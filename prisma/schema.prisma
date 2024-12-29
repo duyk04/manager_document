@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Document {
+  // id           String       @id @default(uuid())
+  soVanBan     String       @unique @id
+  linhVuc      LinhVuc
+  loaiVanBan   LoaiVanBan
+  capBanHanh   CapBanHanh
+  donViCapNhat DonViCapNhat
+  ngayBanHanh  DateTime
+  tenVanBan    String       @db.Text
+  trichYeu     String       @db.Text
+  phamVi       Boolean      @default(false)
+  files        fileVanBan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([soVanBan])
+}
+
+model fileVanBan {
+  // id         String   @id @default(uuid())
+  documentId String   @unique @id
+  path_filePdf    String
+  path_fileGoc    String
+  Document   Document @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([documentId])
+}
+
+enum DonViCapNhat {
+  CNTT
+  TNMT
+  KT
+}
+
+enum LoaiVanBan {
+  VanBan
+  QuyetDinh
+  ThongBao
+  ThongTu
+  QuyDinh
+  QuyChe
+  QuyTrinh
+  QuyDinhKhac
+  QuyCheKhac
+  QuyTrinhKhac
+  VanBanKhac
+}
+
+enum LinhVuc {
+  ThongTu
+  QuyDinh
+  QuyChe
+}
+
+enum CapBanHanh {
+  Truong
+  Khoa
+  Lop
+}
