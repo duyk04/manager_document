@@ -15,16 +15,16 @@ datasource db {
 }
 
 model Document {
-  soVanBan     String       @unique @id
-  linhVuc      LinhVuc
-  loaiVanBan   LoaiVanBan
-  capBanHanh   CapBanHanh
-  donViCapNhat DonViCapNhat
-  ngayBanHanh  DateTime
-  tenVanBan    String       @db.Text
-  trichYeu     String       @db.Text
-  phamVi       Boolean      @default(false)
-  files        fileVanBan[]
+  soVanBan    String       @id @unique
+  linhVuc     LinhVuc[]
+  loaiVanBan  LoaiVanBan
+  capBanHanh  CapBanHanh[]
+  donvi       DonVi[]
+  ngayBanHanh DateTime
+  tenVanBan   String       @db.Text
+  trichYeu    String       @db.Text
+  phamVi      Boolean      @default(false)
+  files       fileVanBan[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -33,22 +33,53 @@ model Document {
 }
 
 model fileVanBan {
-  id         String    @id @default(uuid()) // Khóa chính là UUID, đảm bảo tính duy nhất cho từng file
-  documentId String    // Khóa ngoại tham chiếu tới Document
+  id           String   @id @default(uuid()) // Khóa chính là UUID, đảm bảo tính duy nhất cho từng file
+  documentId   String // Khóa ngoại tham chiếu tới Document
   path_filePdf String?
   path_fileGoc String?
-  Document   Document  @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade)
+  Document     Document @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade)
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([documentId])
 }
 
-enum DonViCapNhat {
-  CNTT
-  TNMT
-  KT
+model LinhVuc {
+  id               Int       @id @default(autoincrement()) // id là khóa chính tự động tăng
+  iddonvi          String // khóa ngoại liên kết với bảng Donvi
+  tenlinhvuc       String // tên lĩnh vực
+  createdAt        DateTime  @default(now()) // Ngày tạo
+  updatedAt        DateTime  @updatedAt // Ngày cập nhật
+  donvi            DonVi     @relation(fields: [iddonvi], references: [id], onDelete: Cascade) // Quan hệ với bảng Donvi
+  Document         Document? @relation(fields: [documentSoVanBan], references: [soVanBan], onDelete: Cascade)
+  documentSoVanBan String?
+}
+
+model MinhChung {
+  id        String @id @default(uuid()) // ID của minh chứng
+  maMC      String @unique // Mã minh chứng
+  tenMC     String // Tên minh chứng
+  tieuChuan String // Tiêu chuẩn
+  tieuChi   String // Tiêu chí
+
+  createdAt DateTime @default(now()) // Ngày tạo
+  updatedAt DateTime @updatedAt // Ngày cập nhật
+
+  @@index([maMC]) // Tạo index cho mã MC
+}
+
+model DonVi {
+  id       String @id @default(uuid()) // ID duy nhất của đơn vị
+  tenDonVi String @unique // Tên đơn vị (duy nhất)
+
+  createdAt        DateTime  @default(now()) // Ngày tạo
+  updatedAt        DateTime  @updatedAt // Ngày cập nhật
+  Document         Document? @relation(fields: [documentSoVanBan], references: [soVanBan], onDelete: Cascade)
+  documentSoVanBan String?
+  Linhvuc          LinhVuc[]
+
+  @@index([tenDonVi]) // Tạo index cho tên đơn vị
 }
 
 enum LoaiVanBan {
@@ -65,14 +96,9 @@ enum LoaiVanBan {
   VanBanKhac
 }
 
-enum LinhVuc {
-  ThongTu
-  QuyDinh
-  QuyChe
-}
-
-enum CapBanHanh {
-  Truong
-  Khoa
-  Lop
+model CapBanHanh {
+  id               Int       @id @default(autoincrement()) // Khóa chính tự động tăng
+  tenCap           String // Tên cấp ban hành (Trường Khoa, Trường, Lớp)
+  Document         Document? @relation(fields: [documentSoVanBan], references: [soVanBan], onDelete: Cascade)
+  documentSoVanBan String?
 }

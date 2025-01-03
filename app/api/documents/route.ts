@@ -48,7 +48,7 @@ export async function POST(
 
         const document = await db.document.create({
             data: {
-                donViCapNhat: DON_VI_CN,
+                donVi: DON_VI_CN,
                 linhVuc: LINH_VUC,
                 loaiVanBan: LOAI_VAN_BAN,
                 capBanHanh: CAP_BAN_HANH,
