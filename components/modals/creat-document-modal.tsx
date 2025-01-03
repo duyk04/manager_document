@@ -5,6 +5,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import qs from "query-string"
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
 import { FileUpload } from "@/components/file-upload";
+
+import { CapBanHanh, DonViCapNhat, LinhVuc, LoaiVanBan } from "@prisma/client";
 
 interface FileField {
     id: number;
@@ -84,18 +90,29 @@ export const CreateDocumentModal = () => {
         }
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const router = useRouter();
+    const params = useParams();
 
-        const updatedValues = {
-            ...values,
-            FILE_PDF: values.FILE_PDF.map((file) => (file === "" ? null : file)),
-            FILE_GOC: values.FILE_GOC.map((file) => (file === "" ? null : file)),
-        };
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            // Chuẩn bị giá trị form trước khi gửi
+            const updatedValues = {
+                ...values,
+                FILE_PDF: values.FILE_PDF.map((file) => (file.trim() === "" ? null : file)),
+                FILE_GOC: values.FILE_GOC.map((file) => (file.trim() === "" ? null : file)),
+            };
 
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(updatedValues)
-    }
+            console.log(updatedValues);
+
+            // Gửi dữ liệu đến API
+            await axios.post("/api/documents", updatedValues);
+            // Reset form sau khi thành công
+            // form.reset();
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
+    };
+
 
     const isLoading = form.formState.isSubmitting;
 
@@ -127,9 +144,15 @@ export const CreateDocumentModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="general">General</SelectItem>
+                                            {Object.values(DonViCapNhat).map((type) => (
+                                                <SelectItem key={type} value={type} className="capitalize">
+                                                    {type}
+                                                </SelectItem>
+                                            ))}
+
+                                            {/* <SelectItem value="general">General</SelectItem>
                                             <SelectItem value="random">Random</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem> */}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -154,13 +177,15 @@ export const CreateDocumentModal = () => {
                                             <SelectTrigger
                                                 className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
                                             >
-                                                <SelectValue placeholder="Chọn đơn vị cập nhật" />
+                                                <SelectValue placeholder="Chọn lĩnh vực" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="general">General</SelectItem>
-                                            <SelectItem value="random">Random</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
+                                            {Object.values(LinhVuc).map((type) => (
+                                                <SelectItem key={type} value={type} className="capitalize">
+                                                    {type}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -185,13 +210,15 @@ export const CreateDocumentModal = () => {
                                             <SelectTrigger
                                                 className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
                                             >
-                                                <SelectValue placeholder="Chọn đơn vị cập nhật" />
+                                                <SelectValue placeholder="Chọn loại văn bản" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="general">General</SelectItem>
-                                            <SelectItem value="random">Random</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
+                                            {Object.values(LoaiVanBan).map((type) => (
+                                                <SelectItem key={type} value={type} className="capitalize">
+                                                    {type}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -229,14 +256,26 @@ export const CreateDocumentModal = () => {
                                         dark:text-secondary/70">
                                         Cấp ban hành
                                     </FormLabel>
-                                    <Input
+                                    <Select
                                         disabled={isLoading}
-                                        className="bg-zinc-300/50 border-0
-                                                focus-visible:ring-0 text-black
-                                                focus-visible:ring-offset-0"
-                                        placeholder="Các cấp ban hành"
-                                        {...field}
-                                    />
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger
+                                                className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
+                                            >
+                                                <SelectValue placeholder="Chọn cấp ban hành" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {Object.values(CapBanHanh).map((type) => (
+                                                <SelectItem key={type} value={type} className="capitalize">
+                                                    {type}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -321,7 +360,7 @@ export const CreateDocumentModal = () => {
                                             <SelectTrigger
                                                 className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
                                             >
-                                                <SelectValue defaultValue="false"/>
+                                                <SelectValue defaultValue="false" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>

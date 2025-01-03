@@ -112,7 +112,9 @@ export function NavigationNavbar() {
                                 </Link>
                             </li>
                             <li title="Installation">
-                                How to install dependencies and structure your app.
+                                <Link href="/document/view" legacyBehavior passHref >
+                                    Danh sách văn bản
+                                </Link>
                             </li>
                             <li title="Typography">
                                 Styles for headings, paragraphs, lists...etc
@@ -184,7 +186,7 @@ export function NavigationNavbar() {
                         </ul>
                     </NavigationMenuContent>
                 </NavigationMenuItem>
-                
+
             </NavigationMenuList>
         </NavigationMenu>
 

@@ -15,7 +15,6 @@ datasource db {
 }
 
 model Document {
-  // id           String       @id @default(uuid())
   soVanBan     String       @unique @id
   linhVuc      LinhVuc
   loaiVanBan   LoaiVanBan
@@ -34,14 +33,14 @@ model Document {
 }
 
 model fileVanBan {
-  // id         String   @id @default(uuid())
-  documentId String   @unique @id
-  path_filePdf    String
-  path_fileGoc    String
-  Document   Document @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade, onUpdate: Cascade)
+  id         String    @id @default(uuid()) // Khóa chính là UUID, đảm bảo tính duy nhất cho từng file
+  documentId String    // Khóa ngoại tham chiếu tới Document
+  path_filePdf String?
+  path_fileGoc String?
+  Document   Document  @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([documentId])
 }

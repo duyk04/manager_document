@@ -23,7 +23,8 @@ export const FileUpload = ({
 		}
 	};
 
-	const handleUpload = async () => {
+	const handleUpload = async (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault(); // Ngăn hành động mặc định
 		if (!file) {
 			setUploadStatus("Please select a file first.");
 			return;
