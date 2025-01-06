@@ -20,18 +20,6 @@ export async function POST(
             FILE_GOC
         } = await req.json();
 
-        // console.log("DON_VI_CN", DON_VI_CN);
-        // console.log("LINH_VUC", LINH_VUC);
-        // console.log("LOAI_VAN_BAN", LOAI_VAN_BAN);
-        // console.log("SO_VAN_BAN", SO_VAN_BAN);
-        // console.log("CAP_BAN_HANH", CAP_BAN_HANH);
-        // console.log("NGAY_BAN_HANH", NGAY_BAN_HANH);
-        // console.log("TEN_VAN_BAN", TEN_VAN_BAN);
-        // console.log("TRICH_YEU", TRICH_YEU);
-        // console.log("PUBLIC", PUBLIC);
-        // console.log("FILE_PDF", FILE_PDF);
-        // console.log("FILE_GOC", FILE_GOC);
-
         if (!FILE_GOC || !FILE_PDF) {
             return new NextResponse("FILE_GOC or FILE_PDF is required", { status: 400 });
         }
@@ -84,6 +72,8 @@ export async function GET(
                 files: true,
             }
         });
+
+        const files = await db.fileVanBan.findMany();
 
         return NextResponse.json(documents);
     } catch (error) {
