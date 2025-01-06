@@ -1,6 +1,6 @@
 "use client"
 
-import { CreateDocumentModal } from "@/components/modals/creat-document-modal";
+import { CreateDocumentModal } from "@/components/documents/document-creat";
 
 const DocumentPage = () => {
     return (
