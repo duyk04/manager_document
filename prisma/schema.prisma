@@ -14,65 +14,214 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Document {
-  soVanBan     String       @unique @id
-  linhVuc      LinhVuc
-  loaiVanBan   LoaiVanBan
-  capBanHanh   CapBanHanh
-  donViCapNhat DonViCapNhat
-  ngayBanHanh  DateTime
-  tenVanBan    String       @db.Text
-  trichYeu     String       @db.Text
-  phamVi       Boolean      @default(false)
-  files        fileVanBan[]
+// model Document {
+//   soVanBan     String       @unique @id
+//   linhVuc      LinhVuc
+//   loaiVanBan   LoaiVanBan
+//   capBanHanh   CapBanHanh
+//   donViCapNhat DonViCapNhat
+//   ngayBanHanh  DateTime
+//   tenVanBan    String       @db.Text
+//   trichYeu     String       @db.Text
+//   phamVi       Boolean      @default(false)
+//   files        fileVanBan[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  @@index([soVanBan])
+//   @@index([soVanBan])
+// }
+
+// model fileVanBan {
+//   id         String    @id @default(uuid()) // Khóa chính là UUID, đảm bảo tính duy nhất cho từng file
+//   documentId String    // Khóa ngoại tham chiếu tới Document
+//   path_filePdf String?
+//   path_fileGoc String?
+//   Document   Document  @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade)
+
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+
+//   @@index([documentId])
+// }
+
+// enum DonViCapNhat {
+//   CNTT
+//   TNMT
+//   KT
+// }
+
+// enum LoaiVanBan {
+//   VanBan
+//   QuyetDinh
+//   ThongBao
+//   ThongTu
+//   QuyDinh
+//   QuyChe
+//   QuyTrinh
+//   QuyDinhKhac
+//   QuyCheKhac
+//   QuyTrinhKhac
+//   VanBanKhac
+// }
+
+// enum LinhVuc {
+//   ThongTu
+//   QuyDinh
+//   QuyChe
+// }
+
+// enum CapBanHanh {
+//   Truong
+//   Khoa
+//   Lop
+// }
+
+// Enum for user roles
+enum RoleType {
+  ROOT
+  INSPECTOR
+  ADMIN
+  STAFF
+  GUEST
 }
 
-model fileVanBan {
-  id         String    @id @default(uuid()) // Khóa chính là UUID, đảm bảo tính duy nhất cho từng file
-  documentId String    // Khóa ngoại tham chiếu tới Document
-  path_filePdf String?
-  path_fileGoc String?
-  Document   Document  @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade)
+// Users model
+model Users {
+  id           String      @id @default(uuid())
+  userId       String      @unique
+  name         String
+  imageUrl     String? // Optional field for user image
+  email        String      @unique
+  department   Department? @relation(fields: [departmentId], references: [departmentCode], onDelete: Cascade)
+  departmentId String?
+  role         RoleType
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  @@index([departmentId])
+}
+
+// Department model
+model Department {
+  id             Int             @id @default(autoincrement())
+  departmentCode String          @unique
+  departmentName String
+  describe       String?
+  users          Users[]
+  documents      Document[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  ProofDocument  ProofDocument[]
+}
+
+// Documents model
+model Document {
+  id             String          @id @default(uuid())
+  textNumber     String          @unique
+  textName       String
+  textType       TextType        @relation(fields: [textTypeId], references: [name], onDelete: Cascade)
+  textTypeId     String
+  releaseLevel   ReleaseLevel    @relation(fields: [releaseLevelId], references: [name], onDelete: Cascade)
+  releaseLevelId String
+  field          Field           @relation(fields: [fieldId], references: [name], onDelete: Cascade)
+  fieldId        String
+  releaseDate    DateTime
+  updateUnit     Department      @relation(fields: [updateUnitId], references: [departmentCode], onDelete: Cascade)
+  updateUnitId   String
+  scope          Boolean // Indicates internal or public
+  describe       String?
+  documentFiles  DocumentFile[]
+  proofDocuments ProofDocument[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([textNumber])
+  @@index([textTypeId])
+  @@index([releaseLevelId])
+  @@index([fieldId])
+  @@index([updateUnitId])
+}
+
+// DocumentFile model
+model DocumentFile {
+  id           Int      @id @default(autoincrement())
+  document     Document @relation(fields: [documentId], references: [textNumber])
+  documentId   String
+  pdfFile      String
+  originalFile String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([documentId])
 }
 
-enum DonViCapNhat {
-  CNTT
-  TNMT
-  KT
+// ProofDocuments model
+model ProofDocument {
+  id             Int                 @id @default(autoincrement())
+  textNumber     String              @unique
+  textName       String
+  textType       TextType            @relation(fields: [textTypeId], references: [id])
+  textTypeId     Int
+  releaseLevel   ReleaseLevel        @relation(fields: [releaseLevelId], references: [id])
+  releaseLevelId Int
+  field          Field               @relation(fields: [fieldId], references: [id])
+  fieldId        Int
+  releaseDate    DateTime
+  updateUnit     Department?         @relation(fields: [updateUnitId], references: [id])
+  updateUnitId   Int?
+  scope          Boolean
+  describe       String?
+  proofFiles     ProofDocumentFile[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  Document       Document?           @relation(fields: [documentId], references: [id])
+  documentId     String?
+
+  @@index([textNumber])
+  @@index([textTypeId])
+  @@index([releaseLevelId])
+  @@index([fieldId])
+  @@index([updateUnitId])
+  @@index([documentId])
 }
 
-enum LoaiVanBan {
-  VanBan
-  QuyetDinh
-  ThongBao
-  ThongTu
-  QuyDinh
-  QuyChe
-  QuyTrinh
-  QuyDinhKhac
-  QuyCheKhac
-  QuyTrinhKhac
-  VanBanKhac
+// ProofDocumentFile model
+model ProofDocumentFile {
+  id           Int           @id @default(autoincrement())
+  document     ProofDocument @relation(fields: [documentId], references: [textNumber])
+  documentId   String
+  pdfFile      String?
+  originalFile String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([documentId])
 }
 
-enum LinhVuc {
-  ThongTu
-  QuyDinh
-  QuyChe
+// Field lookup model
+model Field {
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  describe       String?
+  documents      Document[]
+  proofDocuments ProofDocument[]
 }
 
-enum CapBanHanh {
-  Truong
-  Khoa
-  Lop
+// TextType lookup model
+model TextType {
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  describe       String?
+  documents      Document[]
+  proofDocuments ProofDocument[]
+}
+
+// ReleaseLevel lookup model
+model ReleaseLevel {
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  describe       String?
+  documents      Document[]
+  proofDocuments ProofDocument[]
 }
