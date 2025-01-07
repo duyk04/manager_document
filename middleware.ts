@@ -3,7 +3,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher([
     '/sign-in(.*)', // Đăng nhập
     '/sign-up(.*)', // Đăng ký
-    '/api/uploadthing' // uploadthing
+    // '/api/uploadthing' // uploadthing
   ]); // Đường dẫn không cần xác thực (public route)
    
   export default clerkMiddleware(async (auth, request) => {
