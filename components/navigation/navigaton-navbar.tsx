@@ -1,5 +1,6 @@
 "use client"
 import Link from "next/link"
+import { UserButton } from "@clerk/nextjs";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,13 +11,23 @@ import {
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { RoleType } from "@prisma/client";
 
-export function NavigationNavbar() {
+interface NavigationNavbarProps {
+    name?: string;
+    role?: RoleType;
+}
+
+export function NavigationNavbar({
+    name,
+    role
+}: NavigationNavbarProps) {
     const path = usePathname();
-    console.log("path", path);
+    const isAdmin = role === RoleType.ADMIN;
+    const isRoot = role === RoleType.ROOT;
     return (
         <nav className="bg-white shadow-lg w-full">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     {/* Logo */}
                     <div className="flex-shrink-0 flex items-center">
@@ -98,16 +109,32 @@ export function NavigationNavbar() {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-
+                        {isAdmin || isRoot && (
+                            <Link href="/account">
+                                <p className={cn(
+                                    "text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium",
+                                    { "text-blue-600": path === "/admin" }
+                                )}>
+                                    Quản lý tài khoản
+                                </p>
+                            </Link>
+                        )}
                     </div>
 
                     {/* Action Button */}
                     <div className="hidden sm:flex items-center">
-                        <Link href="/login">
-                            <p className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
-                                Login
-                            </p>
-                        </Link>
+                        <p className="text-zinc-700 px-2">
+                            {name}
+                        </p>
+                        <UserButton
+                            afterSignOutUrl="/"
+                            // afterSwitchSessionUrl="/"
+                            appearance={{
+                                elements: {
+                                    avatarBox: "h-[40px] w-[40px]"
+                                }
+                            }}
+                        />
                     </div>
 
                     {/* Mobile Menu */}
