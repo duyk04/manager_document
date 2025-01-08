@@ -27,7 +27,7 @@ export const DeleteDepartmentModal= () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleDeleteDepartment = async () => {
+    const handleDelete = async () => {
         try {
             setIsLoading(true);
             await axios.delete("/api/department", {
@@ -65,7 +65,7 @@ export const DeleteDepartmentModal= () => {
                         </Button>
                         <Button
                             disabled={isLoading}
-                            onClick={handleDeleteDepartment}
+                            onClick={handleDelete}
                             variant="primary"
                         >
                             Confirm

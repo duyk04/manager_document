@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import qs from "query-string"
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 

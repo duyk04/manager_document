@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ModalType = "createDepartment" | "editDepartment" | "deleteDepartment" | "createAccount" | "editAccount";
+export type ModalType = "createDepartment" | "editDepartment" | "deleteDepartment" | "createAccount" | "editAccount"| "createFieldDocument" | "editFieldDocument" | "deleteFieldDocument" ;
 
 interface ModalStore {
     type: ModalType | null;

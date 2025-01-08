@@ -23,7 +23,7 @@ export const ListDepartment = ({
     const { onOpen } = useModal();
     return (
         <div>
-            <Button variant={"primary"} onClick={() => onOpen("createDeparment")}>
+            <Button variant={"primary"} onClick={() => onOpen("createDepartment")}>
                 <span className="pl-2">Create Deparment</span>
             </Button>
             <Separator className="my-4" />

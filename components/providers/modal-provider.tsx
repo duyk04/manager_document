@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CreateDepartmentModal } from "@/components/modals/creat-department-modal";
+import { CreateFieldDocumentModal } from "@/components/modals/creat-department-modal";
 import { EditAccountModal } from "@/components/modals/edit-account-modal";
-import { EditDepartmentModal } from "../modals/edit-department-modal";
-import { DeleteDepartmentModal } from "../modals/delete-department-modal";
+import { EditDepartmentModal } from "@/components/modals/edit-department-modal";
+import { DeleteDepartmentModal } from "@/components/modals/delete-department-modal";
+import { CreateDepartmentModal } from "@/components/modals/creat-fieldDocument-modal";
+import { EditFieldDocumentModal } from "@/components/modals/edit-fieldDocument-modal";
+import { DeleteFielDocumentModal } from "@/components/modals/delete-fieldDocument";
 
 
 export const ModalProvider = () => {
@@ -24,6 +27,9 @@ export const ModalProvider = () => {
             <CreateDepartmentModal />
             <EditDepartmentModal />
             <DeleteDepartmentModal />
+            <CreateFieldDocumentModal />
+            <EditFieldDocumentModal />
+            <DeleteFielDocumentModal/>
         </>
     );
 };

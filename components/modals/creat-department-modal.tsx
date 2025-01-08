@@ -33,12 +33,12 @@ const formSchema = z.object({
     describe: z.string().nonempty("Describe is required"),
 });
 
-export const CreateDepartmentModal = () => {
+export const CreateFieldDocumentModal = () => {
     const { isOpen, onClose, type} = useModal();
     const router = useRouter();
 
 
-    const isModalOpen = isOpen && type === "createDeparment";
+    const isModalOpen = isOpen && type === "createDepartment";
 
     const form = useForm({
         resolver: zodResolver(formSchema),
