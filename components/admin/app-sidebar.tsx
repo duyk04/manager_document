@@ -41,6 +41,24 @@ export function AppSidebar() {
                     </CollapsibleContent>
                 </SidebarMenuItem>
             </Collapsible>
+            <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                        <SidebarMenuButton className="text-xl" >
+                            Manage Field Document
+                        </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <SidebarMenuSub>
+                            <SidebarMenuSubItem>
+                                <Link href="/admin/field">
+                                    <SidebarMenuButton>Field document</SidebarMenuButton>
+                                </Link>
+                            </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                    </CollapsibleContent>
+                </SidebarMenuItem>
+            </Collapsible>
         </SidebarMenu>
     )
 }
