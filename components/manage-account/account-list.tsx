@@ -1,3 +1,4 @@
+"use client"
 import {
     Table,
     TableBody,
@@ -8,14 +9,29 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { Button } from "../ui/button";
+import { useModal } from "@/hooks/use-modal-store";
+
+interface Department {
+    departmentCode: string;
+}
+
+interface Account {
+    id: string;
+    name: string;
+    email: string;
+    department: string | Department;
+    role: string;
+}
 
 interface ListAccountProps {
     listAccount: any;
 }
 
-export const ListAccount = async ({
+export const ListAccount = ({
     listAccount
 }: ListAccountProps) => {
+    const { onOpen, data } = useModal();
     return (
         <div>
             <Table>
@@ -32,22 +48,31 @@ export const ListAccount = async ({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {listAccount.map((account: any, index: number) => (
+                    {listAccount?.map((account: Account, index: number) => (
                         <TableRow key={account.id}>
                             <TableCell className="font-medium text-center">{index + 1}</TableCell>
                             <TableCell>{account.id}</TableCell>
                             <TableCell>{account.name}</TableCell>
                             <TableCell>{account.email}</TableCell>
-                            <TableCell>{account.department}</TableCell>
+                            <TableCell>
+                                {typeof account.department === "object" && account.department !== null
+                                    ? account.department.departmentCode
+                                    : account.department}
+                            </TableCell>
                             <TableCell>{account.role}</TableCell>
-                            <TableCell className="text-right">Action</TableCell>
+                            <TableCell className="text-right">
+                                <Button variant={"primary"} onClick={() => onOpen("editAccount", account)}>
+                                    Edit
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
                 <TableFooter>
                     <TableRow>
-                        <TableCell colSpan={3}>Total</TableCell>
-                        <TableCell className="text-right">$2,500.00</TableCell>
+                        <TableCell colSpan={3}>Example</TableCell>
+                        <TableCell colSpan={3}>Example</TableCell>
+                        <TableCell className="text-right">Example</TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>
