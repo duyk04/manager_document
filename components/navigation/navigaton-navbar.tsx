@@ -23,21 +23,30 @@ export function NavigationNavbar({
     role
 }: NavigationNavbarProps) {
     const path = usePathname();
-    const isAdmin = role === RoleType.ADMIN;
-    const isRoot = role === RoleType.ROOT;
+    const isAdmin = role === RoleType.ADMIN || role === RoleType.ROOT || role === RoleType.INSPECTOR; 
+
     return (
         <nav className="bg-white shadow-lg w-full">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+                <div className="flex h-16">
                     {/* Logo */}
                     <div className="flex-shrink-0 flex items-center">
                         <Link href="/">
-                            <p className="text-2xl font-bold text-emerald-600">My</p>
+                            {/* <p className="text-2xl font-bold text-emerald-600">Logo</p> */}
+                            <UserButton
+                                afterSignOutUrl="/"
+                                // afterSwitchSessionUrl="/"
+                                appearance={{
+                                    elements: {
+                                        avatarBox: "h-[40px] w-[40px]"
+                                    }
+                                }}
+                            />
                         </Link>
                     </div>
 
                     {/* Navigation Links */}
-                    <div className="hidden sm:flex space-x-8 items-center">
+                    <div className="items-center flex-auto sm:flex">
                         <Link href="/home">
                             <p className={cn(
                                 "text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium",
@@ -109,20 +118,17 @@ export function NavigationNavbar({
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        {isAdmin || isRoot && (
-                            <Link href="/account">
-                                <p className={cn(
-                                    "text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium",
-                                    { "text-blue-600": path === "/admin" }
-                                )}>
-                                    Quản lý tài khoản
+                        {isAdmin && (
+                            <Link href="/admin/account">
+                                <p className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium">
+                                    Admin
                                 </p>
                             </Link>
                         )}
                     </div>
 
                     {/* Action Button */}
-                    <div className="hidden sm:flex items-center">
+                    <div className="hidden sm:flex items-center flex-auto justify-end">
                         <p className="text-zinc-700 px-2">
                             {name}
                         </p>
@@ -137,7 +143,7 @@ export function NavigationNavbar({
                         />
                     </div>
 
-                    {/* Mobile Menu */}
+                    {/* Mobile Menu
                     <div className="sm:hidden flex items-center">
                         <button
                             type="button"
@@ -158,7 +164,7 @@ export function NavigationNavbar({
                                 />
                             </svg>
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </nav>
