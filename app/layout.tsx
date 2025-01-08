@@ -2,18 +2,12 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { cn } from "@/lib/utils";
+import { ModalProvider } from "@/components/providers/modal-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const font = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Manage Documents",
@@ -28,9 +22,10 @@ export default function RootLayout({
   return (
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}>
       <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body className={cn(font.className,
+          "bg-white dark:bg-[#313338]"
+        )}>
+          <ModalProvider/>
           <QueryProvider>
             {children}
           </QueryProvider>
