@@ -1,3 +1,4 @@
+import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
@@ -5,6 +6,16 @@ export async function POST(
     req: Request,
 ) {
     try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
         const {
             deparmentCode,
             deparmentName,
@@ -41,6 +52,12 @@ export async function GET(
     req: Request,
 ) {
     try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
         const deparments = await db.department.findMany({
             select: {
                 id: true,
@@ -61,6 +78,16 @@ export async function PATCH(
     req: Request,
 ) {
     try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
         const {
             id,
             departmentCode,
@@ -90,6 +117,16 @@ export async function DELETE(
     req: Request,
 ) {
     try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
         const {
             id
         } = await req.json();
@@ -97,13 +134,13 @@ export async function DELETE(
         const deparmentExist = await db.department.findFirst({
             where: {
                 id: id,
-            },include: {
+            }, include: {
                 users: true,
             }
         });
 
-        if (deparmentExist) {
-            return new NextResponse("Deparment is not exist", { status: 400 });
+        if (deparmentExist?.users.length != 0) {
+            return new Response("Can not delete Department", { status: 404 });
         }
 
         const deparment = await db.department.delete({
