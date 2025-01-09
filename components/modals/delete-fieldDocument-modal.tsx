@@ -1,6 +1,5 @@
 "use client";
 
-import qs from "query-string";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,7 +22,7 @@ export const DeleteFielDocumentModal= () => {
 
     const isModalOpen = isOpen && type === "deleteFieldDocument";
     const { id, name } = data;
-    console.log(id);
+    // console.log(id);
 
     const [isLoading, setIsLoading] = useState(false);
 

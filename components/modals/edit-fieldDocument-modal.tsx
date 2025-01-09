@@ -51,20 +51,6 @@ export const EditFieldDocumentModal = () => {
 
     const isModalOpen = isOpen && type === "editFieldDocument";
 
-    const [deparments, setDeparment] = useState<Department[]>([]);
-    // console.log(deparmentCode);
-    useEffect(() => {
-        const fetchDeparment = async () => {
-            try {
-                const response = await axios.get("/api/department");
-                setDeparment(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchDeparment();
-    }, []);
-
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -122,7 +108,7 @@ export const EditFieldDocumentModal = () => {
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Loại văn bản
+                                            Lĩnh vực văn bản
                                         </FormLabel>
                                         <FormControl>
                                             <Input

@@ -32,7 +32,7 @@ export const ListField = ({
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
-                        <TableHead>Tên loại văn bản</TableHead>
+                        <TableHead>Tên lĩnh vực văn bản</TableHead>
                         <TableHead>Mô tả</TableHead>
                         <TableHead className="text-right">Hành động</TableHead>
                     </TableRow>
