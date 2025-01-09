@@ -59,6 +59,42 @@ export function AppSidebar() {
                     </CollapsibleContent>
                 </SidebarMenuItem>
             </Collapsible>
+            <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                        <SidebarMenuButton className="text-xl" >
+                            Manage Type Document
+                        </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <SidebarMenuSub>
+                            <SidebarMenuSubItem>
+                                <Link href="/admin/type">
+                                    <SidebarMenuButton>Type document</SidebarMenuButton>
+                                </Link>
+                            </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                    </CollapsibleContent>
+                </SidebarMenuItem>
+            </Collapsible>
+            <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                        <SidebarMenuButton className="text-xl" >
+                            Manage Release Level
+                        </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <SidebarMenuSub>
+                            <SidebarMenuSubItem>
+                                <Link href="/admin/release-level">
+                                    <SidebarMenuButton>Release level document</SidebarMenuButton>
+                                </Link>
+                            </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                    </CollapsibleContent>
+                </SidebarMenuItem>
+            </Collapsible>
         </SidebarMenu>
     )
 }
