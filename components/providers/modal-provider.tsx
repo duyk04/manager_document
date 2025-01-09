@@ -7,7 +7,13 @@ import { EditDepartmentModal } from "@/components/modals/edit-department-modal";
 import { DeleteDepartmentModal } from "@/components/modals/delete-department-modal";
 import { CreateDepartmentModal } from "@/components/modals/creat-fieldDocument-modal";
 import { EditFieldDocumentModal } from "@/components/modals/edit-fieldDocument-modal";
-import { DeleteFielDocumentModal } from "@/components/modals/delete-fieldDocument";
+import { DeleteFielDocumentModal } from "@/components/modals/delete-fieldDocument-modal";
+import { CreateTypeDocumentModal } from "@/components/modals/creat-typeDocument-modal";
+import { EditTypeDocumentModal } from "@/components/modals/edit-typeDocument-modal";
+import { DeleteTypeDocumentModal } from "@/components/modals/delete-typeDocument-modal";
+import { CreateReleaseLevelDocumentModal } from "@/components/modals/creat-releaseLevelDocument-modal";
+import { EditReleaseLevelDocumentModal } from "@/components/modals/edit-releaseLevelDocument-modal";
+import { DeleteReleaseLevelDocumentModal } from "@/components/modals/delete-releaseLevelDocument-modal";
 
 
 export const ModalProvider = () => {
@@ -29,7 +35,13 @@ export const ModalProvider = () => {
             <DeleteDepartmentModal />
             <CreateFieldDocumentModal />
             <EditFieldDocumentModal />
-            <DeleteFielDocumentModal/>
+            <DeleteFielDocumentModal />
+            <CreateTypeDocumentModal />
+            <EditTypeDocumentModal />
+            <DeleteTypeDocumentModal />
+            <CreateReleaseLevelDocumentModal />
+            <EditReleaseLevelDocumentModal />
+            <DeleteReleaseLevelDocumentModal />
         </>
     );
 };
