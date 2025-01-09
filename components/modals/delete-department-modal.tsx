@@ -23,7 +23,7 @@ export const DeleteDepartmentModal= () => {
 
     const isModalOpen = isOpen && type === "deleteDepartment";
     const { id, departmentName } = data;
-    console.log(id);
+    // console.log(id);
 
     const [isLoading, setIsLoading] = useState(false);
 

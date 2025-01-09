@@ -47,26 +47,12 @@ interface Department {
 export const EditDepartmentModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
-    console.log(data);
+    // console.log(data);
 
     const { id, departmentCode, departmentName, describe} = data;
 
 
     const isModalOpen = isOpen && type === "editDepartment";
-
-    const [deparments, setDeparment] = useState<Department[]>([]);
-    // console.log(deparmentCode);
-    useEffect(() => {
-        const fetchDeparment = async () => {
-            try {
-                const response = await axios.get("/api/department");
-                setDeparment(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchDeparment();
-    }, []);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
