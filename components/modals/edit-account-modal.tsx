@@ -58,6 +58,7 @@ export const EditAccountModal = () => {
     const [deparments, setDeparment] = useState<Department[]>([]);
     // console.log(deparmentCode);
     useEffect(() => {
+        if (!isModalOpen) return;
         const fetchDeparment = async () => {
             try {
                 const response = await axios.get("/api/department");
@@ -67,7 +68,7 @@ export const EditAccountModal = () => {
             }
         };
         fetchDeparment();
-    }, []);
+    }, [isModalOpen]);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
