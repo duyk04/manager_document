@@ -219,7 +219,7 @@ export const EditAccountModal = () => {
                                                 <SelectTrigger
                                                     className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
                                                 >
-                                                    <SelectValue placeholder="Select a channel type" />
+                                                    <SelectValue placeholder="Select a department" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -249,7 +249,7 @@ export const EditAccountModal = () => {
                                                 <SelectTrigger
                                                     className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
                                                 >
-                                                    <SelectValue placeholder="Select a channel type" />
+                                                    <SelectValue placeholder="Select a type" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>

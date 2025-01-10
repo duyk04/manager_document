@@ -145,7 +145,7 @@ export const EditDepartmentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
+                                                placeholder="Enter department code"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -168,7 +168,7 @@ export const EditDepartmentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
+                                                placeholder="Enter department name"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -191,7 +191,7 @@ export const EditDepartmentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
+                                                placeholder="Enter describe"
                                                 {...field}
                                             />
                                         </FormControl>
