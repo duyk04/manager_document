@@ -1,7 +1,7 @@
 "use client"
 
 import * as z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,12 +16,31 @@ import { DialogFooter } from "@/components/ui/dialog";
 
 import { FileUpload } from "@/components/file-upload";
 
-import { CapBanHanh, DonViCapNhat, LinhVuc, LoaiVanBan } from "@prisma/client";
 
 interface FileField {
     id: number;
     pdfFile: File | null;
     gocFile: File | null;
+}
+
+interface Department {
+    departmentCode: string;
+    departmentName: string;
+}
+
+interface field {
+    name: string;
+    describe: string;
+}
+
+interface type {
+    name: string;
+    describe: string;
+}
+
+interface release {
+    name: string;
+    describe: string;
 }
 
 const formSchema = z.object({
@@ -40,6 +59,30 @@ const formSchema = z.object({
 
 
 export const CreateDocumentModal = () => {
+    const [isMounted, setMounted] = useState(false);
+    const [departments, setDeparment] = useState<Department[]>([]);
+    const [fieldDocument, setFieldDocument] = useState<field[]>([]);
+    const [type, setType] = useState<type[]>([]);
+    const [release, setRelease] = useState<release[]>([]);
+    useEffect(() => {
+        setMounted(true);
+        const fetchDeparment = async () => {
+            try {
+                const department = await axios.get("/api/department");
+                const field = await axios.get("/api/fieldDocument");
+                const type = await axios.get("/api/typeDocument");
+                const release = await axios.get("/api/releaseLevel");
+                setDeparment(department.data);
+                setFieldDocument(field.data);
+                setType(type.data);
+                setRelease(release.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchDeparment();
+    }, [isMounted]);
+
 
     // State quản lý các trường file
     const [fileFields, setFileFields] = useState<FileField[]>([
@@ -143,15 +186,11 @@ export const CreateDocumentModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {Object.values(DonViCapNhat).map((type) => (
-                                                <SelectItem key={type} value={type} className="capitalize">
-                                                    {type}
+                                            {departments?.map((item) => (
+                                                <SelectItem key={item.departmentCode} value={item.departmentCode} className="capitalize">
+                                                       {item.departmentName}
                                                 </SelectItem>
                                             ))}
-
-                                            {/* <SelectItem value="general">General</SelectItem>
-                                            <SelectItem value="random">Random</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem> */}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -180,9 +219,9 @@ export const CreateDocumentModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {Object.values(LinhVuc).map((type) => (
-                                                <SelectItem key={type} value={type} className="capitalize">
-                                                    {type}
+                                            {fieldDocument?.map((item) => (
+                                                <SelectItem key={item.name} value={item.name} className="capitalize">
+                                                    {item.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -213,9 +252,9 @@ export const CreateDocumentModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {Object.values(LoaiVanBan).map((type) => (
-                                                <SelectItem key={type} value={type} className="capitalize">
-                                                    {type}
+                                            {type?.map((item) => (
+                                                <SelectItem key={item.name} value={item.name} className="capitalize">
+                                                    {item.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -268,9 +307,9 @@ export const CreateDocumentModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {Object.values(CapBanHanh).map((type) => (
-                                                <SelectItem key={type} value={type} className="capitalize">
-                                                    {type}
+                                            {release?.map((item) => (
+                                                <SelectItem key={item.name} value={item.name} className="capitalize">
+                                                    {item.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

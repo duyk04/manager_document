@@ -119,17 +119,17 @@ model Department {
 model Document {
   id             String          @id @default(uuid())
   textNumber     String          @unique
-  textName       String
-  textType       TextType        @relation(fields: [textTypeId], references: [name], onDelete: Cascade)
-  textTypeId     String
-  releaseLevel   ReleaseLevel    @relation(fields: [releaseLevelId], references: [name], onDelete: Cascade)
-  releaseLevelId String
-  field          Field           @relation(fields: [fieldId], references: [name], onDelete: Cascade)
-  fieldId        String
+  textName       String          @db.Text
+  textType       TextType?        @relation(fields: [textTypeId], references: [name], onDelete: Cascade)
+  textTypeId     String?
+  releaseLevel   ReleaseLevel?    @relation(fields: [releaseLevelId], references: [name], onDelete: Cascade)
+  releaseLevelId String?
+  field          Field?           @relation(fields: [fieldId], references: [name], onDelete: Cascade)
+  fieldId        String?
   releaseDate    DateTime
-  updateUnit     Department      @relation(fields: [updateUnitId], references: [departmentCode], onDelete: Cascade)
-  updateUnitId   String
-  scope          Boolean // Indicates internal or public
+  updateUnit     Department?      @relation(fields: [updateUnitId], references: [departmentCode], onDelete: Cascade)
+  updateUnitId   String?
+  scope          Boolean         @default(false)
   describe       String?
   documentFiles  DocumentFile[]
   proofDocuments ProofDocument[]
@@ -145,11 +145,11 @@ model Document {
 
 // DocumentFile model
 model DocumentFile {
-  id           Int      @id @default(autoincrement())
+  id           String      @id @default(uuid())
   document     Document @relation(fields: [documentId], references: [textNumber])
   documentId   String
-  pdfFile      String
-  originalFile String
+  pdfFile      String?
+  originalFile String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

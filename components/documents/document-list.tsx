@@ -28,40 +28,40 @@ export const ViewDocumentModal = () => {
                         >
                             {/* Document Title */}
                             <a
-                                href={document.tenVanBan}
+                                href={document.textName}
                                 className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
                             >
-                                {document.tenVanBan}
+                                {document.textName}
                             </a>
                             {/* Document Summary */}
-                            <p className="mt-2 text-gray-600 dark:text-gray-400">{document.trichYeu}</p>
+                            <p className="mt-2 text-gray-600 dark:text-gray-400">{document.describe}</p>
 
                             {/* Files Section */} 
                             <ul className="mt-4 space-y-4">
-                                {document.files.map((file: any, index: number) => (
+                                {document.documentFiles.map((file: any, index: number) => (
                                     <li key={index} className="flex">
                                         {/* File PDF */}
                                         <div className="flex items-center gap-3 p-3 mx-5 my-2 rounded-lg bg-gray-100 dark:bg-gray-700 w-1/2">
                                             <FileIcon className="h-8 w-8 fill-indigo-200 stroke-indigo-400" />
                                             <a
-                                                href={file.path_filePdf}
+                                                href={file.pdfFile}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
                                                 className="flex-1 text-sm text-indigo-600 dark:text-indigo-400 hover:underline truncate"
                                             >
-                                                {file.path_filePdf?.split("/").pop() || "No PDF file"}
+                                                {file.pdfFile?.split("/").pop() || "No PDF file"}
                                             </a>
                                         </div>
                                         {/* File Gốc */}
                                         <div className="flex items-center gap-3 p-3 mx-5 my-2 rounded-lg bg-gray-100 dark:bg-gray-700 w-1/2">
                                             <FileIcon className="h-8 w-8 fill-indigo-200 stroke-indigo-400" />
                                             <a
-                                                href={file.path_fileGoc}
+                                                href={file.originalFile}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
                                                 className="flex-1 text-sm text-indigo-600 dark:text-indigo-400 hover:underline truncate"
                                             >
-                                                {file.path_fileGoc?.split("/").pop() || "No original file"}
+                                                {file.originalFile?.split("/").pop() || "No original file"}
                                             </a>
                                         </div>
                                     </li>
