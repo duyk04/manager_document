@@ -3,9 +3,12 @@
 import axios from "axios";
 import { FileIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const ViewDocumentModal = () => {
     const [documents, setDocuments] = useState<any[]>([]);
+    const { onOpen } = useModal();
     useEffect(() => {
         const fetchDocuments = async () => {
             try {
@@ -67,6 +70,9 @@ export const ViewDocumentModal = () => {
                                     </li>
                                 ))}
                             </ul>
+                            <Button variant={"primary"} onClick={() => onOpen("editDocument", document)}>
+                                Edit
+                            </Button>
                         </div>
                     ))}
             </div>

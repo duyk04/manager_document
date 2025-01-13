@@ -34,9 +34,9 @@ export async function POST(
         //     FILE_GOC
         // })
 
-        if (!FILE_GOC || !FILE_PDF) {
-            return new NextResponse("FILE_GOC or FILE_PDF is required", { status: 400 });
-        }
+        // if (!FILE_GOC || !FILE_PDF) {
+        //     return new NextResponse("FILE_GOC or FILE_PDF is required", { status: 400 });
+        // }
 
         const documentExist = await db.document.findFirst({
             where: {
@@ -90,7 +90,7 @@ export async function GET(
 
         return NextResponse.json(documents);
     } catch (error) {
-        // console.error("DOCUMENT_GET", error);
+        console.error("DOCUMENT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

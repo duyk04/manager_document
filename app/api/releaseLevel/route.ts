@@ -135,7 +135,7 @@ export async function DELETE(
         });
 
         if (releaseLevelExist?.documents.length != 0) {
-            return new Response("Can not delete this Type", { status: 404 });
+            return new Response("Can not delete this release level", { status: 404 });
         }
 
         const releaseLevel = await db.releaseLevel.delete({

@@ -14,6 +14,7 @@ import { DeleteTypeDocumentModal } from "@/components/modals/delete-typeDocument
 import { CreateReleaseLevelDocumentModal } from "@/components/modals/creat-releaseLevelDocument-modal";
 import { EditReleaseLevelDocumentModal } from "@/components/modals/edit-releaseLevelDocument-modal";
 import { DeleteReleaseLevelDocumentModal } from "@/components/modals/delete-releaseLevelDocument-modal";
+import { EditDocumentModal } from "../modals/edit-document-modal";
 
 
 export const ModalProvider = () => {
@@ -42,6 +43,7 @@ export const ModalProvider = () => {
             <CreateReleaseLevelDocumentModal />
             <EditReleaseLevelDocumentModal />
             <DeleteReleaseLevelDocumentModal />
+            <EditDocumentModal />
         </>
     );
 };
