@@ -14,214 +14,170 @@ datasource db {
   relationMode = "prisma"
 }
 
-// model Document {
-//   soVanBan     String       @unique @id
-//   linhVuc      LinhVuc
-//   loaiVanBan   LoaiVanBan
-//   capBanHanh   CapBanHanh
-//   donViCapNhat DonViCapNhat
-//   ngayBanHanh  DateTime
-//   tenVanBan    String       @db.Text
-//   trichYeu     String       @db.Text
-//   phamVi       Boolean      @default(false)
-//   files        fileVanBan[]
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@index([soVanBan])
-// }
-
-// model fileVanBan {
-//   id         String    @id @default(uuid()) // Khóa chính là UUID, đảm bảo tính duy nhất cho từng file
-//   documentId String    // Khóa ngoại tham chiếu tới Document
-//   path_filePdf String?
-//   path_fileGoc String?
-//   Document   Document  @relation(fields: [documentId], references: [soVanBan], onDelete: Cascade)
-
-//   createdAt  DateTime  @default(now())
-//   updatedAt  DateTime  @updatedAt
-
-//   @@index([documentId])
-// }
-
-// enum DonViCapNhat {
-//   CNTT
-//   TNMT
-//   KT
-// }
-
-// enum LoaiVanBan {
-//   VanBan
-//   QuyetDinh
-//   ThongBao
-//   ThongTu
-//   QuyDinh
-//   QuyChe
-//   QuyTrinh
-//   QuyDinhKhac
-//   QuyCheKhac
-//   QuyTrinhKhac
-//   VanBanKhac
-// }
-
-// enum LinhVuc {
-//   ThongTu
-//   QuyDinh
-//   QuyChe
-// }
-
-// enum CapBanHanh {
-//   Truong
-//   Khoa
-//   Lop
-// }
-
-// Enum for user roles
-enum RoleType {
-  ROOT
-  INSPECTOR
-  ADMIN
-  STAFF
-  GUEST
+enum VaiTro {
+  QUANTRIVIEN
+  THANHTRA
+  QUANLY
+  NHANVIEN
 }
 
-// Users model
-model Users {
-  id           String      @id @default(uuid())
-  userId       String      @unique
-  name         String
-  imageUrl     String? // Optional field for user image
-  email        String      @unique
-  department   Department? @relation(fields: [departmentId], references: [departmentCode], onDelete: Cascade)
-  departmentId String?
-  role         RoleType
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-
-  @@index([departmentId])
+enum PhamVi {
+  CONGKHAI
+  NOIBO
 }
 
-// Department model
-model Department {
-  id             Int             @id @default(autoincrement())
-  departmentCode String          @unique
-  departmentName String
-  describe       String?
-  users          Users[]
-  documents      Document[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  ProofDocument  ProofDocument[]
+model NguoiDung {
+  ma          Int      @id @default(autoincrement())
+  maDonVi     Int?
+  vaiTro      VaiTro   @default(NHANVIEN)
+  hoTen       String
+  email       String   @unique
+  matKhau     String
+  trangThai   Boolean  @default(true)
+  anhDaiDien  String?
+  ngayTao     DateTime @default(now())
+  ngayCapNhat DateTime @updatedAt
+
+  donVi DonVi? @relation(fields: [maDonVi], references: [ma])
+
+  @@index([email]) // Thêm chỉ mục cho trường email
+  @@index([maDonVi]) // Thêm chỉ mục cho trường maDonVi
 }
 
-// Documents model
-model Document {
-  id             String          @id @default(uuid())
-  textNumber     String          @unique
-  textName       String
-  textType       TextType        @relation(fields: [textTypeId], references: [name], onDelete: Cascade)
-  textTypeId     String
-  releaseLevel   ReleaseLevel    @relation(fields: [releaseLevelId], references: [name], onDelete: Cascade)
-  releaseLevelId String
-  field          Field           @relation(fields: [fieldId], references: [name], onDelete: Cascade)
-  fieldId        String
-  releaseDate    DateTime
-  updateUnit     Department      @relation(fields: [updateUnitId], references: [departmentCode], onDelete: Cascade)
-  updateUnitId   String
-  scope          Boolean // Indicates internal or public
-  describe       String?
-  documentFiles  DocumentFile[]
-  proofDocuments ProofDocument[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+model DonVi {
+  ma        Int         @id @default(autoincrement())
+  tenDonVi  String
+  moTa      String?
+  nguoiDung NguoiDung[]
+  taiLieu   TaiLieu[]
 
-  @@index([textNumber])
-  @@index([textTypeId])
-  @@index([releaseLevelId])
-  @@index([fieldId])
-  @@index([updateUnitId])
+  @@index([ma])
+  @@index([tenDonVi]) // Thêm chỉ mục cho trường tenDonVi
 }
 
-// DocumentFile model
-model DocumentFile {
-  id           Int      @id @default(autoincrement())
-  document     Document @relation(fields: [documentId], references: [textNumber])
-  documentId   String
-  pdfFile      String
-  originalFile String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model CapBanHanh {
+  ma      Int       @id @default(autoincrement())
+  tenCap  String
+  moTa    String?
+  taiLieu TaiLieu[]
 
-  @@index([documentId])
+  @@index([tenCap]) // Thêm chỉ mục cho trường tenCap
 }
 
-// ProofDocuments model
-model ProofDocument {
-  id             Int                 @id @default(autoincrement())
-  textNumber     String              @unique
-  textName       String
-  textType       TextType            @relation(fields: [textTypeId], references: [id])
-  textTypeId     Int
-  releaseLevel   ReleaseLevel        @relation(fields: [releaseLevelId], references: [id])
-  releaseLevelId Int
-  field          Field               @relation(fields: [fieldId], references: [id])
-  fieldId        Int
-  releaseDate    DateTime
-  updateUnit     Department?         @relation(fields: [updateUnitId], references: [id])
-  updateUnitId   Int?
-  scope          Boolean
-  describe       String?
-  proofFiles     ProofDocumentFile[]
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  Document       Document?           @relation(fields: [documentId], references: [id])
-  documentId     String?
+model LinhVuc {
+  ma         Int         @id @default(autoincrement())
+  maLinhVuc  String      @unique
+  tenLinhVuc String
+  moTa       String?
+  tieuChuan  TieuChuan[]
+  taiLieu    TaiLieu[]
 
-  @@index([textNumber])
-  @@index([textTypeId])
-  @@index([releaseLevelId])
-  @@index([fieldId])
-  @@index([updateUnitId])
-  @@index([documentId])
+  @@index([maLinhVuc]) // Thêm chỉ mục cho trường maLinhVuc
 }
 
-// ProofDocumentFile model
-model ProofDocumentFile {
-  id           Int           @id @default(autoincrement())
-  document     ProofDocument @relation(fields: [documentId], references: [textNumber])
-  documentId   String
-  pdfFile      String?
-  originalFile String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+model ChuongTrinhDaoTao {
+  ma         Int         @id @default(autoincrement())
+  maCTDT     String      @unique
+  tenCTDT    String
+  moTa       String?
+  namDanhGia Int
+  ngayTao    DateTime    @default(now())
+  tieuChuan  TieuChuan[]
 
-  @@index([documentId])
+  @@index([maCTDT]) // Thêm chỉ mục cho trường maCTDT
 }
 
-// Field lookup model
-model Field {
-  id             Int             @id @default(autoincrement())
-  name           String          @unique
-  describe       String?
-  documents      Document[]
-  proofDocuments ProofDocument[]
+model TieuChuan {
+  ma                Int                @id @default(autoincrement())
+  maTieuChuan       String             @unique
+  maLinhVuc         Int
+  tenTieuChuan      String
+  moTa              String?
+  namDanhGia        Int
+  ngayTao           DateTime           @default(now())
+  linhVuc           LinhVuc            @relation(fields: [maLinhVuc], references: [ma])
+  tieuChi           TieuChi[]
+  ChuongTrinhDaoTao ChuongTrinhDaoTao? @relation(fields: [maCTDT], references: [ma])
+  maCTDT            Int
+
+  @@index([maCTDT]) // Thêm chỉ mục cho trường idCTDT
+  @@index([maLinhVuc]) // Thêm chỉ mục cho trường maLinhVuc
 }
 
-// TextType lookup model
-model TextType {
-  id             Int             @id @default(autoincrement())
-  name           String          @unique
-  describe       String?
-  documents      Document[]
-  proofDocuments ProofDocument[]
+model TieuChi {
+  ma          Int         @id @default(autoincrement())
+  maTieuChi   String      @unique
+  maTieuChuan Int
+  tenTieuChi  String
+  moTa        String?
+  namDanhGia  Int
+  ngayTao     DateTime    @default(now())
+  tieuChuan   TieuChuan   @relation(fields: [maTieuChuan], references: [ma])
+  minhChung   MinhChung[]
+
+  @@index([maTieuChuan]) // Thêm chỉ mục cho trường maTieuChuan
 }
 
-// ReleaseLevel lookup model
-model ReleaseLevel {
-  id             Int             @id @default(autoincrement())
-  name           String          @unique
-  describe       String?
-  documents      Document[]
-  proofDocuments ProofDocument[]
+model MinhChung {
+  ma           Int       @id @default(autoincrement())
+  maMinhChung  String    @unique
+  maTieuChi    Int
+  tenMinhChung String
+  moTa         String?
+  ngayTao      DateTime  @default(now())
+  taiLieu      TaiLieu[]
+  tieuChi      TieuChi   @relation(fields: [maTieuChi], references: [ma])
+
+  @@index([maTieuChi]) // Thêm chỉ mục cho trường maTieuChi
+}
+
+model LoaiVanBan {
+  ma      Int       @id @default(autoincrement())
+  moTa    String?
+  taiLieu TaiLieu[]
+
+  @@index([ma]) // Thêm chỉ mục cho trường maLoaiVanBan
+}
+
+model TaiLieu {
+  ma           Int      @id @default(autoincrement())
+  maDonVi      Int
+  maLinhVuc    Int
+  maCapBanHanh Int
+  maLoaiVanBan Int
+  maMinhChung  Int?
+  tenTaiLieu   String
+  trichYeu     String?
+  moTa         String?
+  phamVi       PhamVi
+  ngayBanHanh  DateTime
+  ngayTao      DateTime @default(now())
+  ngayCapNhat  DateTime @updatedAt
+
+  donVi      DonVi      @relation(fields: [maDonVi], references: [ma])
+  linhVuc    LinhVuc    @relation(fields: [maLinhVuc], references: [ma])
+  capBanHanh CapBanHanh @relation(fields: [maCapBanHanh], references: [ma])
+  loaiVanBan LoaiVanBan @relation(fields: [maLoaiVanBan], references: [ma])
+  file       File[]
+  MinhChung  MinhChung? @relation(fields: [maMinhChung], references: [ma])
+
+  @@index([ma]) // Thêm chỉ mục cho trường mâTàiLiệu
+  @@index([maDonVi])
+  @@index([maCapBanHanh])
+  @@index([maLoaiVanBan])
+  @@index([maLinhVuc])
+  @@index([maMinhChung])
+}
+
+model File {
+  ma          Int      @id @default(autoincrement())
+  maTaiLieu   Int
+  tenFile     String
+  fileGoc     String
+  ngayTao     DateTime @default(now())
+  ngayTapNhat DateTime @updatedAt
+
+  taiLieu TaiLieu @relation(fields: [maTaiLieu], references: [ma])
+
+  @@index([maTaiLieu]) // Thêm chỉ mục cho trường maTaiLieu
 }
