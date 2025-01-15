@@ -8,12 +8,12 @@ export const currentProfile = async () => {
         return null;
     }
 
-    const profile = await db.users.
-    findUnique({
-        where: {
-            userId
-        }
-    });
+    const profile = await db.nguoiDung.
+        findUnique({
+            where: {
+                userId
+            }
+        });
 
     return profile;
 }
