@@ -8,17 +8,16 @@ const MainLayout = async ({
 
     return (
         <div className="h-full justify-center flex">
-            <div className="w-4/5 flex justify-center pt-5">
-                <SidebarProvider>
-                    <Separator orientation="vertical" />
+            {/* <SidebarProvider> */}
+            {/* <Separator orientation="vertical" />
                     <AppSidebar />
-                    <Separator orientation="vertical" />
-                    <div className="w-full pl-10">
-                        {/* <SidebarTrigger /> */}
-                        {children}
-                    </div>
-                </SidebarProvider>
+                    <Separator orientation="vertical" /> */}
+            <div className="w-full p-5">
+                {/* <SidebarTrigger /> */}
+                {children}
             </div>
+            {/* </SidebarProvider> */}
+
         </div>
     );
 }
