@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import { Open_Sans } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
@@ -20,10 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}>
       <html lang="en">
         <body className={cn(font.className,
-          "bg-white dark:bg-[#313338]"
+          "bg-black dark:bg-[#313338]"
         )}>
           <ModalProvider/>
           <QueryProvider>
@@ -31,6 +29,5 @@ export default function RootLayout({
           </QueryProvider>
         </body>
       </html>
-    </ClerkProvider>
   );
 }

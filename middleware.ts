@@ -1,22 +1,51 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import NextAuth from "next-auth";
 
-const isPublicRoute = createRouteMatcher([
-    '/sign-in(.*)', // Đăng nhập
-    '/sign-up(.*)', // Đăng ký
-    // '/api/uploadthing' // uploadthing
-  ]); // Đường dẫn không cần xác thực (public route)
-   
-  export default clerkMiddleware(async (auth, request) => {
-    if (!isPublicRoute(request)) {
-      await auth.protect()
+import authConfig from "@/auth.config";
+import {
+    DEAFAULT_LOGIN_REDIRECT,
+    apiAuthPrefix,
+    authRouters,
+    publicRouters
+} from "@/routes";
+
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
+    const { nextUrl } = req;
+    const isLoggedIn = !!req.auth?.user;
+    // console.log("ROUTE", req.nextUrl.pathname);
+    // console.log("IS LOGIN", isLoggedIn);
+
+    const isApiAuthRoute = req.nextUrl.pathname.startsWith(apiAuthPrefix);
+    const isPublicRoute = publicRouters.includes(nextUrl.pathname);
+    const isAuthRoute = authRouters.includes(nextUrl.pathname);
+
+    if (isApiAuthRoute) {
+        return undefined;
     }
-  })
+
+    if (isAuthRoute) {
+        if (isLoggedIn) {
+            return Response.redirect(new URL(DEAFAULT_LOGIN_REDIRECT, nextUrl));
+        }
+        return undefined;
+    }
+
+    if (!isLoggedIn && !isPublicRoute) {
+        // console.log("REDIRECT TO LOGIN");
+        return Response.redirect(new URL("/auth/login", nextUrl));
+    }
+
+    return undefined;
+})
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-};
+    matcher: [
+        // "/auth/register",
+        // "/auth/login",
+        // Skip Next.js internals and all static files, unless found in search params
+        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+        // Always run for API routes
+        '/(api|trpc)(.*)',
+    ]
+}
