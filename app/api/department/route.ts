@@ -17,26 +17,24 @@ export async function POST(
         }
 
         const {
-            deparmentCode,
-            deparmentName,
-            describe,
+            tenDonVi,
+            moTa
         } = await req.json();
 
         const depamentExist = await db.department.findFirst({
             where: {
-                departmentCode: deparmentCode,
+                tenDonVi: tenDonVi,
             }
         })
 
         if (depamentExist) {
-            return new NextResponse("Deparment is already exist", { status: 400 });
+            return new NextResponse("Khoa , đơn vi đã tồn tại!", { status: 400 });
         }
 
-        const deparment = await db.department.create({
+        const deparment = await db.donVi.create({
             data: {
-                departmentCode: deparmentCode,
-                departmentName: deparmentName,
-                describe: describe,
+                tenDonVi: tenDonVi,
+                moTa: moTa,
             }
         });
 
@@ -84,25 +82,23 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            id,
-            departmentCode,
-            departmentName,
-            describe,
+            ma,
+            tenDonVi,
+            moTa
         } = await req.json();
 
-        const deparment = await db.department.update({
+        const deparment = await db.donVi.update({
             where: {
-                id: id,
+                ma: ma,
             },
             data: {
-                departmentCode: departmentCode,
-                departmentName: departmentName,
-                describe: describe,
+                tenDonVi: tenDonVi,
+                moTa: moTa,
             }
         });
 
@@ -123,29 +119,29 @@ export async function DELETE(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            id
+            ma
         } = await req.json();
 
-        const deparmentExist = await db.department.findFirst({
+        const deparmentExist = await db.donVi.findFirst({
             where: {
-                id: id,
+                ma: ma,
             }, include: {
-                users: true,
+                nguoiDung: true,
             }
         });
 
-        if (deparmentExist?.users.length != 0) {
-            return new Response("Can not delete Department", { status: 404 });
+        if (deparmentExist?.nguoiDung.length != 0) {
+            return new Response("Không thể xóa đơn vị này", { status: 404 });
         }
 
-        const deparment = await db.department.delete({
+        const deparment = await db.donVi.delete({
             where: {
-                id: id,
+                ma: ma,
             }
         });
 
