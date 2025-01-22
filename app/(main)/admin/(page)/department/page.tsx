@@ -1,7 +1,7 @@
 import { ListDepartment } from "@/components/manage-departments/department-list";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { RoleType } from "@prisma/client";
+import { RoleType, VaiTro } from "@prisma/client";
 
 export const DeparmentPage = async () => {
     const profile = await currentProfile();
@@ -10,7 +10,7 @@ export const DeparmentPage = async () => {
         return null;
     }
 
-    if (profile.role !== RoleType.ADMIN && profile.role !== RoleType.ROOT) {
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA) {
         return null;
     }
 
@@ -26,7 +26,7 @@ export const DeparmentPage = async () => {
     return (
         <div className="w-full">
             <div>
-                <p className="text-2xl">Manage Deparment</p>
+                <p className="text-2xl">Quản lý khoa, đơn vị</p>
                 <p className="text-zinc-400 text-md">Create and manage deparment, their settings and their information</p>
             </div>
             <div>

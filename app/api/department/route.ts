@@ -12,7 +12,7 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN" && profile.vaiTro !== "THANHTRA") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
@@ -21,7 +21,7 @@ export async function POST(
             moTa
         } = await req.json();
 
-        const depamentExist = await db.department.findFirst({
+        const depamentExist = await db.donVi.findFirst({
             where: {
                 tenDonVi: tenDonVi,
             }
@@ -56,11 +56,11 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const deparments = await db.department.findMany({
+        const deparments = await db.donVi.findMany({
             select: {
-                id: true,
-                departmentCode: true,
-                departmentName: true,
+                ma: true,
+                tenDonVi: true,
+                moTa: true,
                 // describe: true,
             }
         });

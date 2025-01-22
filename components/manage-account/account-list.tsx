@@ -11,21 +11,29 @@ import {
 } from "@/components/ui/table"
 import { Button } from "../ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { VaiTro } from "@prisma/client";
 
-interface Department {
-    departmentCode: string;
+interface DonVi {
+    tenDonVi: string;
 }
 
 interface Account {
-    id: string;
-    name: string;
+    ma: string;
+    hoTen: string;
     email: string;
-    department: string | Department;
-    role: string;
+    donVi: string | DonVi;
+    vaiTro: VaiTro;
 }
 
 interface ListAccountProps {
     listAccount: any;
+}
+
+const roleMap = {
+    [VaiTro.QUANTRIVIEN]: "Quản trị viên",
+    [VaiTro.THANHTRA]: "Thanh tra",
+    [VaiTro.QUANLY]: "Quản lý",
+    [VaiTro.NHANVIEN]: "Nhân viên",
 }
 
 export const ListAccount = ({
@@ -49,17 +57,17 @@ export const ListAccount = ({
                 </TableHeader>
                 <TableBody>
                     {listAccount?.map((account: Account, index: number) => (
-                        <TableRow key={account.id}>
+                        <TableRow key={account.ma}>
                             <TableCell className="font-medium text-center">{index + 1}</TableCell>
-                            <TableCell>{account.id}</TableCell>
-                            <TableCell>{account.name}</TableCell>
+                            <TableCell>{account.ma}</TableCell>
+                            <TableCell>{account.hoTen}</TableCell>
                             <TableCell>{account.email}</TableCell>
                             <TableCell>
-                                {typeof account.department === "object" && account.department !== null
-                                    ? account.department.departmentCode
-                                    : account.department}
+                                {account.donVi instanceof Object ? account.donVi.tenDonVi : account.donVi}
                             </TableCell>
-                            <TableCell>{account.role}</TableCell>
+                            <TableCell>
+                                {roleMap[account.vaiTro]}
+                            </TableCell>
                             <TableCell className="text-right">
                                 <Button variant={"primary"} onClick={() => onOpen("editAccount", account)}>
                                     Cập nhật    
