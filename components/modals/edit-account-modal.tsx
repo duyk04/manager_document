@@ -54,14 +54,10 @@ export const EditAccountModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
     // console.log(data);
-
     const { ma, hoTen, email, donVi, vaiTro } = data;
-
-
     const isModalOpen = isOpen && type === "editAccount";
-
     const [deparments, setDeparment] = useState<DonVi[]>([]);
-    // console.log(deparmentCode);
+
     useEffect(() => {
         if (!isModalOpen) return;
         const fetchDeparment = async () => {
@@ -81,14 +77,13 @@ export const EditAccountModal = () => {
             ma: ma,
             hoTen: hoTen,
             email: email,
-            donVi: donVi?.ma,
+            donVi: donVi?.ma.toString() || "",
             vaiTro: vaiTro
         }
     });
 
-    // console.log(donVi?.ma);
     useEffect(() => {
-        if (vaiTro || donVi) {
+        if (form) {
             form.setValue(
                 "ma", ma,
             );
@@ -99,7 +94,7 @@ export const EditAccountModal = () => {
                 "email", email,
             );
             form.setValue(
-                "donVi", donVi?.ma,
+                "donVi", donVi?.ma.toString() || "",
             );
             form.setValue(
                 "vaiTro", vaiTro,
@@ -107,21 +102,21 @@ export const EditAccountModal = () => {
         }
     }, [form, vaiTro, donVi]);
 
+
     const isLoading = form.formState.isSubmitting;
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
-        // try {
-        //     await axios.patch("/api/account", value);
-
-        //     form.reset();
-        //     router.refresh();
-        // } catch (error) {
-        //     console.error(error);
-        // } finally {
-        //     onClose();
-        // }
+        // console.log(value);
+        try {
+            await axios.patch("/api/account", value);
+            form.reset();
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            onClose();
+        }
     }
 
     const handleClose = () => {
@@ -220,7 +215,11 @@ export const EditAccountModal = () => {
                                             disabled={isLoading}
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
-                                            
+                                            // defaultValue={field.value ? field.value.toString() : ""} // Chuyển giá trị sang string để hiển thị
+                                            // onValueChange={(value) => {
+                                            //     field.onChange(Number(value)); // Chuyển đổi value sang số
+                                            // }}
+
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
@@ -229,7 +228,7 @@ export const EditAccountModal = () => {
                                             </FormControl>
                                             <SelectContent>
                                                 {deparments?.map((item) => (
-                                                    <SelectItem key={item.ma} value={item.ma} className="capitalize">
+                                                    <SelectItem key={item.ma} value={item.ma.toString()} className="capitalize">
                                                         {item.tenDonVi}
                                                     </SelectItem>
                                                 ))}

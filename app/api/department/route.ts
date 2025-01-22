@@ -12,7 +12,7 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.vaiTro !== "QUANTRIVIEN" && profile.vaiTro !== "THANHTRA") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 

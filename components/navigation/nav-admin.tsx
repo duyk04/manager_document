@@ -99,16 +99,16 @@ const navAdmin = [
 		icon: BookMarked,
 		items: [
 			{
-				title: "Danh sách",
-				url: "/admin/account",
+				title: "Lĩnh vực",
+				url: "/admin/field",
 			},
 			{
-				title: "Thêm mới",
-				url: "#",
+				title: "Loại văn bản",
+				url: "/admin/type",
 			},
 			{
-				title: "Quantum",
-				url: "#",
+				title: "Cấp ban hành",
+				url: "/admin/release-level",
 			},
 		],
 	},

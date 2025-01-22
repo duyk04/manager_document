@@ -59,9 +59,9 @@ async function main() {
     // Thêm dữ liệu mẫu cho bảng LoaiVanBan
     await prisma.loaiVanBan.createMany({
         data: [
-            { moTa: 'Quyết định hành chính' },
-            { moTa: 'Thông tư hướng dẫn' },
-            { moTa: 'Công văn nội bộ' },
+            { tenLoaiVanBan: 'A1', moTa: 'Quyết định hành chính' },
+            { tenLoaiVanBan: 'A12', moTa: 'Thông tư hướng dẫn' },
+            { tenLoaiVanBan: 'A13', moTa: 'Công văn nội bộ' },
         ],
     });
 

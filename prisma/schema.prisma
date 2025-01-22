@@ -133,6 +133,7 @@ model MinhChung {
 
 model LoaiVanBan {
     ma      Int       @id @default(autoincrement())
+    tenLoaiVanBan String
     moTa    String?
     taiLieu TaiLieu[]
 
@@ -146,6 +147,7 @@ model TaiLieu {
     maCapBanHanh Int
     maLoaiVanBan Int
     maMinhChung  Int?
+    soVanBan     String   @unique
     tenTaiLieu   String
     trichYeu     String?
     moTa         String?
@@ -154,14 +156,16 @@ model TaiLieu {
     ngayTao      DateTime @default(now())
     ngayCapNhat  DateTime @updatedAt
 
+    
     donVi      DonVi      @relation(fields: [maDonVi], references: [ma], onUpdate: Cascade)
     linhVuc    LinhVuc    @relation(fields: [maLinhVuc], references: [ma], onUpdate: Cascade)
     capBanHanh CapBanHanh @relation(fields: [maCapBanHanh], references: [ma], onUpdate: Cascade)
     loaiVanBan LoaiVanBan @relation(fields: [maLoaiVanBan], references: [ma], onUpdate: Cascade)
-    file       File[]
+    file       File[]     
     MinhChung  MinhChung? @relation(fields: [maMinhChung], references: [ma], onUpdate: Cascade)
 
     @@index([ma]) // Thêm chỉ mục cho trường mâTàiLiệu
+    @@index([soVanBan])
     @@index([maDonVi])
     @@index([maCapBanHanh])
     @@index([maLoaiVanBan])
@@ -171,13 +175,13 @@ model TaiLieu {
 
 model File {
     ma          Int      @id @default(autoincrement())
-    maTaiLieu   Int
-    filePDF    String?
+    maTaiLieu   String
+    filePDF     String?
     fileGoc     String?
     ngayTao     DateTime @default(now())
     ngayCapNhat DateTime @updatedAt
 
-    taiLieu TaiLieu @relation(fields: [maTaiLieu], references: [ma], onUpdate: Cascade)
+    taiLieu TaiLieu @relation(fields: [maTaiLieu], references: [soVanBan], onUpdate: Cascade)
 
     @@index([maTaiLieu]) // Thêm chỉ mục cho trường maTaiLieu
 }
