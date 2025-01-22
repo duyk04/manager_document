@@ -28,8 +28,8 @@ import { useModal } from "@/hooks/use-modal-store";
 
 
 const formSchema = z.object({
-    name: z.string().nonempty("Name is required"),
-    describe: z.string().nonempty("Describe is required"),
+    tenCap: z.string().nonempty("Tên cấp ban hành không được để trống"),
+    moTa: z.string().nonempty("Mô tả không được để trống"),
 });
 
 export const CreateReleaseLevelDocumentModal = () => {
@@ -42,8 +42,8 @@ export const CreateReleaseLevelDocumentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            describe: "",
+            tenCap: "",
+            moTa: "",
         }
     });
 
@@ -73,7 +73,7 @@ export const CreateReleaseLevelDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Create Release Level Document
+                        Thêm mới cấp ban hành
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -81,12 +81,12 @@ export const CreateReleaseLevelDocumentModal = () => {
                         <div className="space-y-8 px-6">
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="tenCap"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Name release level
+                                            Tên cấp ban hành
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -94,7 +94,7 @@ export const CreateReleaseLevelDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter release level name"
+                                                placeholder="Nhập tên cấp ban hành"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -104,12 +104,12 @@ export const CreateReleaseLevelDocumentModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="describe"
+                                name="moTa"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Describe
+                                            Mô tả
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -117,7 +117,7 @@ export const CreateReleaseLevelDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter release level describe"
+                                                placeholder="Nhập mô tả"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -128,7 +128,7 @@ export const CreateReleaseLevelDocumentModal = () => {
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Create
+                                Thêm
                             </Button>
                         </DialogFooter>
                     </form>

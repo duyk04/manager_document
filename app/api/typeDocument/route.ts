@@ -13,32 +13,31 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            name,
-            describe,
+            tenLoaiVanBan,
+            moTa
         } = await req.json();
 
-        const typeExist = await db.textType.findFirst({
+        const typeExist = await db.loaiVanBan.findFirst({
             where: {
-                name: name,
+                tenLoaiVanBan: tenLoaiVanBan,
             }
         })
 
         if (typeExist) {
-            return new NextResponse("Type text is already exist", { status: 400 });
+            return new NextResponse("Loại văn bản này đã tồn tại", { status: 400 });
         }
 
-        const type = await db.textType.create({
+        const type = await db.loaiVanBan.create({
             data: {
-                name: name,
-                describe: describe,
+                tenLoaiVanBan: tenLoaiVanBan,
+                moTa: moTa,
             }
         });
-
 
         return NextResponse.json(type);
     } catch (error) {
@@ -57,11 +56,11 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const type = await db.textType.findMany({
+        const type = await db.loaiVanBan.findMany({
             select: {
-                id: true,
-                name: true,
-                describe: true,
+                ma: true,
+                tenLoaiVanBan: true,
+                moTa: true,
             }
         });
 
@@ -82,23 +81,33 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            id,
-            name,
-            describe,
+            ma,
+            tenLoaiVanBan,
+            moTa,
         } = await req.json();
 
-        const type = await db.textType.update({
+        const typeExist = await db.loaiVanBan.findFirst({
             where: {
-                id: id,
+                tenLoaiVanBan: tenLoaiVanBan,
+            }
+        });
+
+        if ( typeExist && typeExist.ma != ma) {
+            return new NextResponse("Loại văn bản này đã tồn tại", { status: 400 });
+        }
+
+        const type = await db.loaiVanBan.update({
+            where: {
+                ma: ma,
             },
             data: {
-                name: name,
-                describe: describe,
+                tenLoaiVanBan: tenLoaiVanBan,
+                moTa: moTa,
             }
         });
 
@@ -119,28 +128,28 @@ export async function DELETE(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
         const {
-            id
+            ma
         } = await req.json();
 
-        const typeExist = await db.textType.findFirst({
+        const typeExist = await db.loaiVanBan.findFirst({
             where: {
-                id: id,
+                ma: ma,
             },include: {
-                documents: true,
+                taiLieu: true,
             }
         });
 
-        if (typeExist?.documents.length != 0) {
-            return new Response("Can not delete this Type", { status: 404 });
+        if (typeExist?.taiLieu.length != 0) {
+            return new Response("Không thể xóa loại văn bản này vì có tài liệu liên quan đang sử dụng", { status: 404 });
         }
 
-        const type = await db.textType.delete({
+        const type = await db.loaiVanBan.delete({
             where: {
-                id: id,
+                ma: ma,
             }
         });
 

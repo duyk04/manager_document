@@ -13,32 +13,40 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            id,
-            name,
+            ma,
+            donVi,
+            hoTen,
             email,
-            department,
-            role,
+            vaiTro,
         } = await req.json();
 
-        const user = await db.users.update({
+        console.log(ma, donVi, hoTen, email, vaiTro);
+
+        const maDonVi = typeof donVi === 'string' ? Number(donVi) : donVi;
+
+        const user = await db.nguoiDung.update({
             where: {
-                id: id,
+                ma: ma,
             },
             data: {
-                name: name,
-                email: email,
-                departmentId: department,
-                role: role,
+                hoTen: hoTen,
+                donVi: {
+                    connect: {
+                        ma: maDonVi,
+                    },
+                },
+                vaiTro: vaiTro
             }
         });
 
-
+        // console.log(user);
         return NextResponse.json(user);
+        
     } catch (error) {
         console.error("ACCOUNT_POST", error);
         return new NextResponse("Internal Server Error", { status: 500 });

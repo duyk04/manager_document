@@ -1,7 +1,7 @@
 import { ListReleaseLevel } from "@/components/manage-release/type-list";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { RoleType } from "@prisma/client";
+import { VaiTro } from "@prisma/client";
 
 export const TypePage = async () => {
     const profile = await currentProfile();
@@ -10,23 +10,28 @@ export const TypePage = async () => {
         return null;
     }
 
-    if (profile.role !== RoleType.ADMIN && profile.role !== RoleType.ROOT) {
-        return null;
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN) {
+        return (
+            <div>
+                <p className="text-2xl">Unauthorized</p>
+                <p className="text-zinc-400 text-md">You are not authorized to access this page</p>
+            </div>
+        );
     }
 
-    const listReleaseLevel= await db.releaseLevel.findMany({
+    const listReleaseLevel = await db.capBanHanh.findMany({
         select: {
-            id: true,
-            name: true,
-            describe: true,
+            ma: true,
+            tenCap: true,
+            moTa: true,
         },
     });
 
     return (
         <div className="w-full">
-            <div>
-                <p className="text-2xl">Manage Release Level Document</p>
-                <p className="text-zinc-400 text-md">Create and manage release document, their settings and their information</p>
+            <div className="mb-8">
+                <p className="text-2xl">Quản lý cấp ban hành</p>
+                <p className="text-zinc-400 text-md">Tạo và quản lý các cấp ban hành</p>
             </div>
             <div>
                 <ListReleaseLevel listReleaseLevel={listReleaseLevel} />

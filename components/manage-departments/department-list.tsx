@@ -24,15 +24,15 @@ export const ListDepartment = ({
     return (
         <div>
             <Button variant={"primary"} onClick={() => onOpen("createDepartment")}>
-                <span className="pl-2">Create Deparment</span>
+                <span>Thêm mới</span>
             </Button>
             <Separator className="my-4" />
             <Table>
-                <TableCaption>List account</TableCaption>
+                <TableCaption>Danh sách khoa, đơn vị</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
-                        <TableHead>Mã Khoa</TableHead>
+                        {/* <TableHead>Mã Khoa</TableHead> */}
                         <TableHead>Tên khoa</TableHead>
                         <TableHead>Mô tả</TableHead>
                         <TableHead className="text-right">Hành động</TableHead>
@@ -45,15 +45,15 @@ export const ListDepartment = ({
                         </TableRow>
                     )}
                     {listDepartment.map((department: any, index: number) => (
-                        <TableRow key={department.id}>
+                        <TableRow key={department.ma}>
                             <TableCell className="font-medium text-center">{index + 1}</TableCell>
-                            <TableCell>{department.departmentCode}</TableCell>
-                            <TableCell>{department.departmentName}</TableCell>
-                            <TableCell>{department.describe}</TableCell>
+                            {/* <TableCell>{department.ma}</TableCell> */}
+                            <TableCell>{department.tenDonVi}</TableCell>
+                            <TableCell>{department.moTa}</TableCell>
                             <TableCell className="text-right">
                                 <div>
-                                    <Button variant={"outline"} onClick={() => onOpen("editDepartment", department)}>Edit</Button>
-                                    <Button variant={"outline"} onClick={() => onOpen("deleteDepartment", department)}>Delete</Button>
+                                    <Button variant={"outline"} onClick={() => onOpen("editDepartment", department)}>Sửa</Button>
+                                    <Button variant={"outline"} onClick={() => onOpen("deleteDepartment", department)}>Xóa</Button>
                                 </div>
                             </TableCell>
                         </TableRow>

@@ -20,7 +20,7 @@ export const DeleteReleaseLevelDocumentModal= () => {
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "deleteReleaseLevel";
-    const { id, name } = data;
+    const { ma, tenCap } = data;
     // console.log(id);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ export const DeleteReleaseLevelDocumentModal= () => {
         try {
             setIsLoading(true);
             await axios.delete("/api/releaseLevel", {
-                data: { id },
+                data: { ma },
             });
             onClose();
         } catch (error) {
@@ -45,11 +45,11 @@ export const DeleteReleaseLevelDocumentModal= () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Delete Release Level Document
+                        Xóa cấp ban hành
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Are you sure you want to do this? <br />
-                        <span className="text-indigo-500 font-semibold">#{name}</span> will be permanently deleted.
+                        Bạn có muốn xóa cấp ban hành này không? <br/>
+                        <span className="text-indigo-500 font-semibold">{tenCap}</span>
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="bg-gray-100 px-6 py-4">
@@ -59,14 +59,14 @@ export const DeleteReleaseLevelDocumentModal= () => {
                             onClick={onClose}
                             variant="ghost"
                         >
-                            Cancel
+                            Hủy
                         </Button>
                         <Button
                             disabled={isLoading}
                             onClick={handleDelete}
                             variant="primary"
                         >
-                            Confirm
+                            Xác nhận
                         </Button>
                     </div>
                 </DialogFooter>

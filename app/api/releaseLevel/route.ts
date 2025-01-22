@@ -13,29 +13,29 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            name,
-            describe,
+            tenCap,
+            moTa,
         } = await req.json();
 
-        const releaseLevelExist = await db.releaseLevel.findFirst({
+        const releaseLevelExist = await db.capBanHanh.findFirst({
             where: {
-                name: name,
+                tenCap: tenCap,
             }
         })
 
         if (releaseLevelExist) {
-            return new NextResponse("Release level is already exist", { status: 400 });
+            return new NextResponse("Cấp ban hành này đã có trong danh sách", { status: 400 });
         }
 
-        const release = await db.releaseLevel.create({
+        const release = await db.capBanHanh.create({
             data: {
-                name: name,
-                describe: describe,
+                tenCap: tenCap,
+                moTa: moTa,
             }
         });
 
@@ -57,11 +57,11 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const releaseLevel = await db.releaseLevel.findMany({
+        const releaseLevel = await db.capBanHanh.findMany({
             select: {
-                id: true,
-                name: true,
-                describe: true,
+                ma: true,
+                tenCap: true,
+                moTa: true,
             }
         });
 
@@ -82,23 +82,33 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            id,
-            name,
-            describe,
+            ma,
+            tenCap,
+            moTa,
         } = await req.json();
 
-        const releaseLevel = await db.releaseLevel.update({
+        const releaseLevelExist = await db.capBanHanh.findFirst({
             where: {
-                id: id,
+                tenCap: tenCap,
+            }
+        });
+
+        if (releaseLevelExist && releaseLevelExist.ma !== ma) {
+            return new NextResponse("Cấp ban hành này đã có trong danh sách", { status: 400 });
+        }
+
+        const releaseLevel = await db.capBanHanh.update({
+            where: {
+                ma: ma,
             },
             data: {
-                name: name,
-                describe: describe,
+                tenCap: tenCap,
+                moTa: moTa,
             }
         });
 
@@ -119,28 +129,28 @@ export async function DELETE(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
         const {
-            id
+            ma
         } = await req.json();
 
-        const releaseLevelExist = await db.releaseLevel.findFirst({
+        const releaseLevelExist = await db.capBanHanh.findFirst({
             where: {
-                id: id,
+                ma: ma,
             },include: {
-                documents: true,
+                taiLieu: true,
             }
         });
 
-        if (releaseLevelExist?.documents.length != 0) {
-            return new Response("Can not delete this release level", { status: 404 });
+        if (releaseLevelExist?.taiLieu.length != 0) {
+            return new Response("Không thể xóa cấp ban hành này vì đã đang sử dụng ở một tài liệu khác", { status: 404 });
         }
 
-        const releaseLevel = await db.releaseLevel.delete({
+        const releaseLevel = await db.capBanHanh.delete({
             where: {
-                id: id,
+                ma: ma,
             }
         });
 

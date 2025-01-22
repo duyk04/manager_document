@@ -23,7 +23,7 @@ export const ListReleaseLevel = ({
     return (
         <div>
             <Button variant={"primary"} onClick={() => onOpen("createReleaseLevel")}>
-                <span className="pl-2">Create Release Level Document</span>
+                <span>Thêm</span>
             </Button>
             <Separator className="my-4" />
             <Table>
@@ -43,14 +43,14 @@ export const ListReleaseLevel = ({
                         </TableRow>
                     )}
                     {listReleaseLevel.map((field: any, index: number) => (
-                        <TableRow key={field.id}>
+                        <TableRow key={field.ma}>
                             <TableCell className="font-medium text-center">{index + 1}</TableCell>
-                            <TableCell>{field.name}</TableCell>
-                            <TableCell>{field.describe}</TableCell>
+                            <TableCell>{field.tenCap}</TableCell>
+                            <TableCell>{field.moTa}</TableCell>
                             <TableCell className="text-right">
                                 <div>
-                                    <Button variant={"outline"} onClick={() => onOpen("editReleaseLevel", field)}>Edit</Button>
-                                    <Button variant={"outline"} onClick={() => onOpen("deleteReleaseLevel", field)}>Delete</Button>
+                                    <Button variant={"outline"} onClick={() => onOpen("editReleaseLevel", field)}>Sửa</Button>
+                                    <Button variant={"outline"} onClick={() => onOpen("deleteReleaseLevel", field)}>Xóa</Button>
                                 </div>
                             </TableCell>
                         </TableRow>

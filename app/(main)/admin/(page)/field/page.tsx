@@ -1,7 +1,7 @@
 import { ListField } from "@/components/manage-field/field-list";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { RoleType } from "@prisma/client";
+import { VaiTro } from "@prisma/client";
 
 export const FieldPage = async () => {
     const profile = await currentProfile();
@@ -10,22 +10,23 @@ export const FieldPage = async () => {
         return null;
     }
 
-    if (profile.role !== RoleType.ADMIN && profile.role !== RoleType.ROOT) {
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA) {
         return null;
     }
 
-    const listFiels = await db.field.findMany({
+    const listFiels = await db.linhVuc.findMany({
         select: {
-            id: true,
-            name: true,
-            describe: true,
+            ma: true,
+            maLinhVuc: true,
+            tenLinhVuc: true,
+            moTa: true,
         },
     });
 
     return (
         <div className="w-full">
             <div>
-                <p className="text-2xl">Manage Field Document</p>
+                <p className="text-2xl">Quản lý lĩnh vực văn bản</p>
                 <p className="text-zinc-400 text-md">Create and manage deparment, their settings and their information</p>
             </div>
             <div>

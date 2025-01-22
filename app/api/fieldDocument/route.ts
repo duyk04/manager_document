@@ -13,29 +13,31 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const {
-            name,
-            describe,
+            maLinhVuc,
+            tenLinhVuc,
+            moTa
         } = await req.json();
 
-        const depamentExist = await db.field.findFirst({
+        const fieldExist = await db.linhVuc.findFirst({
             where: {
-                name: name,
+                maLinhVuc: maLinhVuc,
             }
         })
 
-        if (depamentExist) {
-            return new NextResponse("Field name is already exist", { status: 400 });
+        if (fieldExist) {
+            return new NextResponse("Mã lĩnh vực đã tồn tại", { status: 400 });
         }
 
-        const field = await db.field.create({
+        const field = await db.linhVuc.create({
             data: {
-                name: name,
-                describe: describe,
+                maLinhVuc: maLinhVuc,
+                tenLinhVuc: tenLinhVuc,
+                moTa: moTa,
             }
         });
 
@@ -57,11 +59,12 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const field = await db.field.findMany({
+        const field = await db.linhVuc.findMany({
             select: {
-                id: true,
-                name: true,
-                describe: true,
+                ma: true,
+                maLinhVuc: true,
+                tenLinhVuc: true,
+                moTa: true,
             }
         });
 
@@ -82,23 +85,35 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
-
         const {
-            id,
-            name,
-            describe,
+            ma,
+            maLinhVuc,
+            tenLinhVuc,
+            moTa,
         } = await req.json();
 
-        const field = await db.field.update({
+        const fieldExist = await db.linhVuc.findFirst({
             where: {
-                id: id,
+                maLinhVuc: maLinhVuc,
+            }
+        })
+
+        if (fieldExist && fieldExist.ma != ma) {
+            return new NextResponse("Mã lĩnh vực đã được sử dụng", { status: 400 });
+        }
+
+        const field = await db.linhVuc.update({
+            where: {
+                ma: ma,
             },
             data: {
-                name: name,
-                describe: describe,
+                maLinhVuc: maLinhVuc,
+                tenLinhVuc: tenLinhVuc,
+                moTa: moTa,
+
             }
         });
 
@@ -119,28 +134,28 @@ export async function DELETE(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.role !== "ADMIN" && profile.role !== "ROOT") {
+        if (profile.vaiTro !== "QUANTRIVIEN") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
         const {
-            id
+            ma
         } = await req.json();
 
-        const fieldExist = await db.field.findFirst({
+        const documentExist = await db.linhVuc.findFirst({
             where: {
-                id: id,
-            },include: {
-                documents: true,
+                ma: ma,
+            }, include: {
+                taiLieu: true,
             }
         });
 
-        if (fieldExist?.documents.length != 0) {
-            return new Response("Can not delete this Field", { status: 404 });
+        if (documentExist?.taiLieu.length != 0) {
+            return new Response("Không thể xóa lĩnh vực này vì có tài liệu đang sử dụng lĩnh vực này", { status: 404 });
         }
 
-        const field = await db.field.delete({
+        const field = await db.linhVuc.delete({
             where: {
-                id: id,
+                ma: ma,
             }
         });
 

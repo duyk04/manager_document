@@ -1,7 +1,7 @@
 import { ListType } from "@/components/manage-type/type-list";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { RoleType } from "@prisma/client";
+import { RoleType, VaiTro } from "@prisma/client";
 
 export const TypePage = async () => {
     const profile = await currentProfile();
@@ -10,23 +10,28 @@ export const TypePage = async () => {
         return null;
     }
 
-    if (profile.role !== RoleType.ADMIN && profile.role !== RoleType.ROOT) {
-        return null;
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN) {
+        return (
+            <div>
+                <p className="text-2xl">Unauthorized</p>
+                <p className="text-zinc-400 text-md">You are not authorized to access this page</p>
+            </div>
+        );
     }
 
-    const listTypes = await db.textType.findMany({
+    const listTypes = await db.loaiVanBan.findMany({
         select: {
-            id: true,
-            name: true,
-            describe: true,
+            ma: true,
+            tenLoaiVanBan: true,
+            moTa: true,
         },
     });
 
     return (
         <div className="w-full">
             <div>
-                <p className="text-2xl">Manage Type Document</p>
-                <p className="text-zinc-400 text-md">Create and manage type document, their settings and their information</p>
+                <p className="text-2xl">Quản lý loại văn bản</p>
+                <p className="text-zinc-400 text-md">Tạo và quản lý các loại văn bản và các thông tin liên quan</p>
             </div>
             <div>
                 <ListType listType={listTypes} />

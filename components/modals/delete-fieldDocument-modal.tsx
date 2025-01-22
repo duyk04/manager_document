@@ -21,7 +21,7 @@ export const DeleteFielDocumentModal= () => {
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "deleteFieldDocument";
-    const { id, name } = data;
+    const { ma, tenLinhVuc } = data;
     // console.log(id);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ export const DeleteFielDocumentModal= () => {
         try {
             setIsLoading(true);
             await axios.delete("/api/fieldDocument", {
-                data: { id },
+                data: { ma },
             });
             onClose();
         } catch (error) {
@@ -46,11 +46,11 @@ export const DeleteFielDocumentModal= () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Delete Field Document
+                        Xóa lĩnh vực văn bản
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Are you sure you want to do this? <br />
-                        <span className="text-indigo-500 font-semibold">#{name}</span> will be permanently deleted.
+                        Lĩnh vực văn bản này sẽ bị xóa <br />
+                        <span className="text-indigo-500 font-semibold">{tenLinhVuc}</span>
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="bg-gray-100 px-6 py-4">
@@ -60,14 +60,14 @@ export const DeleteFielDocumentModal= () => {
                             onClick={onClose}
                             variant="ghost"
                         >
-                            Cancel
+                            Hủy 
                         </Button>
                         <Button
                             disabled={isLoading}
                             onClick={handleDelete}
                             variant="primary"
                         >
-                            Confirm
+                            Xác nhận
                         </Button>
                     </div>
                 </DialogFooter>

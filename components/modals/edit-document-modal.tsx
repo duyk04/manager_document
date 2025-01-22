@@ -62,14 +62,12 @@ const formSchema = z.object({
 export const EditDocumentModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
-    console.log(data);
+    // console.log(data);
 
     const isModalOpen = isOpen && type === "editDocument";
 
     const { id, updateUnitId, fieldId, textTypeId, textNumber, releaseLevelId, releaseDate, textName, describe, scope, documentFiles } = data;
 
-
-    console.log(releaseDate)
     const [departments, setDepartments] = useState<Department[]>([]);
     const [fieldDocument, setFieldDocument] = useState<Field[]>([]);
     const [typeDocument, setTypeDocument] = useState<Type[]>([]);
@@ -95,11 +93,11 @@ export const EditDocumentModal = () => {
         fetchData();
     }, [isModalOpen]);
 
-    console.log(releaseDate)
+    // console.log(releaseDate)
 
     const date = new Date("2025-01-12T00:00:00.000Z");
     const formattedDate = date.toISOString().split('T')[0]; // Kết quả: "2025-01-12"
-    console.log(formattedDate);
+    // console.log(formattedDate);
     
     const form = useForm({
         resolver: zodResolver(formSchema),

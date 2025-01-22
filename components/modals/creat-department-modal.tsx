@@ -28,9 +28,8 @@ import { useModal } from "@/hooks/use-modal-store";
 
 
 const formSchema = z.object({
-    deparmentCode: z.string().nonempty("Department code is required"),
-    deparmentName: z.string().nonempty("Department name is required"),
-    describe: z.string().nonempty("Describe is required"),
+    tenDonVi: z.string().nonempty("Tên đơn vị không được để trống"),
+    moTa: z.string().nonempty("Mô tả không được để trống"),
 });
 
 export const CreateFieldDocumentModal = () => {
@@ -43,9 +42,8 @@ export const CreateFieldDocumentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            deparmentCode: "",
-            deparmentName: "",
-            describe: "",
+            tenDonVi: "",
+            moTa: "",
         }
     });
 
@@ -75,13 +73,13 @@ export const CreateFieldDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Create Deparment
+                        Thêm mới khoa, đơn vị
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="space-y-8 px-6">
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="deparmentCode"
                                 render={({ field }) => (
@@ -103,15 +101,15 @@ export const CreateFieldDocumentModal = () => {
                                         <FormMessage />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             <FormField
                                 control={form.control}
-                                name="deparmentName"
+                                name="tenDonVi"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Deparment name
+                                            Tên đơn vị
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -119,7 +117,7 @@ export const CreateFieldDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter department name"
+                                                placeholder="Nhập tên đơn vị"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -129,12 +127,12 @@ export const CreateFieldDocumentModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="describe"
+                                name="moTa"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Describe
+                                            Mô tả
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -142,7 +140,7 @@ export const CreateFieldDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter describe"
+                                                placeholder="Nhập mô tả"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -153,7 +151,7 @@ export const CreateFieldDocumentModal = () => {
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Create
+                                Thêm
                             </Button>
                         </DialogFooter>
                     </form>

@@ -20,7 +20,7 @@ export const DeleteTypeDocumentModal= () => {
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "deleteTypeDocument";
-    const { id, name } = data;
+    const { ma, tenLoaiVanBan } = data;
     // console.log(id);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ export const DeleteTypeDocumentModal= () => {
         try {
             setIsLoading(true);
             await axios.delete("/api/typeDocument", {
-                data: { id },
+                data: { ma },
             });
             onClose();
         } catch (error) {
@@ -45,11 +45,11 @@ export const DeleteTypeDocumentModal= () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Delete Type Document
+                        Xóa loại văn bản
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Are you sure you want to do this? <br />
-                        <span className="text-indigo-500 font-semibold">#{name}</span> will be permanently deleted.
+                        Bạn muốn xóa loại văn bản này <br />
+                        <span className="text-indigo-500 font-semibold">{tenLoaiVanBan}</span>
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="bg-gray-100 px-6 py-4">
@@ -59,14 +59,14 @@ export const DeleteTypeDocumentModal= () => {
                             onClick={onClose}
                             variant="ghost"
                         >
-                            Cancel
+                            Hủy
                         </Button>
                         <Button
                             disabled={isLoading}
                             onClick={handleDelete}
                             variant="primary"
                         >
-                            Confirm
+                            Xác nhận
                         </Button>
                     </div>
                 </DialogFooter>

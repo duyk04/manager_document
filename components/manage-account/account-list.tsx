@@ -62,7 +62,7 @@ export const ListAccount = ({
                             <TableCell>{account.role}</TableCell>
                             <TableCell className="text-right">
                                 <Button variant={"primary"} onClick={() => onOpen("editAccount", account)}>
-                                    Edit
+                                    Cập nhật    
                                 </Button>
                             </TableCell>
                         </TableRow>

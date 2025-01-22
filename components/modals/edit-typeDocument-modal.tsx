@@ -29,24 +29,17 @@ import { useEffect } from "react";
 
 
 const formSchema = z.object({
-    id: z.number(),
-    name: z.string().nonempty(),
-    describe: z.string().nonempty(),
+    ma: z.number(),
+    tenLoaiVanBan: z.string().nonempty(),
+    moTa: z.string().nonempty(),
 });
-
-interface Department {
-    id: number;
-    name: string;
-    describe: string;
-}
-
 
 export const EditTypeDocumentModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
     // console.log(data);
 
-    const { id, name, describe } = data;
+    const { ma, tenLoaiVanBan, moTa } = data;
 
 
     const isModalOpen = isOpen && type === "editTypeDocument";
@@ -54,19 +47,20 @@ export const EditTypeDocumentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            id: id,
-            name: name,
-            describe: describe,
+            ma: ma,
+            tenLoaiVanBan: tenLoaiVanBan,
+            moTa: moTa,
         }
     });
 
     useEffect(() => {
-        if (id) {
-            form.setValue("id", id);
-            form.setValue("name", name);
-            form.setValue("describe", describe);
+        if (ma) {
+            form.setValue("ma", ma);
+            form.setValue("tenLoaiVanBan", tenLoaiVanBan);
+            form.setValue("moTa", moTa);
+         
         }
-    }, [form, id]);
+    }, [form, ma]);
 
     const isLoading = form.formState.isSubmitting;
 
@@ -95,7 +89,7 @@ export const EditTypeDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Edit Type Document
+                        Chỉnh sửa loại văn bản
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -103,12 +97,12 @@ export const EditTypeDocumentModal = () => {
                         <div className="space-y-8 px-6">
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="tenLoaiVanBan"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Loại văn bản
+                                            Tên loại văn bản
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -116,7 +110,7 @@ export const EditTypeDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
+                                                placeholder="Nhập tên loại văn bản"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -126,7 +120,7 @@ export const EditTypeDocumentModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="describe"
+                                name="moTa"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
@@ -139,7 +133,7 @@ export const EditTypeDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
+                                                placeholder="Nhập mô tả"
                                                 {...field}
                                             />
                                         </FormControl>

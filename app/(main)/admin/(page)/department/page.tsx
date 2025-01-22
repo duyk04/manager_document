@@ -14,12 +14,12 @@ export const DeparmentPage = async () => {
         return null;
     }
 
-    const listDepartment = await db.department.findMany({
+    const listDepartment = await db.donVi.findMany({
         select: {
-            id: true,
-            departmentCode: true,
-            departmentName: true,
-            describe: true,
+            ma: true,
+            tenDonVi: true,
+            moTa: true,
+ 
         },
     });
 

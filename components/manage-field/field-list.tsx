@@ -24,7 +24,7 @@ export const ListField = ({
     return (
         <div>
             <Button variant={"primary"} onClick={() => onOpen("createFieldDocument")}>
-                <span className="pl-2">Create Field Document</span>
+                <span className="pl-2">Thêm mới</span>
             </Button>
             <Separator className="my-4" />
             <Table>
@@ -32,6 +32,7 @@ export const ListField = ({
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
+                        <TableHead>Mã lĩnh vực</TableHead>
                         <TableHead>Tên lĩnh vực văn bản</TableHead>
                         <TableHead>Mô tả</TableHead>
                         <TableHead className="text-right">Hành động</TableHead>
@@ -44,14 +45,15 @@ export const ListField = ({
                         </TableRow>
                     )}
                     {listField.map((field: any, index: number) => (
-                        <TableRow key={field.id}>
+                        <TableRow key={field.ma}>
                             <TableCell className="font-medium text-center">{index + 1}</TableCell>
-                            <TableCell>{field.name}</TableCell>
-                            <TableCell>{field.describe}</TableCell>
+                            <TableCell>{field.maLinhVuc}</TableCell>
+                            <TableCell>{field.tenLinhVuc}</TableCell>
+                            <TableCell>{field.moTa}</TableCell>
                             <TableCell className="text-right">
                                 <div>
-                                    <Button variant={"outline"} onClick={() => onOpen("editFieldDocument", field)}>Edit</Button>
-                                    <Button variant={"outline"} onClick={() => onOpen("deleteFieldDocument", field)}>Delete</Button>
+                                    <Button variant={"outline"} onClick={() => onOpen("editFieldDocument", field)}>Sửa</Button>
+                                    <Button variant={"outline"} onClick={() => onOpen("deleteFieldDocument", field)}>Xóa</Button>
                                 </div>
                             </TableCell>
                         </TableRow>

@@ -30,17 +30,15 @@ import { useEffect, useState } from "react";
 
 
 const formSchema = z.object({
-    id: z.number(),
-    departmentCode: z.string().nonempty(),
-    departmentName: z.string().nonempty(),
-    describe: z.string().nonempty(),
+    ma: z.number(),
+    tenDonVi: z.string().nonempty(),
+    moTa: z.string().nonempty(),
 });
 
 interface Department {
-    id: number;
-    departmentCode: string;
-    departmentName: string;
-    describe: string;
+    ma: number;
+    tenDonVi: string;
+    moTa: string;
 }
 
 
@@ -49,7 +47,7 @@ export const EditDepartmentModal = () => {
     const router = useRouter();
     // console.log(data);
 
-    const { id, departmentCode, departmentName, describe} = data;
+    const { ma, tenDonVi, moTa} = data;
 
 
     const isModalOpen = isOpen && type === "editDepartment";
@@ -57,21 +55,19 @@ export const EditDepartmentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            id: id,
-            departmentCode: departmentCode,
-            departmentName: departmentName,
-            describe: describe,
+            ma: ma,
+            tenDonVi: tenDonVi,
+            moTa: moTa,
         }
     });
 
     useEffect(() => {
-        if (id) {
-            form.setValue("id", id);
-            form.setValue("departmentCode", departmentCode);
-            form.setValue("departmentName", departmentName);
-            form.setValue("describe", describe);
+        if (form) {
+            form.setValue("ma", ma);
+            form.setValue("tenDonVi", tenDonVi);
+            form.setValue("moTa", moTa);
         }
-    }, [form, id]);
+    }, [form, ma]);
 
     const isLoading = form.formState.isSubmitting;
 
@@ -132,7 +128,8 @@ export const EditDepartmentModal = () => {
                             /> */}
                             <FormField
                                 control={form.control}
-                                name="departmentCode"
+                                name="ma"
+                                disabled
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
@@ -145,7 +142,6 @@ export const EditDepartmentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter department code"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -155,12 +151,12 @@ export const EditDepartmentModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="departmentName"
+                                name="tenDonVi"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Tên
+                                            Tên đơn vị
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -168,7 +164,7 @@ export const EditDepartmentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter department name"
+                                                placeholder="Nhập tên đơn vị"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -178,7 +174,7 @@ export const EditDepartmentModal = () => {
                             />                                 
                             <FormField
                                 control={form.control}
-                                name="describe"
+                                name="moTa"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
@@ -191,7 +187,7 @@ export const EditDepartmentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter describe"
+                                                placeholder="Nhập mô tả"
                                                 {...field}
                                             />
                                         </FormControl>

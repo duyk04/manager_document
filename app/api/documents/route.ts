@@ -7,64 +7,65 @@ export async function POST(
 ) {
     try {
         const {
-            DON_VI_CN,
-            LINH_VUC,
-            LOAI_VAN_BAN,
-            SO_VAN_BAN,
-            CAP_BAN_HANH,
-            NGAY_BAN_HANH,
-            TEN_VAN_BAN,
-            TRICH_YEU,
-            PUBLIC,
+            donVi,
+            linhVuc,
+            loaiVanBan,
+            soVanBan,
+            capBanHanh,
+            ngayBanHanh,
+            tenVanBan,
+            trichyeu,
+            phamVi,
             FILE_PDF,
             FILE_GOC
         } = await req.json();
 
-        // console.log("DATA", {
-        //     DON_VI_CN,
-        //     LINH_VUC,
-        //     LOAI_VAN_BAN,
-        //     SO_VAN_BAN,
-        //     CAP_BAN_HANH,
-        //     NGAY_BAN_HANH,
-        //     TEN_VAN_BAN,
-        //     TRICH_YEU,
-        //     PUBLIC,
+        // console.log("DATA",
+        //     donVi,
+        //     linhVuc,
+        //     loaiVanBan,
+        //     soVanBan,
+        //     capBanHanh,
+        //     ngayBanHanh,
+        //     tenVanBan,
+        //     trichyeu,
+        //     phamVi,
         //     FILE_PDF,
         //     FILE_GOC
-        // })
+        // )
 
         // if (!FILE_GOC || !FILE_PDF) {
         //     return new NextResponse("FILE_GOC or FILE_PDF is required", { status: 400 });
         // }
 
-        const documentExist = await db.document.findFirst({
+        const documentExist = await db.taiLieu.findFirst({
             where: {
-                textNumber: SO_VAN_BAN,
+                soVanBan: soVanBan,
             }
         })
 
         if (documentExist) {
-            return new NextResponse("Document is already exist", { status: 400 });
+            return new NextResponse("Số văn bản này đã tồn tại", { status: 400 });
         }
 
-        const document = await db.document.create({
+        const document = await db.taiLieu.create({
             data: {
-                id: uuidv4(),
-                updateUnitId: DON_VI_CN,
-                fieldId: LINH_VUC,
-                textTypeId: LOAI_VAN_BAN,
-                releaseLevelId: CAP_BAN_HANH,
-                releaseDate: new Date(NGAY_BAN_HANH),
-                textName: TEN_VAN_BAN,
-                describe: TRICH_YEU,
-                textNumber: SO_VAN_BAN,
-                scope: PUBLIC,
-                documentFiles: {
+                
+                maDonVi: donVi,
+                maLinhVuc: linhVuc,
+                maLoaiVanBan: loaiVanBan,
+                maCapBanHanh: capBanHanh,
+                ngayBanHanh: new Date(ngayBanHanh),
+                tenTaiLieu: tenVanBan,
+                trichYeu: trichyeu,
+                soVanBan: soVanBan,
+                phamVi: phamVi,
+                file: {
                     create: FILE_PDF.map((pdfPath: string, index: number) => ({
-                        id: uuidv4(),
-                        pdfFile: pdfPath || null,
-                        originalFile: FILE_GOC[index] || null,
+                        // id: uuidv4(),
+                        // maTaiLieu: soVanBan,
+                        filePDF: pdfPath || null,
+                        fileGoc: FILE_GOC[index] || null,
                     })),
                 },
             }
@@ -82,9 +83,9 @@ export async function GET(
     req: Request,
 ) {
     try {
-        const documents = await db.document.findMany({
+        const documents = await db.taiLieu.findMany({
             include: {
-                documentFiles: true,
+                file: true,
             }
         });
 

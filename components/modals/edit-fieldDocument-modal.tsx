@@ -29,24 +29,18 @@ import { useEffect, useState } from "react";
 
 
 const formSchema = z.object({
-    id: z.number(),
-    name: z.string().nonempty(),
-    describe: z.string().nonempty(),
+    ma: z.number(),
+    maLinhVuc: z.string().nonempty("Mã lĩnh vực không được để trống"),
+    tenLinhVuc: z.string().nonempty("Tên lĩnh vực không được để trống"),
+    moTa: z.string().nonempty("Mô tả không được để trống"),
 });
-
-interface Department {
-    id: number;
-    name: string;
-    describe: string;
-}
-
 
 export const EditFieldDocumentModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
     // console.log(data);
 
-    const { id, name, describe } = data;
+    const { ma, maLinhVuc, tenLinhVuc, moTa } = data;
 
 
     const isModalOpen = isOpen && type === "editFieldDocument";
@@ -54,19 +48,21 @@ export const EditFieldDocumentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            id: id,
-            name: name,
-            describe: describe,
+            ma: ma,
+            maLinhVuc: maLinhVuc,
+            tenLinhVuc: tenLinhVuc,
+            moTa: moTa,
         }
     });
 
     useEffect(() => {
-        if (id) {
-            form.setValue("id", id);
-            form.setValue("name", name);
-            form.setValue("describe", describe);
+        if (ma) {
+            form.setValue("ma", ma);
+            form.setValue("maLinhVuc", maLinhVuc);
+            form.setValue("tenLinhVuc", tenLinhVuc);
+            form.setValue("moTa", moTa);
         }
-    }, [form, id]);
+    }, [form, ma]);
 
     const isLoading = form.formState.isSubmitting;
 
@@ -95,7 +91,7 @@ export const EditFieldDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Edit Field Document
+                        Sửa lĩnh vực văn bản
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -103,12 +99,12 @@ export const EditFieldDocumentModal = () => {
                         <div className="space-y-8 px-6">
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="maLinhVuc"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Lĩnh vực văn bản
+                                            Mã lĩnh vực
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -116,7 +112,7 @@ export const EditFieldDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter field document name"
+                                                placeholder="Nhập mã lĩnh vực"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -126,7 +122,30 @@ export const EditFieldDocumentModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="describe"
+                                name="tenLinhVuc"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="uppercase text-xs font-bold text-zinc-500
+                                        dark:text-secondary/70">
+                                            Tên lĩnh vực
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                disabled={isLoading}
+                                                className="bg-zinc-300/50 border-0
+                                                focus-visible:ring-0 text-black
+                                                focus-visible:ring-offset-0"
+                                                placeholder="Nhập tên lĩnh vực"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="moTa"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
@@ -139,7 +158,7 @@ export const EditFieldDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter field document describe"
+                                                placeholder="Nhập mô tả"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -150,7 +169,7 @@ export const EditFieldDocumentModal = () => {
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Save
+                                Lưu
                             </Button>
                         </DialogFooter>
                     </form>
