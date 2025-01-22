@@ -1,19 +1,19 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 
 import { db } from "@/lib/db";
 
 export const currentProfile = async () => {
-    const { userId } = await auth();  // Thêm `await` để giải quyết Promise
+    const session = await auth();  // Thêm `await` để giải quyết Promise
+    const userId = session?.user.id
     if (!userId) {
         return null;
     }
 
-    const profile = await db.users.
-    findUnique({
-        where: {
-            userId
-        }
-    });
+    const profile = await db.nguoiDung.findUnique({
+            where: {
+                ma: userId
+            }
+        });
 
     return profile;
 }

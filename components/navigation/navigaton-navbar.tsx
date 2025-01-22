@@ -1,6 +1,6 @@
-"use client"
 import Link from "next/link"
-import { UserButton } from "@clerk/nextjs";
+import { signOut } from "@/auth";
+import { redirect } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,22 +9,18 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { RoleType } from "@prisma/client";
+import { vaitro } from "@prisma/client";
 
 interface NavigationNavbarProps {
     name?: string;
-    role?: RoleType;
+    role?: vaitro;
 }
 
-export function NavigationNavbar({
+const NavigationNavbar = async ({
     name,
     role
-}: NavigationNavbarProps) {
-    const path = usePathname();
-    const isAdmin = role === RoleType.ADMIN || role === RoleType.ROOT || role === RoleType.INSPECTOR; 
-
+}: NavigationNavbarProps) => {
+    const isAdmin = role === vaitro.QUANTRIVIEN || role === vaitro.THANHTRA || role === vaitro.QUANLY;
     return (
         <nav className="bg-white shadow-lg w-full">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +29,7 @@ export function NavigationNavbar({
                     <div className="flex-shrink-0 flex items-center">
                         <Link href="/">
                             {/* <p className="text-2xl font-bold text-emerald-600">Logo</p> */}
-                            <UserButton
+                            {/* <UserButton
                                 afterSignOutUrl="/"
                                 // afterSwitchSessionUrl="/"
                                 appearance={{
@@ -41,25 +37,19 @@ export function NavigationNavbar({
                                         avatarBox: "h-[40px] w-[40px]"
                                     }
                                 }}
-                            />
+                            /> */}
                         </Link>
                     </div>
 
                     {/* Navigation Links */}
                     <div className="items-center flex-auto sm:flex">
                         <Link href="/home">
-                            <p className={cn(
-                                "text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium",
-                                { "text-blue-600": path === "/home" }
-                            )}>
+                            <p className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium">
                                 Trang chủ
                             </p>
                         </Link>
                         <Link href="/home">
-                            <p className={cn(
-                                "text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium",
-                                { "text-blue-600": path === "/homess" }
-                            )}>
+                            <p className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-xl font-medium">
                                 Đánh giá cơ sở đào tạo
                             </p>
                         </Link>
@@ -130,44 +120,27 @@ export function NavigationNavbar({
                     {/* Action Button */}
                     <div className="hidden sm:flex items-center flex-auto justify-end">
                         <p className="text-zinc-700 px-2">
-                            {name}
+                            Xin chào {name}
                         </p>
-                        <UserButton
-                            afterSignOutUrl="/"
-                            // afterSwitchSessionUrl="/"
-                            appearance={{
-                                elements: {
-                                    avatarBox: "h-[40px] w-[40px]"
-                                }
-                            }}
-                        />
-                    </div>
+                        <form action={async () => {
+                            "use server";
+                            try {
+                                await signOut();
+                            } finally {
+                                redirect("/auth/login");
+                            }
 
-                    {/* Mobile Menu
-                    <div className="sm:hidden flex items-center">
-                        <button
-                            type="button"
-                            className="text-gray-800 hover:text-blue-600 focus:outline-none"
-                        >
-                            <svg
-                                className="h-6 w-6"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M4 6h16M4 12h16M4 18h16"
-                                />
-                            </svg>
-                        </button>
-                    </div> */}
+                        }}>
+                            <button className="text-black" type="submit">
+                                Đăng xuất
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </nav>
     );
 };
+
+export default NavigationNavbar;
 

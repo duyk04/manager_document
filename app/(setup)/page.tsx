@@ -1,12 +1,12 @@
-import { initialProfile } from "@/lib/initial-profile";
+
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 const SetupPage = async () => {
-    const profile = await initialProfile();
-
-    const isUser = await db.users.findFirst({
+    const session = await auth();
+    const isUser = await db.nguoiDung.findFirst({
         where: {
-            userId: profile.userId,
+            ma: session?.user.id,
         },
     });
 

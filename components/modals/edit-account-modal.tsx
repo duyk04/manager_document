@@ -25,37 +25,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
-import { RoleType } from "@prisma/client";
+import { VaiTro } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 
 const formSchema = z.object({
-    id: z.string(),
-    name: z.string().nonempty(),
+    ma: z.string(),
+    hoTen: z.string().nonempty(),
     email: z.string().email(),
-    department: z.string().nonempty(),
-    role: z.nativeEnum(RoleType),
+    donVi: z.string(),
+    vaiTro: z.nativeEnum(VaiTro),
 });
 
-interface Department {
-    id: number;
-    departmentCode: string;
-    departmentName: string;
+interface DonVi {
+    ma: string;
+    tenDonVi: string;
 }
 
+const roleMap = {
+    [VaiTro.QUANTRIVIEN]: "Quản trị viên",
+    [VaiTro.THANHTRA]: "Thanh tra",
+    [VaiTro.QUANLY]: "Quản lý",
+    [VaiTro.NHANVIEN]: "Nhân viên",
+}
 
 export const EditAccountModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
     // console.log(data);
 
-    const { id, name, email, department, role } = data;
+    const { ma, hoTen, email, donVi, vaiTro } = data;
 
 
     const isModalOpen = isOpen && type === "editAccount";
 
-    const [deparments, setDeparment] = useState<Department[]>([]);
+    const [deparments, setDeparment] = useState<DonVi[]>([]);
     // console.log(deparmentCode);
     useEffect(() => {
         if (!isModalOpen) return;
@@ -73,49 +78,50 @@ export const EditAccountModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            id: id,
-            name: name,
+            ma: ma,
+            hoTen: hoTen,
             email: email,
-            department: department,
-            role: role
+            donVi: donVi?.ma,
+            vaiTro: vaiTro
         }
     });
 
+    // console.log(donVi?.ma);
     useEffect(() => {
-        if (role) {
+        if (vaiTro || donVi) {
             form.setValue(
-                "id", id,
+                "ma", ma,
             );
             form.setValue(
-                "name", name,
+                "hoTen", hoTen,
             );
             form.setValue(
                 "email", email,
             );
             form.setValue(
-                "department", department?.departmentCode,
+                "donVi", donVi?.ma,
             );
             form.setValue(
-                "role", role,
+                "vaiTro", vaiTro,
             );
         }
-    }, [form, role]);
+    }, [form, vaiTro, donVi]);
 
     const isLoading = form.formState.isSubmitting;
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
         console.log(value);
-        try {
-            await axios.patch("/api/account", value);
+        // try {
+        //     await axios.patch("/api/account", value);
 
-            form.reset();
-            router.refresh();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            onClose();
-        }
+        //     form.reset();
+        //     router.refresh();
+        // } catch (error) {
+        //     console.error(error);
+        // } finally {
+        //     onClose();
+        // }
     }
 
     const handleClose = () => {
@@ -128,7 +134,7 @@ export const EditAccountModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Edit Account
+                        Sửa thông tin tài khoản
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -136,7 +142,7 @@ export const EditAccountModal = () => {
                         <div className="space-y-8 px-6">
                             <FormField
                                 control={form.control}
-                                name="id"
+                                name="ma"
                                 disabled
                                 render={({ field }) => (
                                     <FormItem>
@@ -150,7 +156,6 @@ export const EditAccountModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -160,12 +165,12 @@ export const EditAccountModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="hoTen"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Tên
+                                            Họ và Tên
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -173,7 +178,7 @@ export const EditAccountModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Enter channel name"
+                                                placeholder="Nhập họ và tên"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -184,6 +189,7 @@ export const EditAccountModal = () => {
                             <FormField
                                 control={form.control}
                                 name="email"
+                                disabled
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
@@ -206,7 +212,7 @@ export const EditAccountModal = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="department"
+                                name="donVi"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Khoa</FormLabel>
@@ -214,6 +220,7 @@ export const EditAccountModal = () => {
                                             disabled={isLoading}
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
+                                            
                                         >
                                             <FormControl>
                                                 <SelectTrigger
@@ -224,8 +231,8 @@ export const EditAccountModal = () => {
                                             </FormControl>
                                             <SelectContent>
                                                 {deparments?.map((item) => (
-                                                    <SelectItem key={item.departmentCode} value={item.departmentCode}>
-                                                        {item.departmentName}
+                                                    <SelectItem key={item.ma} value={item.ma} className="capitalize">
+                                                        {item.tenDonVi}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -236,7 +243,7 @@ export const EditAccountModal = () => {
                             ></FormField>
                             <FormField
                                 control={form.control}
-                                name="role"
+                                name="vaiTro"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Role</FormLabel>
@@ -253,9 +260,9 @@ export const EditAccountModal = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {Object.values(RoleType).map((type) => (
-                                                    <SelectItem key={type} value={type} className="capitalize">
-                                                        {type}
+                                                {Object.entries(roleMap).map(([key, value]) => (
+                                                    <SelectItem key={key} value={key} className="capitalize">
+                                                        {value}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
