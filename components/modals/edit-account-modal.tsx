@@ -216,9 +216,7 @@ export const EditAccountModal = () => {
                                             defaultValue={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger
-                                                    className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
-                                                >
+                                                <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
                                                     <SelectValue placeholder="Select a department" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -246,9 +244,7 @@ export const EditAccountModal = () => {
                                             defaultValue={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger
-                                                    className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
-                                                >
+                                                <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
                                                     <SelectValue placeholder="Select a type" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -269,7 +265,7 @@ export const EditAccountModal = () => {
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Save
+                                Lưu
                             </Button>
                         </DialogFooter>
                     </form>
