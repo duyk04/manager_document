@@ -157,25 +157,6 @@ const RegisterForm = () => {
                             </FormItem>
                         )}
                     />
-                    {/* <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center">
-                            <input
-                                id="remember-me"
-                                name="remember-me"
-                                type="checkbox"
-                                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                            />
-                            <label
-                                htmlFor="remember-me"
-                                className="ml-2 block text-sm text-gray-800"
-                            >
-                                Remember me
-                            </label>
-                        </div>
-                        <a href="#" className="text-sm text-indigo-600 hover:underline">
-                            Quên mật khẩu?
-                        </a>
-                    </div> */}
                     <FormSuccess message={success} />
                     <FormError message={error} />
                     <Button

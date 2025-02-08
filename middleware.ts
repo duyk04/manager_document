@@ -10,7 +10,7 @@ import {
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export default auth((req: string | any) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth?.user;
     // console.log("ROUTE", req.nextUrl.pathname);

@@ -1,12 +1,10 @@
 "use client"
 
 import * as z from "zod";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -99,28 +97,28 @@ export const CreateDocumentModal = () => {
     const removeFileField = (id: number): void => {
         const updatedFileFields = fileFields.filter((file) => file.id !== id);
         const removedIndex = fileFields.findIndex((file) => file.id === id);
-    
+
         // Cập nhật giá trị trong form
         const updatedPdfFiles = form.getValues("FILE_PDF").filter((_, index) => index !== removedIndex);
         const updatedGocFiles = form.getValues("FILE_GOC").filter((_, index) => index !== removedIndex);
-    
+
         form.setValue("FILE_PDF", updatedPdfFiles);
         form.setValue("FILE_GOC", updatedGocFiles);
-    
+
         // Cập nhật trạng thái `fileFields`
         setFileFields(updatedFileFields);
     };
 
     const addFileField = (): void => {
         const newField = { id: Date.now(), pdfFile: null, gocFile: null };
-    
+
         // Cập nhật trạng thái `fileFields`
         setFileFields([...fileFields, newField]);
-    
+
         // Cập nhật giá trị trong form
         form.setValue("FILE_PDF", [...form.getValues("FILE_PDF"), ""]);
         form.setValue("FILE_GOC", [...form.getValues("FILE_GOC"), ""]);
-    };    
+    };
 
 
     const form = useForm({
@@ -139,11 +137,6 @@ export const CreateDocumentModal = () => {
             FILE_GOC: [] as string[],
         }
     });
-
-    //
-
-    const router = useRouter();
-    const params = useParams();
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -313,10 +306,10 @@ export const CreateDocumentModal = () => {
                                         Cấp ban hành
                                     </FormLabel>
                                     <Select
-                                         defaultValue={field.value ? field.value.toString() : ""}
-                                         onValueChange={(value) => {
-                                             field.onChange(Number(value));
-                                         }}
+                                        defaultValue={field.value ? field.value.toString() : ""}
+                                        onValueChange={(value) => {
+                                            field.onChange(Number(value));
+                                        }}
                                     >
                                         <FormControl>
                                             <SelectTrigger
