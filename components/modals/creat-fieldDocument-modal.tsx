@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -57,9 +58,19 @@ export const CreateDepartmentModal = () => {
             await axios.post("/api/fieldDocument", value);
 
             form.reset();
+            toast({
+                variant: "success",
+                title: "Thành công",
+                description: `Đã thêm lĩnh vực văn bản ${value.tenLinhVuc}`,
+            });
             router.refresh();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         }finally {
             onClose();
         }
