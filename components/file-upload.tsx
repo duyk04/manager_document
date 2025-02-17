@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FileIcon } from "lucide-react";
+import { FileIcon, X } from "lucide-react";
 
 interface FileUploadProps {
 	value?: string;
@@ -64,6 +64,38 @@ export const FileUpload = ({
 				>
 					{response.filePath}
 				</a>
+				<button
+					onClick={() => {setResponse(null)}}
+					className="bg-rose-500 text-white p-1
+                    rounded-full absolute top-0 right-0 shadow-sm"
+					type="button"
+				>
+					<X className="h-4 w-4" />
+				</button>
+			</div>
+		);
+	}
+
+	if (value) {
+		return (
+			<div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
+				<FileIcon className="h-10 w-10 fill-indigo-200 stroke-indigo-400" />
+				<a
+					href={value}
+					target="_blank"
+					rel="noreferrer noopener"
+					className="ml-2 w-[380px] text-indigo-500 text-sm dark:text-indigo-400 hover:underline overflow-hidden whitespace-nowrap"
+				>
+					{value}
+				</a>
+				<button
+					onClick={() => onChange && onChange("")}
+					className="bg-rose-500 text-white p-1
+                    rounded-full absolute top-0 right-0 shadow-sm"
+					type="button"
+				>
+					<X className="h-4 w-4" />
+				</button>
 			</div>
 		);
 	}
