@@ -28,6 +28,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { VaiTro } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -111,9 +112,19 @@ export const EditAccountModal = () => {
         try {
             await axios.patch("/api/account", value);
             form.reset();
+            toast({
+                variant: "success",
+                title: "Thành công",
+                description: `Đã cập nhật thông tin tài khoản ${value.email}`,
+            });
             router.refresh();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         } finally {
             onClose();
         }
