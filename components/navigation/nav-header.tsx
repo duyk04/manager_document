@@ -31,7 +31,7 @@ import { usePathname } from "next/navigation"
 
 export const NavHeader = () => {
     const locationPath = usePathname();
-    console.log(locationPath);
+    // console.log(locationPath);
     // vi du http://localhost:3000/admin/account
     const pathParts = locationPath.split("/").filter((part) => part !== "");
     return (

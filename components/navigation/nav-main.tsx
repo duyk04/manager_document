@@ -105,6 +105,10 @@ const navMain = [
 				title: "Settings",
 				url: "#",
 			},
+			{
+				title: "Test",
+				url: "#",
+			},
 		],
 	},
 	{
