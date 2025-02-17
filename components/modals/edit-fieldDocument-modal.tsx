@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -74,8 +75,19 @@ export const EditFieldDocumentModal = () => {
 
             form.reset();
             router.refresh();
+            toast({
+                variant: "success",
+                title: "Thành công",
+                description: `Đã cập nhật thông tin lĩnh vực ${value.tenLinhVuc}`,
+            });
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            // Hiển thị thông báo lỗi bằng toast
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         } finally {
             onClose();
         }
