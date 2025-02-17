@@ -30,7 +30,7 @@ const AccountPage = async () => {
             donVi: {
                 select: {
                     ma: true,
-                    tenDonVi: true, // Chỉ lấy trường `tenDonVi` từ bảng `DonVi`
+                    tenDonVi: true,
                 },
             },
         }
