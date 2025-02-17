@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 
 export const currentProfile = async () => {
-    const session = await auth();  // Thêm `await` để giải quyết Promise
+    const session = await auth();
     const userId = session?.user.id
     if (!userId) {
         return null;
