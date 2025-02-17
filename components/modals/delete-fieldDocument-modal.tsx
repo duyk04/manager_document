@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { toast } from "@/hooks/use-toast";
 
 
 
@@ -32,9 +33,19 @@ export const DeleteFielDocumentModal= () => {
             await axios.delete("/api/fieldDocument", {
                 data: { ma },
             });
+            toast({
+                variant: "success",
+                title: "Thành công",
+                description: `Đã xóa lĩnh vực văn bản ${tenLinhVuc}`,
+            });
             onClose();
         } catch (error) {
             console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         } finally {
             router.refresh();
             setIsLoading(false);
