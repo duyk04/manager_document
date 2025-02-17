@@ -20,7 +20,6 @@ import {
 
 
 export const ViewDocumentModal = () => {
-    const params = useParams();
     const router = useRouter();
     const [documents, setDocuments] = useState<any[]>([]);
     const { onOpen } = useModal();
@@ -38,8 +37,12 @@ export const ViewDocumentModal = () => {
         fetchDocuments();
     }, []);
 
-    const onClick = (soVanBan: string) => {
+    const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
+    };
+    
+    const onClickEdit = (soVanBan: string) => {
+        router.push(`/document/edit/${soVanBan}`);
     };
 
     const onSearch = () => {
@@ -51,17 +54,36 @@ export const ViewDocumentModal = () => {
         )
     }
 
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            try {
+                const response = await axios.get(`/api/documents?keyword=${search}`);
+                setDocuments(response.data);
+            } catch (error) {
+                console.error("Lỗi khi tải tài liệu:", error);
+            }
+        };
+
+        // Debounce: Chỉ gọi API sau 500ms nếu search không thay đổi
+        const delaySearch = setTimeout(() => {
+            fetchDocuments();
+        }, 300);
+
+        // Cleanup function: Xóa timeout nếu search thay đổi trước khi hết 500ms
+        return () => clearTimeout(delaySearch);
+    }, [search]);
+
 
 
     return (
         <div className="w-full rounded-lg shadow-sm mt-5">
-            <div className="relative flex items-center w-1/5 p-4 bg-white dark:bg-gray-800">
+            <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
                 <Input
                     placeholder="Tìm kiếm văn bản"
                     className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <button onClick={onSearch} className="absolute right-7">
+                <button onClick={onSearch} className="absolute right-0 p-2">
                     <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
                 </button>
             </div>
@@ -72,17 +94,26 @@ export const ViewDocumentModal = () => {
                         <TableHead className="text-center">STT</TableHead>
                         <TableHead className="font-semibold">Tên tài liệu</TableHead>
                         <TableHead className="font-semibold">Mô tả</TableHead>
+                        <TableHead className="text-center font-semibold">Đơn vị</TableHead>
+                        <TableHead className="text-center font-semibold">Phạm vi</TableHead>
                         <TableHead className="text-center font-semibold">File</TableHead>
                         <TableHead className="text-center font-semibold">Thao tác</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
+                    {documents!.length === 0 && (
+                        <TableRow>
+                            <TableCell colSpan={7}>Không có dữ liệu</TableCell>
+                        </TableRow>
+                    )}
                     {documents &&
                         documents.map((document: any, index) => (
                             <TableRow key={index}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell className="text-start text-black font-semibold">{document.tenTaiLieu}</TableCell>
                                 <TableCell className="text-start">{document.trichYeu}</TableCell>
+                                <TableCell>{document.donVi.tenDonVi}</TableCell>
+                                <TableCell>{document.phamVi}</TableCell>
                                 <TableCell>
                                     <ul>
                                         {document.file.map((file: any, index: number) => (
@@ -109,10 +140,10 @@ export const ViewDocumentModal = () => {
                                     </ul>
                                 </TableCell>
                                 <TableCell className="flex justify-center gap-4">
-                                    <Button variant={"primary"} onClick={() => onOpen("editDocument", document)}>
+                                    <Button variant={"primary"} onClick={() => onClickEdit(document.soVanBan)}>
                                         Sửa
                                     </Button>
-                                    <Button variant={"primary"} onClick={() => onClick(document.soVanBan)}>
+                                    <Button variant={"primary"} onClick={() => onClickView(document.soVanBan)}>
                                         Xem
                                     </Button>
                                 </TableCell>
