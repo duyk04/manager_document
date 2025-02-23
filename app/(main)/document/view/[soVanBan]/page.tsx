@@ -18,8 +18,8 @@ const viewVanBan = async ({
         redirect("/home");
     }
 
-    //Lấy số văn bản từ params
-    const { soVanBan } = await params;
+    //Lấy số văn bản từ params và giải mã
+    const soVanBan = decodeURIComponent((await params).soVanBan);
     // console.log(profile);
 
     //Lấy thông tin văn bản từ số văn bản
