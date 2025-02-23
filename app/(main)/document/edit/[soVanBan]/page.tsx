@@ -19,9 +19,8 @@ const EditVanBan = async ({
         redirect("/home");
     }
 
-    //Lấy số văn bản từ params
-    const { soVanBan } = await params;
-    // console.log(profile);
+    //Lấy số văn bản từ params và giải mã
+    const soVanBan = decodeURIComponent((await params).soVanBan);
 
     //Lấy thông tin văn bản từ số văn bản
     const vanBan = await db.taiLieu.findUnique({
