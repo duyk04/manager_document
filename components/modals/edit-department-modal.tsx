@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { RoleType } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -48,7 +49,6 @@ export const EditDepartmentModal = () => {
     // console.log(data);
 
     const { ma, tenDonVi, moTa} = data;
-
 
     const isModalOpen = isOpen && type === "editDepartment";
 
@@ -77,6 +77,10 @@ export const EditDepartmentModal = () => {
         try {
             await axios.patch("/api/department", value);
 
+            toast({
+                variant: "success",
+                title: "Sửa thành công",
+            });
             form.reset();
             router.refresh();
         } catch (error) {
@@ -96,7 +100,7 @@ export const EditDepartmentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Edit Department
+                        Sửa thông tin
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -126,7 +130,7 @@ export const EditDepartmentModal = () => {
                                     </FormItem>
                                 )}
                             /> */}
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="ma"
                                 disabled
@@ -148,7 +152,7 @@ export const EditDepartmentModal = () => {
                                         <FormMessage />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             <FormField
                                 control={form.control}
                                 name="tenDonVi"
@@ -156,7 +160,7 @@ export const EditDepartmentModal = () => {
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Tên đơn vị
+                                            Tên Khoa, Phòng ban
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -198,7 +202,7 @@ export const EditDepartmentModal = () => {
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Save
+                                Lưu
                             </Button>
                         </DialogFooter>
                     </form>

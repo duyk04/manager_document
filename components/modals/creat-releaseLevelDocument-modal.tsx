@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -50,14 +51,22 @@ export const CreateReleaseLevelDocumentModal = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
+        // console.log(value);
         try {
             await axios.post("/api/releaseLevel", value);
-
+            toast({
+                variant: "success",
+                title: "Thêm thành công",
+            });
             form.reset();
             router.refresh();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         }finally {
             onClose();
         }
@@ -73,7 +82,7 @@ export const CreateReleaseLevelDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Thêm mới cấp ban hành
+                        Thêm mới
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>

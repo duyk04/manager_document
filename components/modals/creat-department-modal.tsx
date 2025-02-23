@@ -23,8 +23,9 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -54,10 +55,19 @@ export const CreateFieldDocumentModal = () => {
         try {
             await axios.post("/api/department", value);
 
+            toast({
+                variant: "success",
+                title: "Thêm thành công",
+            });
             form.reset();
             router.refresh();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         }finally {
             onClose();
         }
@@ -73,7 +83,7 @@ export const CreateFieldDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Thêm mới khoa, đơn vị
+                        Thêm mới
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -109,7 +119,7 @@ export const CreateFieldDocumentModal = () => {
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                            Tên đơn vị
+                                            Tên khoa, phòng ban
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -117,7 +127,7 @@ export const CreateFieldDocumentModal = () => {
                                                 className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black
                                                 focus-visible:ring-offset-0"
-                                                placeholder="Nhập tên đơn vị"
+                                                placeholder="Nhập tên khoa, phòng ban"
                                                 {...field}
                                             />
                                         </FormControl>

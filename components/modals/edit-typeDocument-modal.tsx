@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -70,10 +71,19 @@ export const EditTypeDocumentModal = () => {
         try {
             await axios.patch("/api/typeDocument", value);
 
+            toast({
+                variant: "success",
+                title: "Sửa thành công",
+            });
             form.reset();
             router.refresh();
         } catch (error) {
-            console.error(error);
+            // 
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         } finally {
             onClose();
         }
@@ -144,7 +154,7 @@ export const EditTypeDocumentModal = () => {
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Save
+                                Lưu
                             </Button>
                         </DialogFooter>
                     </form>

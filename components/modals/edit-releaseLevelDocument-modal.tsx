@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
 
 
 const formSchema = z.object({
@@ -69,10 +70,19 @@ export const EditReleaseLevelDocumentModal = () => {
         try {
             await axios.patch("/api/releaseLevel", value);
 
+            toast({
+                variant: "success",
+                title: "Sửa thành công",
+            });
             form.reset();
             router.refresh();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         } finally {
             onClose();
         }
@@ -88,7 +98,7 @@ export const EditReleaseLevelDocumentModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Sửa thông tin cấp ban hành
+                        Sửa thông tin
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>

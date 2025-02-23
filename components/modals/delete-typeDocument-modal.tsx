@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { toast } from "@/hooks/use-toast";
 
 export const DeleteTypeDocumentModal= () => {
     const { isOpen, onClose, type, data } = useModal();
@@ -31,9 +32,18 @@ export const DeleteTypeDocumentModal= () => {
             await axios.delete("/api/typeDocument", {
                 data: { ma },
             });
+            toast({
+                variant: "success",
+                title: "Xóa thành công",
+            });
             onClose();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         } finally {
             router.refresh();
             setIsLoading(false);
