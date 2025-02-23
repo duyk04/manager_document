@@ -1,5 +1,3 @@
-"use client"
-
 import { CreateDocumentModal } from "@/components/documents/document-creat";
 
 const DocumentPage = () => {
