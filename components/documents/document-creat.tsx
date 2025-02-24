@@ -14,6 +14,7 @@ import { DialogFooter } from "@/components/ui/dialog";
 
 import { FileUpload } from "@/components/file-upload";
 import { PhamVi } from "@prisma/client";
+import { toast } from "@/hooks/use-toast";
 
 
 interface FileField {
@@ -57,7 +58,7 @@ const formSchema = z.object({
     tenVanBan: z.string().min(1, { message: "Tên văn bản không được bỏ trống" }),
     trichyeu: z.string().min(1, { message: "Trích yếu không được bỏ trống" }),
     phamVi: z.nativeEnum(PhamVi),
-    FILE_PDF: z.array(z.string()),
+    FILE_PDF: z.array(z.string().nonempty(), { message: "File PDF không được bỏ trống" }),
     FILE_GOC: z.array(z.string()),
 });
 
@@ -72,14 +73,17 @@ export const CreateDocumentModal = () => {
         setMounted(true);
         const fetchDeparment = async () => {
             try {
-                const department = await axios.get("/api/department");
-                const field = await axios.get("/api/fieldDocument");
-                const type = await axios.get("/api/typeDocument");
-                const release = await axios.get("/api/releaseLevel");
-                setDeparment(department.data);
-                setFieldDocument(field.data);
-                setType(type.data);
-                setRelease(release.data);
+                const [departmentRes, fieldRes, typeRes, releaseRes] = await Promise.all([
+                    axios.get("/api/department"),
+                    axios.get("/api/fieldDocument"),
+                    axios.get("/api/typeDocument"),
+                    axios.get("/api/releaseLevel"),
+                ]);
+
+                setDeparment(departmentRes.data);
+                setFieldDocument(fieldRes.data);
+                setType(typeRes.data);
+                setRelease(releaseRes.data);
             } catch (error) {
                 console.error(error);
             }
@@ -153,11 +157,20 @@ export const CreateDocumentModal = () => {
             await axios.post("/api/documents", updatedValues);
             // Reset form sau khi thành công
             form.reset();
+            // Thông báo thành công
+            toast({
+                variant: "success",
+                title: "Thêm thành công",
+            });
         } catch (error) {
-            console.error("Error submitting form:", error);
+            // console.error("Error submitting form:", error);
+            toast({
+                variant: "destructive",
+                title: "Lỗi",
+                description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+            });
         }
     };
-
 
     const isLoading = form.formState.isSubmitting;
 
@@ -174,7 +187,7 @@ export const CreateDocumentModal = () => {
                                 <FormItem>
                                     <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                        Đơn vị cập nhật
+                                        Khoa
                                     </FormLabel>
                                     <Select
                                         disabled={isLoading}
@@ -189,7 +202,7 @@ export const CreateDocumentModal = () => {
                                             <SelectTrigger
                                                 className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
                                             >
-                                                <SelectValue placeholder="Chọn đơn vị cập nhật" />
+                                                <SelectValue placeholder="Chọn khoa" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -440,6 +453,8 @@ export const CreateDocumentModal = () => {
                                             </FormLabel>
                                             <FileUpload
                                                 value={field.value[index]}
+                                                typeFile={'.pdf'}
+                                                required={true}
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
                                                     updatedFiles[index] = filePath;
@@ -462,6 +477,7 @@ export const CreateDocumentModal = () => {
                                             </FormLabel>
                                             <FileUpload
                                                 value={field.value[index]}
+                                                typeFile={'.doc, .docx, .xls, .xlsx'}
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
                                                     updatedFiles[index] = filePath;
@@ -489,7 +505,7 @@ export const CreateDocumentModal = () => {
                         <Button
                             type="button"
                             variant="primary"
-                            className="col-span-2"
+                            className="w-1/6"
                             onClick={addFileField}
                             disabled={isLoading}
                         >
