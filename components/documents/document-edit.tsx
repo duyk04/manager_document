@@ -14,9 +14,8 @@ import { DialogFooter } from "@/components/ui/dialog";
 
 import { FileUpload } from "@/components/file-upload";
 import { PhamVi } from "@prisma/client";
-import { redirect } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { ToastAction, ToastClose } from "../ui/toast";
+import { Textarea } from "../ui/textarea";
 
 
 interface EditDocumentProps {
@@ -65,8 +64,8 @@ const formSchema = z.object({
     tenVanBan: z.string().min(1, { message: "Tên văn bản không được bỏ trống" }),
     trichyeu: z.string().min(1, { message: "Trích yếu không được bỏ trống" }),
     phamVi: z.nativeEnum(PhamVi),
-    FILE_PDF: z.array(z.string() .nullable()),
-    FILE_GOC: z.array(z.string(). nullable()),
+    FILE_PDF: z.array(z.string().nullable()),
+    FILE_GOC: z.array(z.string().nullable()),
 });
 
 export const EditDocument = ({
@@ -102,10 +101,25 @@ export const EditDocument = ({
         fetchDeparment();
     }, []);
 
+
     // State quản lý các trường file
     const [fileFields, setFileFields] = useState<FileField[]>([
         { id: Date.now(), pdfFile: null, gocFile: null },
     ]);
+
+    useEffect(() => {
+        if (!isMounted && vanBan) {
+            const updatedFileFields = vanBan.file.map((file: any, index: number) => ({
+                id: index,
+                pdfFile: file.filePDF,
+                gocFile: file.fileGoc,
+            }));
+
+            setFileFields(updatedFileFields);
+            setMounted(true);
+        }
+    }
+        , [isMounted, vanBan]);
 
     // Hàm xóa trường theo ID
     const removeFileField = (id: number): void => {
@@ -408,13 +422,18 @@ export const EditDocument = ({
                                     dark:text-secondary/70">
                                         Trích yếu
                                     </FormLabel>
-                                    <Input
+                                    {/* <Input
                                         disabled={isLoading}
                                         className="bg-zinc-300/50 border-0
                                             focus-visible:ring-0 text-black
                                             focus-visible:ring-offset-0"
                                         {...field}
-                                    />
+                                    /> */}
+                                    <Textarea
+                                        className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                                        placeholder="Nhập nội dung"
+                                        disabled={isLoading}
+                                        {...field} />
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -455,7 +474,7 @@ export const EditDocument = ({
                             )}
                         />
                         {fileFields.map((file, index) => (
-                            <div className="col-span-2 grid grid-cols-2 gap-4" key={file.id}>
+                            <div className="col-span-2 grid grid-cols-2 gap-4 border-b-2 border-b-zinc-200 pb-2" key={file.id}>
                                 {/* File PDF */}
                                 <FormField
                                     control={form.control}
@@ -467,6 +486,7 @@ export const EditDocument = ({
                                             </FormLabel>
                                             <FileUpload
                                                 value={field.value[index]}
+                                                typeFile=".pdf"
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
                                                     updatedFiles[index] = filePath;
@@ -489,6 +509,7 @@ export const EditDocument = ({
                                             </FormLabel>
                                             <FileUpload
                                                 value={field.value[index]}
+                                                typeFile=".doc, .docx, .xls, .xlsx"
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
                                                     updatedFiles[index] = filePath;
@@ -504,10 +525,10 @@ export const EditDocument = ({
                                 <Button
                                     type="button"
                                     variant="secondary"
-                                    className="h-8 w-8 pl-10 text-red-500"
+                                    className="h-8 w-28 text-red-500"
                                     onClick={() => removeFileField(file.id)}
                                 >
-                                    Remove file {index + 1}
+                                    Loại bỏ file {index + 1}
                                 </Button>
                             </div>
                         ))}
@@ -516,11 +537,11 @@ export const EditDocument = ({
                         <Button
                             type="button"
                             variant="primary"
-                            className="col-span-2"
+                            className="w-1/6"
                             onClick={addFileField}
                             disabled={isLoading}
                         >
-                            Add file
+                            Thêm file
                         </Button>
 
                     </div>
