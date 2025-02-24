@@ -1,7 +1,9 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { TaiLieu } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
+import { number } from "zod";
 
 export async function POST(
     req: Request,
@@ -70,56 +72,264 @@ export async function POST(
     }
 }
 
-export async function GET(
-    req: Request,
-) {
-    try {
-        // Lấy thông tin profile của người dùng
-        const profile = await currentProfile();
+// export async function GET(
+//     req: Request
+// ) {
+//     try {
+//         // Lấy thông tin profile của người dùng
+//         const profile = await currentProfile();
 
-        // Kiểm tra nếu không có thông tin profile
+//         // Kiểm tra nếu không có thông tin profile
+//         if (!profile) {
+//             return new NextResponse("Unauthorized", { status: 401 });
+//         }
+
+//         const canViewAll = profile.vaiTro === "QUANTRIVIEN"; // Kiểm tra xem người dùng có quyền xem tất cả tài liệu không
+//         const DonVi = profile.maDonVi ?? null;
+
+//         const { searchParams } = new URL(req.url);
+//         const keyword = searchParams.get("keyword")?.trim() || ""; // Từ khóa tìm kiếm
+//         const page = parseInt(searchParams.get("page") || "1", 10); // Trang mặc định là 1
+
+//         const pageSize = 10; // Số bản ghi mỗi trang
+
+//         // Tính toán skip
+//         const skip = (page - 1) * pageSize;
+
+//         let documents: TaiLieu[] = [];
+//         let totalRecords = 0;
+//         let totalPages = 0;
+
+//         if (canViewAll) {
+//             // Truy vấn danh sách tài liệu cho quản trị viên
+//             documents = await db.taiLieu.findMany({
+//                 where: {
+//                     OR: [
+//                         { tenTaiLieu: { contains: keyword } },
+//                         { trichYeu: { contains: keyword } }
+//                     ]
+//                 },
+//                 include: {
+//                     file: true,
+//                     donVi: true,
+//                     capBanHanh: true,
+//                     linhVuc: true,
+//                     loaiVanBan: true
+//                 },
+//                 skip: skip,
+//                 take: pageSize
+//             });
+
+//             // Tổng số bản ghi
+//             totalRecords = await db.taiLieu.count({
+//                 where: {
+//                     OR: [
+//                         { tenTaiLieu: { contains: keyword } },
+//                         { trichYeu: { contains: keyword } }
+//                     ]
+//                 }
+//             });
+
+//             // Tổng số trang
+//             totalPages = Math.ceil(totalRecords / pageSize);
+
+//         } else {
+//             // Truy vấn danh sách tài liệu cho người dùng
+//             documents = await db.taiLieu.findMany({
+//                 where: {
+//                     AND: [
+//                         {
+//                             OR: [
+//                                 DonVi ? { maDonVi: DonVi } : {}, // Lọc theo đơn vị nếu có
+//                                 { phamVi: "CONGKHAI" } // Tài liệu công khai
+//                             ]
+//                         },
+//                         // tìm kiếm tài liệu theo từ khóa
+//                         keyword
+//                             ? {
+//                                 OR: [
+//                                     { tenTaiLieu: { contains: keyword } },
+//                                     { trichYeu: { contains: keyword } }
+//                                 ]
+//                             }
+//                             : {}
+//                     ]
+//                 },
+//                 include: {
+//                     file: true,
+//                     donVi: true,
+//                     capBanHanh: true,
+//                     linhVuc: true,
+//                     loaiVanBan: true
+//                 },
+//                 skip: skip,
+//                 take: pageSize
+//             });
+
+//             // Tổng số bản ghi
+//             totalRecords = await db.taiLieu.count({
+//                 where: {
+//                     AND: [
+//                         {
+//                             OR: [
+//                                 DonVi ? { maDonVi: DonVi } : {},
+//                                 { phamVi: "CONGKHAI" }
+//                             ]
+//                         },
+//                         keyword
+//                             ? {
+//                                 OR: [
+//                                     { tenTaiLieu: { contains: keyword } },
+//                                     { trichYeu: { contains: keyword } }
+//                                 ]
+//                             }
+//                             : {}
+//                     ]
+//                 }
+//             });
+
+//             // Tổng số trang
+//             totalPages = Math.ceil(totalRecords / pageSize);
+//         }
+
+//         const categories = await db.$transaction([
+//             db.donVi.findMany(),
+//             db.capBanHanh.findMany(),
+//             db.linhVuc.findMany(),
+//             db.loaiVanBan.findMany(),
+
+//         ]);
+
+//         // Trả về dữ liệu
+//         return NextResponse.json({
+//             data: documents,
+//             pagination: {
+//                 totalRecords,
+//                 totalPages,
+//                 currentPage: page,
+//                 pageSize
+//             },
+//             categories: {
+//                 donVi: categories[0],
+//                 capBanHanh: categories[1],
+//                 linhVuc: categories[2],
+//                 loaiVanBan: categories[3],
+//             }
+//         });
+
+//     } catch (error) {
+//         console.error("DOCUMENT_GET", error);
+//         return new NextResponse("Internal Server Error", { status: 500 });
+//     }
+// }
+export async function GET(req: Request) {
+    try {
+        const profile = await currentProfile();
         if (!profile) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
+        const canViewAll = profile.vaiTro === "QUANTRIVIEN"; 
         const DonVi = profile.maDonVi ?? null;
-        const { searchParams } = new URL(req.url);
-        const keyword = searchParams.get("keyword")?.trim() || ""; // Lấy từ khóa từ query params để tìm kiếm tài liệu
 
-        // Truy vấn danh sách tài liệu
-        const documents = await db.taiLieu.findMany({
-            where: {
-                AND: [
-                    {
-                        OR: [
-                            DonVi ? { maDonVi: DonVi } : {}, // Lọc theo đơn vị nếu có
-                            { phamVi: "CONGKHAI" } // Tài liệu công khai
-                        ]
-                    },
-                    // tìm kiếm tài liệu theo từ khóa
-                    keyword
-                        ? {
-                            OR: [
-                                { tenTaiLieu: { contains: keyword } },
-                                { trichYeu: { contains: keyword } }
-                            ]
-                        }
-                        : {}
+        const { searchParams } = new URL(req.url);
+        const keyword = searchParams.get("keyword")?.trim() || "";
+        const donViFilter = parseInt(searchParams.get("donVi") || "0", 0) || null;
+        const capBanHanhFilter = parseInt(searchParams.get("capBanHanh") || "0", 0) || null;
+        const linhVucFilter = parseInt(searchParams.get("linhVuc") || "0", 0) || null;
+        const loaiVanBanFilter = parseInt(searchParams.get("loaiVanBan") || "0", 0) || null;
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const pageSize = 10
+        const skip = (page - 1) * pageSize;
+
+        let whereCondition: any = {
+            AND: []
+        };
+
+        // Áp dụng bộ lọc keyword nếu có
+        if (keyword) {
+            whereCondition.AND.push({
+                OR: [
+                    { tenTaiLieu: { contains: keyword } },
+                    { trichYeu: { contains: keyword } }
                 ]
-            },
+            });
+        }
+
+        if (donViFilter) {
+            whereCondition.AND.push({ maDonVi: donViFilter });
+        }
+
+        if (capBanHanhFilter) {
+            whereCondition.AND.push({ maCapBanHanh: capBanHanhFilter });
+        }
+
+        if (linhVucFilter) {
+            whereCondition.AND.push({ maLinhVuc: linhVucFilter });
+        }
+
+        if (loaiVanBanFilter) {
+            whereCondition.AND.push({ maLoaiVanBan: loaiVanBanFilter });
+        }
+
+        if (!canViewAll) {
+            whereCondition.AND.push({
+                OR: [
+                    DonVi ? { maDonVi: DonVi } : {},
+                    { phamVi: "CONGKHAI" }
+                ]
+            });
+        }
+
+        // Truy vấn dữ liệu
+        const documents = await db.taiLieu.findMany({
+            where: whereCondition,
             include: {
                 file: true,
-                donVi: true
+                donVi: true,
+                capBanHanh: true,
+                linhVuc: true,
+                loaiVanBan: true
+            },
+            skip,
+            take: pageSize
+        });
+
+        // Đếm tổng số bản ghi
+        const totalRecords = await db.taiLieu.count({ where: whereCondition });
+        const totalPages = Math.ceil(totalRecords / pageSize);
+
+        // Lấy danh mục danh sách
+        const categories = await db.$transaction([
+            db.donVi.findMany(),
+            db.capBanHanh.findMany(),
+            db.linhVuc.findMany(),
+            db.loaiVanBan.findMany()
+        ]);
+
+        return NextResponse.json({
+            documents: documents,
+            pagination: {
+                totalRecords,
+                totalPages,
+                currentPage: page,
+                pageSize
+            },
+            categories: {
+                donVi: categories[0],
+                capBanHanh: categories[1],
+                linhVuc: categories[2],
+                loaiVanBan: categories[3]
             }
         });
 
-
-        return NextResponse.json(documents);
     } catch (error) {
         console.error("DOCUMENT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
+
+
 
 export async function PATCH(
     req: Request,
@@ -130,7 +340,7 @@ export async function PATCH(
         if (!profile) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
-        
+
         const {
             ma,
             donVi,
