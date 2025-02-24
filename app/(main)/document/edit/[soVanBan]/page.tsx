@@ -48,9 +48,9 @@ const EditVanBan = async ({
         return <div>Không tìm thấy văn bản</div>
     }
 
-    //Kiểm tra nếu người dùng không có quyền xem văn bản
+    //Kiểm tra nếu người dùng không có quyền sửa văn bản
     if (profile?.maDonVi !== vanBan.maDonVi && vanBan.phamVi === 'NOIBO') {
-        return <div>Bạn không có quyền xem văn bản này</div>
+        return <div>Bạn không có quyền sửa văn bản này</div>
     }
 
     return (
