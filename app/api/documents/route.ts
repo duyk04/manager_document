@@ -229,7 +229,7 @@ export async function GET(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const canViewAll = profile.vaiTro === "QUANTRIVIEN"; 
+        const canViewAll = profile.vaiTro === "QUANTRIVIEN";
         const DonVi = profile.maDonVi ?? null;
 
         const { searchParams } = new URL(req.url);
@@ -238,6 +238,7 @@ export async function GET(req: Request) {
         const capBanHanhFilter = parseInt(searchParams.get("capBanHanh") || "0", 0) || null;
         const linhVucFilter = parseInt(searchParams.get("linhVuc") || "0", 0) || null;
         const loaiVanBanFilter = parseInt(searchParams.get("loaiVanBan") || "0", 0) || null;
+        const sort = searchParams.get("sort") || "newest";
         const page = parseInt(searchParams.get("page") || "1", 10);
         const pageSize = 10
         const skip = (page - 1) * pageSize;
@@ -281,6 +282,9 @@ export async function GET(req: Request) {
             });
         }
 
+        // Xác định sắp xếp theo ngày
+        const orderBy = sort === "oldest" ? { ngayBanHanh: "asc" as const } : { ngayBanHanh: "desc" as const };
+
         // Truy vấn dữ liệu
         const documents = await db.taiLieu.findMany({
             where: whereCondition,
@@ -292,7 +296,8 @@ export async function GET(req: Request) {
                 loaiVanBan: true
             },
             skip,
-            take: pageSize
+            take: pageSize,
+            orderBy
         });
 
         // Đếm tổng số bản ghi

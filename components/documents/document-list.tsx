@@ -44,6 +44,7 @@ export const ViewDocumentModal = () => {
      const [selectedCapBanHanh, setSelectedCapBanHanh] = useState<string | null>(null);
      const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
      const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
+     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -56,6 +57,7 @@ export const ViewDocumentModal = () => {
                         capBanHanh: selectedCapBanHanh,
                         linhVuc: selectedLinhVuc,
                         loaiVanBan: selectedLoaiVanBan,
+                        sort: selectedSortDate,
                     },
                 });
                 setDocuments(response.data.documents);
@@ -71,7 +73,7 @@ export const ViewDocumentModal = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan]);
+    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -109,6 +111,11 @@ export const ViewDocumentModal = () => {
         })),
     ]
 
+    const sortDateOptions = [
+        { value: "oldest", label: "Cũ nhất" },
+        { value: "newest", label: "Mới nhất" },
+    ];
+
     return (
         <div className="w-full rounded-lg shadow-sm mt-5">
             <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
@@ -127,6 +134,7 @@ export const ViewDocumentModal = () => {
                 <Combobox options={capBanHanhOptions} label="Lọc theo cấp ban hành..." onChange={setSelectedCapBanHanh} />
                 <Combobox options={linhVucOptions} label="Lọc theo lĩnh vực..." onChange={setSelectedLinhVuc} />
                 <Combobox options={loaiVanBanOptions} label="Lọc theo loại văn bản..." onChange={setSelectedLoaiVanBan} />
+                <Combobox options={sortDateOptions} label="Sắp sếp theo..." onChange={setSelectedSortDate} />
             </div>
             <Table className="w-full text-center items-center">
                 <TableCaption>Danh sách văn bản</TableCaption>
