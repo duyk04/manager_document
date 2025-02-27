@@ -412,3 +412,50 @@ export async function PATCH(
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
+
+export async function DELETE(
+    req: Request,
+) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const { soVanBan } = await req.json();
+
+        // console.log(soVanBan);
+
+        const document = await db.taiLieu.findFirst({
+            where: {
+                soVanBan: soVanBan,
+            }
+        });
+
+        if (!document) {
+            return new NextResponse("Không tìm thấy tài liệu", { status: 404 });
+        }
+
+        const QUANLY_KHOA = profile?.vaiTro === 'QUANLY' && profile?.maDonVi === document.maDonVi;
+
+        const canDelete = profile?.vaiTro === 'QUANTRIVIEN' || QUANLY_KHOA;
+
+        if (!canDelete) {
+            return new NextResponse("Bạn không có quyền xóa tài liệu", { status: 403 });
+        }
+
+        const deletedDocument = await db.taiLieu.delete({
+            where: {
+                soVanBan: soVanBan,
+            },
+            include: {
+                file: true
+            }
+        });
+        return NextResponse.json(deletedDocument);
+    } catch (error) {
+        console.error("DOCUMENT_DELETE", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
