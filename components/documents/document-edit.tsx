@@ -182,7 +182,7 @@ export const EditDocument = ({
             // Gửi dữ liệu đến API
             await axios.patch("/api/documents", updatedValues);
             // Reset form sau khi thành công
-            // form.reset();
+            form.reset();
 
             // Hiển thị thông báo thành công bằng toast
             toast({
