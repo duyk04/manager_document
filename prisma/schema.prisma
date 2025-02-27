@@ -181,7 +181,7 @@ model File {
     ngayTao     DateTime @default(now())
     ngayCapNhat DateTime @updatedAt
 
-    taiLieu TaiLieu @relation(fields: [maTaiLieu], references: [soVanBan], onUpdate: Cascade)
+    taiLieu TaiLieu @relation(fields: [maTaiLieu], references: [soVanBan], onDelete: Cascade, onUpdate: Cascade)
 
     @@index([maTaiLieu]) // Thêm chỉ mục cho trường maTaiLieu
 }
