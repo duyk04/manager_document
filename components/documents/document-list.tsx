@@ -27,9 +27,14 @@ import {
 } from "@/components/ui/pagination"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
+import { useModal } from "@/hooks/use-modal-store";
+import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 
 export const ViewDocumentModal = () => {
     const router = useRouter();
+    const { onOpen } = useModal();
+
     const [documents, setDocuments] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -39,12 +44,12 @@ export const ViewDocumentModal = () => {
     const [linhVuc, setLinhVuc] = useState<{ ma: number; tenLinhVuc: string }[]>([]);
     const [loaiVanBan, setLoaiVanBan] = useState<{ ma: number; tenLoaiVanBan: string }[]>([]);
 
-     // Lưu trạng thái bộ lọc
-     const [selectedDonVi, setSelectedDonVi] = useState<string | null>(null);
-     const [selectedCapBanHanh, setSelectedCapBanHanh] = useState<string | null>(null);
-     const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
-     const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
-     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
+    // Lưu trạng thái bộ lọc
+    const [selectedDonVi, setSelectedDonVi] = useState<string | null>(null);
+    const [selectedCapBanHanh, setSelectedCapBanHanh] = useState<string | null>(null);
+    const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
+    const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
+    const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -117,24 +122,26 @@ export const ViewDocumentModal = () => {
     ];
 
     return (
-        <div className="w-full rounded-lg shadow-sm mt-5">
-            <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
-                <Input
-                    placeholder="Nhập tên hoặc mô tả văn bản"
-                    className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    onChange={(e) => {setSearch(e.target.value); setCurrentPage(1); }}
-                />
-                <button className="absolute right-0 p-2">
-                    <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
-                </button>
-            </div>
-            {/* tính năng lọc tìm kiếm */}
-            <div className="flex gap-4 my-4">
-                <Combobox options={donViOptions} label="Lọc theo khoa..." onChange={(value) => { setSelectedDonVi(value); setCurrentPage(1); }} />
-                <Combobox options={capBanHanhOptions} label="Lọc theo cấp ban hành..." onChange={setSelectedCapBanHanh} />
-                <Combobox options={linhVucOptions} label="Lọc theo lĩnh vực..." onChange={setSelectedLinhVuc} />
-                <Combobox options={loaiVanBanOptions} label="Lọc theo loại văn bản..." onChange={setSelectedLoaiVanBan} />
-                <Combobox options={sortDateOptions} label="Sắp sếp theo..." onChange={setSelectedSortDate} />
+        <div className="w-full rounded-lg shadow-sm">
+            <div className="flex flex-row gap-4 justify-between">
+                <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
+                    <Input
+                        placeholder="Nhập tên hoặc mô tả văn bản"
+                        className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+                    />
+                    <button className="absolute right-0 p-2">
+                        <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
+                    </button>
+                </div>
+                {/* tính năng lọc tìm kiếm */}
+                <div className="flex gap-4 my-4">
+                    <Combobox options={donViOptions} label="Lọc theo khoa..." onChange={(value) => { setSelectedDonVi(value); setCurrentPage(1); }} />
+                    <Combobox options={capBanHanhOptions} label="Lọc theo cấp ban hành..." onChange={setSelectedCapBanHanh} />
+                    <Combobox options={linhVucOptions} label="Lọc theo lĩnh vực..." onChange={setSelectedLinhVuc} />
+                    <Combobox options={loaiVanBanOptions} label="Lọc theo loại văn bản..." onChange={setSelectedLoaiVanBan} />
+                    <Combobox options={sortDateOptions} label="Ngày ban hành..." onChange={setSelectedSortDate} />
+                </div>
             </div>
             <Table className="w-full text-center items-center">
                 <TableCaption>Danh sách văn bản</TableCaption>
@@ -150,7 +157,7 @@ export const ViewDocumentModal = () => {
                         <TableHead className="font-semibold">Thao tác</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody className="min-h-[500px]">
+                <TableBody>
                     {documents.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8}>Không có dữ liệu</TableCell>
@@ -163,9 +170,64 @@ export const ViewDocumentModal = () => {
                                 <TableCell className="text-start">{document.trichYeu}</TableCell>
                                 <TableCell className="text-start">{document.donVi?.tenDonVi || "N/A"}</TableCell>
                                 <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>
-                                <TableCell className="text-start">{document.phamVi}</TableCell>
-                                <TableCell className="text-start">
-                                    <ul>
+                                <TableCell className="text-start">{
+                                    document.phamVi === "NOIBO" ? "Nội bộ" : "Công khai"
+                                }</TableCell>
+                                <TableCell>
+                                    <div className="flex gap-4">
+
+
+                                        <HoverCard>
+                                            <HoverCardTrigger asChild>
+                                                <button className="w-10 h-10 p-0">
+                                                    <IconFolder />
+                                                </button>
+                                            </HoverCardTrigger>
+                                            <HoverCardContent className="w-fit rounded-md">
+                                                <div className="flex space-x-4">
+                                                    <ul>
+                                                        {document.file.map((file: any, index: number) => (
+                                                            <li key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md w-[500px]">
+                                                                <p className="text-gray-600 w-[60px]">Tệp {index + 1}:</p>
+                                                                <a
+                                                                    href={file.filePDF}
+                                                                    target="_blank"
+                                                                    rel="noreferrer noopener"
+                                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline w-1/2"
+                                                                >
+                                                                    {/* {file.filePDF?.split("/").pop() || "No PDF file"} */}
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <span><IconPdf /></span>
+                                                                        <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
+                                                                    </div>
+                                                                </a>
+                                                                <a
+                                                                    href={file.fileGoc}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-blue-600 hover:underline w-1/2"
+                                                                >
+                                                                    <div className="flex items-center space-x-2">
+                                                                        {(() => {
+                                                                            const fileExtension = file.fileGoc?.split(".").pop();
+                                                                            if (fileExtension === "docx" || fileExtension === "doc") {
+                                                                                return <span className="text-green-500"><IconWord /></span>
+                                                                            }
+                                                                            if (fileExtension === "xls" || fileExtension === "xlsx") {
+                                                                                return <span className="text-green-500"><IconExcel /></span>
+                                                                            }
+                                                                        })()}
+                                                                        <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </HoverCardContent>
+                                        </HoverCard>
+                                    </div>
+                                    {/* <ul>
                                         {document.file.map((file: any, index: number) => (
                                             <li key={index}>
                                                 <a
@@ -187,11 +249,12 @@ export const ViewDocumentModal = () => {
                                                 </a>
                                             </li>
                                         ))}
-                                    </ul>
+                                    </ul> */}
                                 </TableCell>
                                 <TableCell className="flex gap-4">
                                     <Button variant={"primary"} onClick={() => onClickEdit(document.soVanBan)}>Sửa</Button>
-                                    <Button variant={"primary"} onClick={() => onClickView(document.soVanBan)}>Xem</Button>
+                                    <Button variant={"success"} onClick={() => onClickView(document.soVanBan)}>Xem</Button>
+                                    <Button variant={"destructive"} onClick={() => onOpen("deleteDocument", document)}>Xóa</Button>
                                 </TableCell>
                             </TableRow>
                         ))
