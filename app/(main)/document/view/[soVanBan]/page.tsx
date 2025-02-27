@@ -1,3 +1,4 @@
+import { IconExcel, IconPdf, IconWord } from "@/components/ui/file-icon";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
@@ -29,7 +30,10 @@ const viewVanBan = async ({
         },
         include: {
             file: true,
-            donVi: true
+            donVi: true,
+            linhVuc: true,
+            capBanHanh: true,
+            loaiVanBan: true
         }
     });
     // console.log(vanBan);
@@ -39,16 +43,17 @@ const viewVanBan = async ({
         return <div>Không tìm thấy văn bản</div>
     }
 
-    //Kiểm tra nếu người dùng không có quyền xem văn bản
-    if (profile?.maDonVi !== vanBan.maDonVi && vanBan.phamVi === 'NOIBO') {
+    const QUANLY_KHOA = profile?.vaiTro === 'QUANLY' && profile?.maDonVi === vanBan?.maDonVi;
+
+    const canView = profile?.vaiTro === 'QUANTRIVIEN' || QUANLY_KHOA;
+
+    if (!canView && profile?.maDonVi !== vanBan.maDonVi && vanBan.phamVi === 'NOIBO') {
         return <div>Bạn không có quyền xem văn bản này</div>
     }
 
     return (
         <div>
-            <p>Chi tiết văn bản</p>
-            <p>{vanBan?.tenTaiLieu}</p>
-            Làm tiếp phần hiển thị chi tiết văn bản và các chức năng khác
+            <p className="text-2xl">Chi tiết văn bản</p>
             <div>
                 <div className="w-full mx-auto bg-white shadow-lg rounded-lg p-6 space-y-4">
                     <h2 className="text-xl font-bold text-gray-800">Thông Tin Văn Bản</h2>
@@ -56,6 +61,26 @@ const viewVanBan = async ({
                         <div>
                             <p className="text-gray-600">Mã:</p>
                             <p className="font-semibold">{vanBan.ma}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-600">Tên văn bản</p>
+                            <p className="font-semibold">{vanBan.tenTaiLieu}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-600">Khoa:</p>
+                            <p className="font-semibold">{vanBan.donVi.tenDonVi}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-600">Lĩnh vực:</p>
+                            <p className="font-semibold">{vanBan.linhVuc.tenLinhVuc}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-600">Loại văn bản</p>
+                            <p className="font-semibold">{vanBan.capBanHanh.tenCap}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-600">Cấp ban hành</p>
+                            <p className="font-semibold">{vanBan.capBanHanh.tenCap}</p>
                         </div>
                         <div>
                             <p className="text-gray-600">Số Văn Bản:</p>
@@ -75,7 +100,9 @@ const viewVanBan = async ({
                         </div>
                         <div>
                             <p className="text-gray-600">Phạm Vi:</p>
-                            <p className="font-semibold">{vanBan.phamVi}</p>
+                            <p className="font-semibold">{
+                                vanBan.phamVi === 'NOIBO' ? 'Nội Bộ' : 'Công Khai'
+                            }</p>
                         </div>
                         <div>
                             <p className="text-gray-600">Ngày Ban Hành:</p>
@@ -86,24 +113,40 @@ const viewVanBan = async ({
                         <div className="mt-4">
                             <h3 className="text-lg font-bold">Tệp Đính Kèm</h3>
                             {vanBan.file.map((file, index) => (
-                                <div key={index} className="mt-2">
+                                <div key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md">
+                                    <p className="text-gray-600 w-[50px]">Tệp {index + 1}:</p>
                                     <a
-                                        href={file.filePDF ?? ''}
+                                        href={file.filePDF ?? undefined}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-600 hover:underline"
+                                        className="text-blue-600 hover:underline w-1/2"
                                     >
-                                        {file.filePDF?.split("/").pop() || "No PDF file"}
+                                        <div className="flex items-center space-x-2">
+                                            <span><IconPdf /></span>
+                                            <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
+                                        </div>
+                                    </a>
+
+                                    <a
+                                        href={file.fileGoc ?? undefined}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline w-1/2"
+                                    >
+                                        <div className="flex items-center space-x-2">
+                                            {(() => {
+                                                const fileExtension = file.fileGoc?.split(".").pop();
+                                                if (fileExtension === "docx" || fileExtension === "doc") {
+                                                    return <span className="text-green-500"><IconWord /></span>
+                                                }
+                                                if (fileExtension === "xls" || fileExtension === "xlsx") {
+                                                    return <span className="text-green-500"><IconExcel /></span>
+                                                }
+                                            })()}
+                                            <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
+                                        </div>
                                     </a>
                                     <br />
-                                    <a
-                                        href={file.fileGoc ?? ''}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 hover:underline"
-                                    >
-                                        {file.fileGoc?.split("/").pop() || "No original file"}
-                                    </a>
                                 </div>
                             ))}
                         </div>
