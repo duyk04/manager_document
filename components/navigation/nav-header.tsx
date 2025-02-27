@@ -36,8 +36,7 @@ export const NavHeader = () => {
     const pathParts = locationPath.split("/").filter((part) => part !== "");
     return (
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
-                            fixed top-0 bg-white shadow-sm eborder-b border-gray-200 w-full
-        ">
+                            fixed top-0 bg-white shadow-sm border-b border-gray-200 w-full z-10">
             <div className="flex items-center gap-2 px-4 ">
                 <SidebarTrigger className="-ml-1" />
                 <Separator orientation="vertical" className="mr-2 h-4" />

@@ -138,7 +138,7 @@ const navMain = [
 		items: [
 			{
 				title: "Danh sách",
-				url: "#",
+				url: "/proofDocuments",
 			},
 			{
 				title: "Thêm mới",
