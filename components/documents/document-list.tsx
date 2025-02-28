@@ -136,11 +136,11 @@ export const ViewDocumentModal = () => {
                 </div>
                 {/* tính năng lọc tìm kiếm */}
                 <div className="flex gap-4 my-4">
-                    <Combobox options={donViOptions} label="Lọc theo khoa..." onChange={(value) => { setSelectedDonVi(value); setCurrentPage(1); }} />
-                    <Combobox options={capBanHanhOptions} label="Lọc theo cấp ban hành..." onChange={setSelectedCapBanHanh} />
-                    <Combobox options={linhVucOptions} label="Lọc theo lĩnh vực..." onChange={setSelectedLinhVuc} />
-                    <Combobox options={loaiVanBanOptions} label="Lọc theo loại văn bản..." onChange={setSelectedLoaiVanBan} />
-                    <Combobox options={sortDateOptions} label="Ngày ban hành..." onChange={setSelectedSortDate} />
+                    <Combobox options={donViOptions} label="Khoa" onChange={(value) => { setSelectedDonVi(value); setCurrentPage(1); }} />
+                    <Combobox options={capBanHanhOptions} label="Cấp ban hành" onChange={setSelectedCapBanHanh} />
+                    <Combobox options={linhVucOptions} label="Lĩnh vực" onChange={setSelectedLinhVuc} />
+                    <Combobox options={loaiVanBanOptions} label="Loại văn bản" onChange={setSelectedLoaiVanBan} />
+                    <Combobox options={sortDateOptions} label="Ngày ban hành." onChange={setSelectedSortDate} />
                 </div>
             </div>
             <Table className="w-full text-center items-center">
