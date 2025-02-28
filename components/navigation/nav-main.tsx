@@ -142,12 +142,8 @@ const navMain = [
 			},
 			{
 				title: "Thêm mới",
-				url: "#",
-			},
-			{
-				title: "Quantum",
-				url: "#",
-			},
+				url: "/proofDocuments/create",
+			}
 		],
 	},
 	{
