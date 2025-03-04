@@ -34,6 +34,10 @@ Deployment: Docker / Kubernetes
 
 2️⃣ Cấu hình môi trường
 Tạo file .env và thiết lập kết nối database:
+DATABASE_URL=
+AUTH_SECRET=
+GOOGLE_OAUTH_CLIENT_ID=your_client_id
+GOOGLE_OAUTH_CLIENT_SECRET=your_client_secret
 
 
 (Đối với DB có thể thay đổi đường dẫn tùy chọn phụ thuộc vào môi trường MySQL trong máy mọi người)
