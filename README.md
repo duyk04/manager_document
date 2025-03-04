@@ -33,6 +33,7 @@ Deployment: Docker / Kubernetes
 - cd document_management
 
 2️⃣ Cấu hình môi trường
+Tạo file .env và thiết lập kết nối database:
 
 
 (Đối với DB có thể thay đổi đường dẫn tùy chọn phụ thuộc vào môi trường MySQL trong máy mọi người)
