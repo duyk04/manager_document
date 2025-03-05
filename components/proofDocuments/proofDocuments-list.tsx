@@ -1,8 +1,8 @@
 "use client";
 
 import axios from "axios";
-import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Paperclip, Search } from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -25,9 +25,17 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
+import { IconExcel, IconPdf, IconWord } from "../ui/file-icon";
+import Link from "next/link";
 
 export const ViewListProofDocument = () => {
     const router = useRouter();
@@ -100,7 +108,7 @@ export const ViewListProofDocument = () => {
             <div className="flex flex-row gap-4 justify-between">
                 <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
                     <Input
-                        placeholder="Nhập tên hoặc mô tả văn bản"
+                        placeholder="Nhập mã hoặc tên minh chứng"
                         className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                     />
@@ -119,7 +127,7 @@ export const ViewListProofDocument = () => {
                 <TableCaption>Danh sách văn bản</TableCaption>
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
-                        <TableHead>STT</TableHead>
+                        <TableHead className="text-center">STT</TableHead>
                         <TableHead className="font-semibold">Mã minh chứng</TableHead>
                         <TableHead className="font-semibold">Tên minh chứng</TableHead>
                         <TableHead className="font-semibold">Tiêu chí</TableHead>
@@ -136,21 +144,82 @@ export const ViewListProofDocument = () => {
                         </TableRow>
                     ) : (
                         documents.map((EvaluationCriterias, index) => (
-                            <TableRow key={index}>
-                                <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
-                                <TableCell className="text-start">{EvaluationCriterias.maMinhChung}</TableCell>
-                                <TableCell className="text-start">{EvaluationCriterias.tenMinhChung}</TableCell>
-                                <TableCell className="text-start">{EvaluationCriterias.tieuChi.maTieuChi} - {EvaluationCriterias.tieuChi.tenTieuChi}</TableCell>
-                                <TableCell className="text-start">{EvaluationCriterias.moTa || "N/A"}</TableCell>
-                                <TableCell className="text-start">{EvaluationCriterias.namDanhGia}</TableCell>
-                                <TableCell className="text-start">{new Date(EvaluationCriterias.ngayTao).toLocaleDateString()}</TableCell>
+                            <Fragment key={index}>
+                                {/* Dòng chính */}
+                                <TableRow>
+                                    <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
+                                    <TableCell className="text-start">{EvaluationCriterias.maMinhChung}</TableCell>
+                                    <TableCell className="text-start">{EvaluationCriterias.tenMinhChung}</TableCell>
+                                    <TableCell className="text-start">{EvaluationCriterias.tieuChi.maTieuChi} - {EvaluationCriterias.tieuChi.tenTieuChi}</TableCell>
+                                    <TableCell className="text-start">{EvaluationCriterias.moTa || "N/A"}</TableCell>
+                                    <TableCell className="text-start">{EvaluationCriterias.namDanhGia}</TableCell>
+                                    <TableCell className="text-start">{new Date(EvaluationCriterias.ngayTao).toLocaleDateString()}</TableCell>
+                                    <TableCell className="flex gap-4">
+                                        <Button variant="primary" onClick={() => { }}>Sửa</Button>
+                                        <Button variant="success" onClick={() => { }}>Xem</Button>
+                                        <Button variant="destructive" onClick={() => { }}>Xóa</Button>
+                                    </TableCell>
+                                </TableRow>
 
-                                <TableCell className="flex gap-4">
-                                    <Button variant={"primary"} onClick={() => { }}>Sửa</Button>
-                                    <Button variant={"success"} onClick={() => { }}>Xem</Button>
-                                    <Button variant={"destructive"} onClick={() => { }}>Xóa</Button>
-                                </TableCell>
-                            </TableRow>
+                                {/* Dòng bổ sung */}
+                                <TableRow className="bg-gray-100">
+                                    <TableCell colSpan={1} className="p-4 bg-white"></TableCell>
+                                    <TableCell colSpan={7} className="p-4">
+                                        <div className="flex items-center">
+                                            <Paperclip className="w-4 h-4 me-2" /> <span>Văn bản đính kèm</span>
+                                        </div> 
+                                        {EvaluationCriterias.taiLieu.map((item: any, index: number) => (
+                                            <Accordion key={index} type="single" collapsible className="w-full ps-6">
+                                                <AccordionItem value="item-1">
+                                                    <AccordionTrigger>
+                                                        <Link href={`/document/view/${item.taiLieu.soVanBan}`} passHref>{item.taiLieu.tenTaiLieu} - {item.taiLieu.soVanBan} </Link>
+                                                    </AccordionTrigger>
+                                                    <AccordionContent>
+                                                        {item.taiLieu.file.map((file: any, index: number) => (
+                                                            <div key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md">
+                                                                <p className="text-gray-600 w-[50px]">Tệp {index + 1}:</p>
+                                                                <a
+                                                                    href={file.filePDF ?? undefined}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-blue-600 hover:underline w-1/2"
+                                                                >
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <span><IconPdf /></span>
+                                                                        <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
+                                                                    </div>
+                                                                </a>
+
+                                                                <a
+                                                                    href={file.fileGoc ?? undefined}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-blue-600 hover:underline w-1/2"
+                                                                >
+                                                                    <div className="flex items-center space-x-2">
+                                                                        {(() => {
+                                                                            const fileExtension = file.fileGoc?.split(".").pop();
+                                                                            if (fileExtension === "docx" || fileExtension === "doc") {
+                                                                                return <span className="text-green-500"><IconWord /></span>
+                                                                            }
+                                                                            if (fileExtension === "xls" || fileExtension === "xlsx") {
+                                                                                return <span className="text-green-500"><IconExcel /></span>
+                                                                            }
+                                                                        })()}
+                                                                        <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
+                                                                    </div>
+                                                                </a>
+                                                                <br />
+                                                            </div>
+                                                        ))}
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            </Accordion>
+                                        ))}
+
+                                    </TableCell>
+                                </TableRow>
+                            </Fragment>
                         ))
                     )}
                 </TableBody>
