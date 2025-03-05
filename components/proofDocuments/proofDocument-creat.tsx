@@ -51,6 +51,7 @@ const formSchema = z.object({
     tieuChi: z.number().int().positive(),
     tenMinhChung: z.string().nonempty(),
     maMinhChung: z.string().nonempty(),
+    namDanhGia: z.number().int().min(1900, { message: "Năm đánh giá không hợp lệ" }),
     moTa: z.string().nonempty(),
     danhSachTaiLieu: z.array(z.object({})),
 });
@@ -81,6 +82,7 @@ export const CreateProofDocumentModal = () => {
             tieuChi: 0,
             tenMinhChung: "",
             maMinhChung: "",
+            namDanhGia: new Date().getFullYear(),
             moTa: "",
             danhSachTaiLieu: [] as string[],
         }
@@ -198,6 +200,12 @@ export const CreateProofDocumentModal = () => {
         { value: "newest", label: "Mới nhất" },
     ];
 
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 30 }, (_, i) => ({
+        value: (currentYear - i).toString(),
+        label: (currentYear - i).toString(),
+    }));
+
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
     };
@@ -305,6 +313,41 @@ export const CreateProofDocumentModal = () => {
                                                         placeholder="Nhập mã minh chứng"
                                                         {...field}
                                                     />
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="namDanhGia"
+                                            render={({ field }) => (
+                                                <FormItem className="row-start-2">
+                                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500
+                                        dark:text-secondary/70">
+                                                        Năm đánh giá
+                                                    </FormLabel>
+                                                    <Select
+                                                        defaultValue={field.value.toString()}
+                                                        onValueChange={(value) => {
+                                                            field.onChange(Number(value));
+                                                        }}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger
+                                                                className="bg-zinc-300/50 border-0 "
+                                                            >
+                                                                <SelectValue placeholder="Năm đánh giá" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {years.map((item) => (
+                                                                <SelectItem key={item.value} value={item.value}>
+                                                                    {item.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+
+                                                    </Select>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}

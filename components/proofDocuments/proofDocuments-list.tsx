@@ -140,7 +140,7 @@ export const ViewListProofDocument = () => {
                                 <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.maMinhChung}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.tenMinhChung}</TableCell>
-                                <TableCell className="text-start">{EvaluationCriterias.tieuChi.tenTieuChi}</TableCell>
+                                <TableCell className="text-start">{EvaluationCriterias.tieuChi.maTieuChi} - {EvaluationCriterias.tieuChi.tenTieuChi}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.moTa || "N/A"}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.namDanhGia}</TableCell>
                                 <TableCell className="text-start">{new Date(EvaluationCriterias.ngayTao).toLocaleDateString()}</TableCell>

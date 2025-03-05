@@ -93,6 +93,7 @@ export async function GET(req: Request) {
                 tieuChi: {
                     select: {
                         ma: true,
+                        maTieuChi: true,
                         tenTieuChi: true,
                     }
                 },
