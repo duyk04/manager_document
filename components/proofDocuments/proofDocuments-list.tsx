@@ -28,8 +28,6 @@ import {
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
-import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 
 export const ViewListProofDocument = () => {
     const router = useRouter();
@@ -39,17 +37,13 @@ export const ViewListProofDocument = () => {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    // const [donVi, setDonVi] = useState<{ ma: number; tenDonVi: string; moTa: string }[]>([]);
-    // const [capBanHanh, setCapBanHanh] = useState<{ ma: number; tenCap: string }[]>([]);
-    // const [linhVuc, setLinhVuc] = useState<{ ma: number; tenLinhVuc: string }[]>([]);
-    // const [loaiVanBan, setLoaiVanBan] = useState<{ ma: number; tenLoaiVanBan: string }[]>([]);
+
+    const [tieuChi, setTieuChi] = useState<{ ma: number; maTieuChi: string; tenTieuChi: string }[]>([]);
 
     // Lưu trạng thái bộ lọc
-    const [selectedDonVi, setSelectedDonVi] = useState<string | null>(null);
-    const [selectedCapBanHanh, setSelectedCapBanHanh] = useState<string | null>(null);
-    const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
-    const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
+    const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
+    const [selectedTieuChi, setSelectedTieuChi] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -58,19 +52,14 @@ export const ViewListProofDocument = () => {
                     params: {
                         page: currentPage,
                         keyword: search,
-                        donVi: selectedDonVi,
-                        capBanHanh: selectedCapBanHanh,
-                        linhVuc: selectedLinhVuc,
-                        loaiVanBan: selectedLoaiVanBan,
+                        tieuChi: selectedTieuChi,
+                        namDanhGia: selectedNamDanhGia,
                         sort: selectedSortDate,
                     },
                 });
                 setDocuments(response.data.listEvaluationCriterias);
-                // setDonVi(response.data.categories.donVi);
-                // setCapBanHanh(response.data.categories.capBanHanh);
-                // setLinhVuc(response.data.categories.linhVuc);
-                // setLoaiVanBan(response.data.categories.loaiVanBan);
                 setTotalPages(response.data.pagination.totalPages);
+                setTieuChi(response.data.categories.tieuChi);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
             }
@@ -78,7 +67,7 @@ export const ViewListProofDocument = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate]);
+    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -88,33 +77,18 @@ export const ViewListProofDocument = () => {
         router.push(`/document/edit/${soVanBan}`);
     };
 
-    // const donViOptions = [
-    //     ...donVi.map((item) => ({
-    //         value: item.ma.toString(),
-    //         label: item.tenDonVi,
-    //     })),
-    // ];
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 30 }, (_, i) => ({
+        value: (currentYear - i).toString(),
+        label: (currentYear - i).toString(),
+    }));
 
-    // const capBanHanhOptions = [
-    //     ...capBanHanh.map((item) => ({
-    //         value: item.ma.toString(),
-    //         label: item.tenCap,
-    //     })),
-    // ]
-
-    // const linhVucOptions = [
-    //     ...linhVuc.map((item) => ({
-    //         value: item.ma.toString(),
-    //         label: item.tenLinhVuc,
-    //     })),
-    // ]
-
-    // const loaiVanBanOptions = [
-    //     ...loaiVanBan.map((item) => ({
-    //         value: item.ma.toString(),
-    //         label: item.tenLoaiVanBan,
-    //     })),
-    // ]
+    const tieuChiOptions = [
+        ...tieuChi.map((item) => ({
+            value: item.ma.toString(),
+            label: item.tenTieuChi,
+        })),
+    ]
 
     const sortDateOptions = [
         { value: "oldest", label: "Cũ nhất" },
@@ -136,10 +110,8 @@ export const ViewListProofDocument = () => {
                 </div>
                 {/* tính năng lọc tìm kiếm */}
                 <div className="flex gap-4 my-4">
-                    {/* <Combobox options={donViOptions} label="Lọc theo khoa..." onChange={(value) => { setSelectedDonVi(value); setCurrentPage(1); }} />
-                    <Combobox options={capBanHanhOptions} label="Lọc theo cấp ban hành..." onChange={setSelectedCapBanHanh} />
-                    <Combobox options={linhVucOptions} label="Lọc theo lĩnh vực..." onChange={setSelectedLinhVuc} />
-                    <Combobox options={loaiVanBanOptions} label="Lọc theo loại văn bản..." onChange={setSelectedLoaiVanBan} /> */}
+                    <Combobox options={tieuChiOptions} label="Tiêu chí" onChange={setSelectedTieuChi} />
+                    <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
                     <Combobox options={sortDateOptions} label="Ngày ban hành..." onChange={setSelectedSortDate} />
                 </div>
             </div>
@@ -150,7 +122,9 @@ export const ViewListProofDocument = () => {
                         <TableHead>STT</TableHead>
                         <TableHead className="font-semibold">Mã minh chứng</TableHead>
                         <TableHead className="font-semibold">Tên minh chứng</TableHead>
+                        <TableHead className="font-semibold">Tiêu chí</TableHead>
                         <TableHead className="font-semibold">Mô tả</TableHead>
+                        <TableHead className="font-semibold">Năm đánh giá</TableHead>
                         <TableHead className="font-semibold">Ngày tạo</TableHead>
                         <TableHead className="font-semibold">Thao tác</TableHead>
                     </TableRow>
@@ -166,13 +140,15 @@ export const ViewListProofDocument = () => {
                                 <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.maMinhChung}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.tenMinhChung}</TableCell>
+                                <TableCell className="text-start">{EvaluationCriterias.tieuChi.tenTieuChi}</TableCell>
                                 <TableCell className="text-start">{EvaluationCriterias.moTa || "N/A"}</TableCell>
+                                <TableCell className="text-start">{EvaluationCriterias.namDanhGia}</TableCell>
                                 <TableCell className="text-start">{new Date(EvaluationCriterias.ngayTao).toLocaleDateString()}</TableCell>
-                           
+
                                 <TableCell className="flex gap-4">
-                                    <Button variant={"primary"} onClick={() => {}}>Sửa</Button>
-                                    <Button variant={"success"} onClick={() => {}}>Xem</Button>
-                                    <Button variant={"destructive"} onClick={() => {}}>Xóa</Button>
+                                    <Button variant={"primary"} onClick={() => { }}>Sửa</Button>
+                                    <Button variant={"success"} onClick={() => { }}>Xem</Button>
+                                    <Button variant={"destructive"} onClick={() => { }}>Xóa</Button>
                                 </TableCell>
                             </TableRow>
                         ))

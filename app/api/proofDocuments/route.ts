@@ -18,6 +18,7 @@ export async function POST(
             tenMinhChung,
             maMinhChung,
             moTa,
+            namDanhGia,
             danhSachTaiLieu
         } = await req.json();
 
@@ -28,10 +29,11 @@ export async function POST(
                 tenMinhChung: tenMinhChung,
                 moTa: moTa,
                 maTieuChi: tieuChi,
+                namDanhGia: namDanhGia,
                 taiLieu: {
                     createMany: {
                         data: danhSachTaiLieu.map((taiLieu: { ma: string }) => ({
-                            maTaiLieu: taiLieu.ma 
+                            maTaiLieu: taiLieu.ma
                         }))
                     }
                 }
@@ -53,17 +55,41 @@ export async function GET(req: Request) {
         }
 
         const { searchParams } = new URL(req.url);
+        const keyword = searchParams.get("keyword")?.trim() || "";
         const page = parseInt(searchParams.get("page") || "1", 10);
+        const namDanhGiaFilter = parseInt(searchParams.get("namDanhGia") || "0", 0) || null;
+        const tieuChiFilter = parseInt(searchParams.get("tieuChi") || "0", 0) || null;
         const pageSize = 10
         const skip = (page - 1) * pageSize;
 
+        let whereCondition: any = {
+            AND: []
+        };
+
+        if (keyword) {
+            whereCondition.AND.push({
+                OR: [
+                    { maMinhChung: { contains: keyword } },
+                    { tenMinhChung: { contains: keyword } }
+                ]
+            });
+        }
+
+        if (tieuChiFilter) {
+            whereCondition.AND.push({
+                maTieuChi: tieuChiFilter
+            });
+        }
+
+        if (namDanhGiaFilter) {
+            whereCondition.AND.push({
+                namDanhGia: namDanhGiaFilter
+            });
+        }
+
         const listEvaluationCriteria = await db.minhChung.findMany({
-            select: {
-                ma: true,
-                maMinhChung: true,
-                tenMinhChung: true,
-                moTa: true,
-                ngayTao: true,
+            where: whereCondition,
+            include: {
                 tieuChi: {
                     select: {
                         ma: true,
@@ -90,6 +116,16 @@ export async function GET(req: Request) {
         const totalRecords = await db.minhChung.count();
         const totalPages = Math.ceil(totalRecords / pageSize);
 
+        const categories = await db.$transaction([
+            db.tieuChi.findMany({
+                select: {
+                    ma: true,
+                    maTieuChi: true,
+                    tenTieuChi: true
+                }
+            }),
+        ]);
+
         return NextResponse.json({
             listEvaluationCriterias: listEvaluationCriteria,
             pagination: {
@@ -98,6 +134,9 @@ export async function GET(req: Request) {
                 currentPage: page,
                 pageSize
             },
+            categories: {
+                tieuChi: categories[0]
+            }
         });
 
     } catch (error) {
