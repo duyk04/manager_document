@@ -56,11 +56,11 @@ const navMain = [
 		items: [
 			{
 				title: "Danh sách",
-				url: "#",
+				url: "/CTDT/view",
 			},
 			{
 				title: "Thêm mới",
-				url: "#",
+				url: "/CTDT/create",
 			},
 			{
 				title: "Quantum",
@@ -69,17 +69,17 @@ const navMain = [
 		],
 	},
 	{
-		title: "Đánh giá cơ sở đào tạo",
+		title: "Quản lý tiêu chí",
 		url: "#",
 		icon: University,
 		items: [
 			{
 				title: "Danh sách",
-				url: "#",
+				url: "/tieuchi/view",
 			},
 			{
 				title: "Thêm mới",
-				url: "#",
+				url: "/tieuchi/create",
 			},
 			{
 				title: "Quantum",
@@ -119,11 +119,11 @@ const navMain = [
 		items: [
 			{
 				title: "Danh sách",
-				url: "/document/view",
+				url: "/tieuchuan/view",
 			},
 			{
 				title: "Thêm mới",
-				url: "/document",
+				url: "/tieuchuan/create",
 			},
 			{
 				title: "Settings",
