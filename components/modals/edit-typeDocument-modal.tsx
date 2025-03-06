@@ -59,9 +59,9 @@ export const EditTypeDocumentModal = () => {
             form.setValue("ma", ma);
             form.setValue("tenLoaiVanBan", tenLoaiVanBan);
             form.setValue("moTa", moTa);
-         
+
         }
-    }, [form, ma]);
+    }, [form, ma, moTa, tenLoaiVanBan]);
 
     const isLoading = form.formState.isSubmitting;
 

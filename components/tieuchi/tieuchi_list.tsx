@@ -39,7 +39,7 @@ export const ViewListTieuChi = () => {
     const [tieuChuan, setTieuChuan] = useState<{ ma: number; maTieuChuan: string; tenTieuChuan: string }[]>([]);
 
     // Lưu trạng thái bộ lọc
-    const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
+    // const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
     const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);
     const [selectedTieuChuan, setSelectedTieuChuan] = useState<string | null>(null);
 
@@ -52,7 +52,7 @@ export const ViewListTieuChi = () => {
                         keyword: search,
                         tieuChuan: selectedTieuChuan,
                         namDanhGia: selectedNamDanhGia,
-                        sort: selectedSortDate,
+                        // sort: selectedSortDate,
                     },
                 });
                 setListTieuChi(response.data.listTieuChi);
@@ -65,15 +65,7 @@ export const ViewListTieuChi = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChuan ]);
-
-    const onClickView = (soVanBan: string) => {
-        router.push(`/document/view/${soVanBan}`);
-    };
-
-    const onClickEdit = (soVanBan: string) => {
-        router.push(`/document/edit/${soVanBan}`);
-    };
+    }, [search, currentPage, selectedNamDanhGia, selectedTieuChuan ]);
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({

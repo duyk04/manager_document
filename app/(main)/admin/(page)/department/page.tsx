@@ -1,9 +1,9 @@
 import { ListDepartment } from "@/components/manage-departments/department-list";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { RoleType, VaiTro } from "@prisma/client";
+import { VaiTro } from "@prisma/client";
 
-export const DeparmentPage = async () => {
+const DepartmentPage = async () => {
     const profile = await currentProfile();
 
     if (!profile) {
@@ -19,7 +19,7 @@ export const DeparmentPage = async () => {
             ma: true,
             tenDonVi: true,
             moTa: true,
- 
+
         },
     });
 
@@ -36,4 +36,4 @@ export const DeparmentPage = async () => {
     )
 }
 
-export default DeparmentPage;
+export default DepartmentPage;

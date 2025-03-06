@@ -3,7 +3,8 @@
  * @type {string[]}
  */
 export const publicRouters = [
-    "/"
+    "/",
+    // "/api/proofDocuments"
 ]
 
 /**
@@ -27,4 +28,4 @@ export const apiAuthPrefix = "/api/auth"
  * Đường dẫn mặc định sau khi đăng nhập
  * @type {string}
  */
-export const DEAFAULT_LOGIN_REDIRECT = "/"
+export const DEFAULT_LOGIN_REDIRECT = "/"

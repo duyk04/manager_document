@@ -1,7 +1,8 @@
 // next-auth.d.ts
-import NextAuth from "next-auth";
+import NextAuth from "@/node_modules/next-auth";
 
-declare module "next-auth" {
+
+declare module "@/node_modules/next-auth" {
     interface User {
         ma: string;
         vaiTro: string;
@@ -13,23 +14,31 @@ declare module "next-auth" {
 
     interface Session {
         user: {
-            id: string;
+            ma: string;
+            vaiTro: string;
             email: string;
-            name: string;
-            role: string;
-            department?: string;
-            avatar?: string;
-            status: boolean;
+            maDonVi?: string;
+            hoTen: string;
+            anhDaiDien?: string;
+            trangThai: boolean;
         };
     }
 
     interface JWT {
-        id: string;
+        // id: string;
+        // email: string;
+        // name: string;
+        // department?: string;
+        // role: string;
+        // avatar?: string;
+        // status: boolean;
+        ma: string;
+        vaiTro: string;
         email: string;
-        name: string;
-        department?: string;
-        role: string;
-        avatar?: string;
-        status: boolean;
+        maDonVi?: string;
+        hoTen: string;
+        anhDaiDien?: string;
+        trangThai: boolean;
     }
+
 }

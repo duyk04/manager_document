@@ -25,7 +25,7 @@ export async function PATCH(
             vaiTro,
         } = await req.json();
 
-        console.log(ma, donVi, hoTen, email, vaiTro);
+        // console.log(ma, donVi, hoTen, email, vaiTro);
 
         const maDonVi = typeof donVi === 'string' ? Number(donVi) : donVi;
 

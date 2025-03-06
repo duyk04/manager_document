@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/pagination"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
-import { set } from "date-fns";
 
 export const ViewListTieuChuan = () => {
     const router = useRouter();
@@ -41,7 +40,6 @@ export const ViewListTieuChuan = () => {
     const [CTDT, setCTDT] = useState<{ ma: number; maCTDT: number; tenCTDT: string }[]>([]);
 
     // Lưu trạng thái bộ lọc
-    const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
     const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);
     const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
     const [selectedCTDT, setSelectedCTDT] = useState<string | null>(null);
@@ -56,7 +54,7 @@ export const ViewListTieuChuan = () => {
                         linhVuc: selectedLinhVuc,
                         CTDT: selectedCTDT,
                         namDanhGia: selectedNamDanhGia,
-                        sort: selectedSortDate,
+                    
                     },
                 });
                 setListTieuChuan(response.data.listTieuChuan);
@@ -70,15 +68,7 @@ export const ViewListTieuChuan = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedLinhVuc, selectedCTDT]);
-
-    const onClickView = (soVanBan: string) => {
-        router.push(`/document/view/${soVanBan}`);
-    };
-
-    const onClickEdit = (soVanBan: string) => {
-        router.push(`/document/edit/${soVanBan}`);
-    };
+    }, [search, currentPage, selectedNamDanhGia, selectedLinhVuc, selectedCTDT]);
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -99,11 +89,6 @@ export const ViewListTieuChuan = () => {
             label: item.tenCTDT,
         })),
     ]
-
-    const sortDateOptions = [
-        { value: "oldest", label: "Cũ nhất" },
-        { value: "newest", label: "Mới nhất" },
-    ];
 
     return (
         <div className="w-full rounded-lg shadow-sm">

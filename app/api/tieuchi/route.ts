@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -54,7 +55,7 @@ export async function POST(
         return NextResponse.json(tieuChi, { status: 200 });
 
     } catch (error) {
-        // console.error("CTDT", error);
+        console.error("TIEUCHI_POST", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
@@ -78,12 +79,14 @@ export async function GET(
         const pageSize = 10
         const skip = (page - 1) * pageSize;
 
-        let whereCondition: any = {
+        const whereCondition: Prisma.TieuChiWhereInput = {
             AND: []
         };
 
+        const andConditions = whereCondition.AND as Prisma.TieuChiWhereInput[];
+
         if (keyword) {
-            whereCondition.AND.push({
+            andConditions.push({
                 OR: [
                     { maTieuChi: { contains: keyword } },
                     { tenTieuChi: { contains: keyword } }
@@ -92,13 +95,13 @@ export async function GET(
         }
 
         if (tieuChuanFilter) {
-            whereCondition.AND.push({
+            andConditions.push({
                 maTieuChuan: tieuChuanFilter
             });
         }
 
         if (namDanhGiaFiler) {
-            whereCondition.AND.push({
+            andConditions.push({
                 namDanhGia: namDanhGiaFiler
             });
         }
@@ -148,7 +151,7 @@ export async function GET(
         });
 
     } catch (error) {
-        // console.error("CTDT_GET", error);
+        console.error("TIEUCHI_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

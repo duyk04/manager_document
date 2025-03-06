@@ -50,7 +50,7 @@ export async function POST(
 }
 
 export async function GET(
-    req: Request,
+    // req: Request,
 ) {
     try {
         const profile = await currentProfile();

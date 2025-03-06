@@ -1,7 +1,8 @@
 import { create } from "zustand";
 
-export type ModalType = "createDepartment" | "editDepartment" | "deleteDepartment" | "createAccount" | "editAccount"| "createFieldDocument" | "editFieldDocument" | "deleteFieldDocument"|
- "createTypeDocument" | "editTypeDocument" | "deleteTypeDocument" | "createReleaseLevel" | "editReleaseLevel" | "deleteReleaseLevel" | "editDocument" | "deleteDocument";
+export type ModalType = "createDepartment" | "editDepartment" | "deleteDepartment" | "createAccount" | "editAccount" | "createFieldDocument" | "editFieldDocument" | "deleteFieldDocument" |
+    "createTypeDocument" | "editTypeDocument" | "deleteTypeDocument" | "createReleaseLevel" | "editReleaseLevel" | "deleteReleaseLevel" |
+    "editDocument" | "deleteDocument" | "editCTDT" | "deleteCTDT";
 
 interface ModalStore {
     type: ModalType | null;

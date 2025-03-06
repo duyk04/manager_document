@@ -1,7 +1,3 @@
-import { AppSidebar } from "@/components/admin/app-sidebar";
-import { Separator } from "@/components/ui/separator";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-
 const MainLayout = async ({
     children
 }: { children: React.ReactNode }) => {

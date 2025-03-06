@@ -7,7 +7,7 @@ export const getUserByEmail = async (email: string) => {
                 email,
             },
         })
-        return user || null;
+        return user;
     } catch (error) {
         return { error: "Có lỗi xảy ra, vui lòng thử lại sau!" };
     }

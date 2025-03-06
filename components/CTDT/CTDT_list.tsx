@@ -27,9 +27,12 @@ import {
 } from "@/components/ui/pagination"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
+import { useModal } from "@/hooks/use-modal-store";
+import { set } from "date-fns";
 
 export const ViewListCTDT = () => {
     const router = useRouter();
+    const { onOpen, onClose, isOpen } = useModal();
 
     const [listCTDT, setListCTDT] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -38,7 +41,7 @@ export const ViewListCTDT = () => {
     // Lưu trạng thái bộ lọc
 
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
-    const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);
+    const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);;
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -60,7 +63,7 @@ export const ViewListCTDT = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia]);
+    }, [search, currentPage, selectedSortDate, selectedNamDanhGia,isOpen]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -125,11 +128,11 @@ export const ViewListCTDT = () => {
                                 <TableCell className="text-start">{CTDT.tenCTDT}</TableCell>
                                 <TableCell className="text-start">{CTDT.moTa || "N/A"}</TableCell>
                                 <TableCell className="text-start">{CTDT.namDanhGia}</TableCell>
-                           
+
                                 <TableCell className="flex gap-4">
-                                    <Button variant={"primary"} onClick={() => {}}>Sửa</Button>
-                                    <Button variant={"success"} onClick={() => {}}>Xem</Button>
-                                    <Button variant={"destructive"} onClick={() => {}}>Xóa</Button>
+                                    <Button variant={"primary"} onClick={() =>  onOpen("editCTDT", CTDT)}>Sửa</Button>
+                                    <Button variant={"success"} onClick={() => { }}>Xem</Button>
+                                    <Button variant={"destructive"} onClick={() => onOpen("deleteCTDT", CTDT)}>Xóa</Button>
                                 </TableCell>
                             </TableRow>
                         ))

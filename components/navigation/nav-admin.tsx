@@ -27,8 +27,6 @@ import {
 
 import {
 	Frame,
-	Map,
-	PieChart,
 	ChevronRight,
 	Folder,
 	Forward,
@@ -41,20 +39,10 @@ import {
 
 const projects = [
 	{
-		name: "Quản lý tài khoản",
+		name: "Setting",
 		url: "#",
 		icon: Frame,
-	},
-	{
-		name: "Sales & Marketing",
-		url: "#",
-		icon: PieChart,
-	},
-	{
-		name: "Travel",
-		url: "#",
-		icon: Map,
-	},
+	}
 ]
 
 const navAdmin = [

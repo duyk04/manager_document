@@ -41,13 +41,13 @@ export async function POST(
 
         return NextResponse.json(deparment);
     } catch (error) {
-        // console.error("DOCUMENT_POST", error);
+        console.error("DOCUMENT_POST", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
 
 export async function GET(
-    req: Request,
+    // req: Request,
 ) {
     try {
         const profile = await currentProfile();
@@ -67,7 +67,7 @@ export async function GET(
 
         return NextResponse.json(deparments);
     } catch (error) {
-        // console.error("DOCUMENT_GET", error);
+        console.error("DEPARTMENT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
@@ -104,7 +104,7 @@ export async function PATCH(
 
         return NextResponse.json(deparment);
     } catch (error) {
-        // console.error("DOCUMENT_PATCH", error);
+        console.error("DEPARMENT_PATCH", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

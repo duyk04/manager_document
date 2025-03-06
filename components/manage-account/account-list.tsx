@@ -39,7 +39,7 @@ const roleMap = {
 export const ListAccount = ({
     listAccount
 }: ListAccountProps) => {
-    const { onOpen, data } = useModal();
+    const { onOpen } = useModal();
     return (
         <div>
             <Table>
