@@ -1,9 +1,7 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { TaiLieu } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from 'uuid';
-import { number } from "zod";
 
 export async function POST(
     req: Request,
@@ -243,13 +241,16 @@ export async function GET(req: Request) {
         const pageSize = 10
         const skip = (page - 1) * pageSize;
 
-        let whereCondition: any = {
+        const whereCondition: Prisma.TaiLieuWhereInput = {
             AND: []
         };
 
+        // Đảm bảo AND luôn là một mảng
+        const andConditions = whereCondition.AND as Prisma.TaiLieuWhereInput[];
+
         // Áp dụng bộ lọc keyword nếu có
         if (keyword) {
-            whereCondition.AND.push({
+            andConditions.push({
                 OR: [
                     { tenTaiLieu: { contains: keyword } },
                     { trichYeu: { contains: keyword } }
@@ -258,23 +259,24 @@ export async function GET(req: Request) {
         }
 
         if (donViFilter) {
-            whereCondition.AND.push({ maDonVi: donViFilter });
+            andConditions.push({ maDonVi: donViFilter });
         }
 
         if (capBanHanhFilter) {
-            whereCondition.AND.push({ maCapBanHanh: capBanHanhFilter });
+            andConditions.push({ maCapBanHanh: capBanHanhFilter });
         }
 
         if (linhVucFilter) {
-            whereCondition.AND.push({ maLinhVuc: linhVucFilter });
+            andConditions.push({ maLinhVuc: linhVucFilter });
         }
 
         if (loaiVanBanFilter) {
-            whereCondition.AND.push({ maLoaiVanBan: loaiVanBanFilter });
+            andConditions.push({ maLoaiVanBan: loaiVanBanFilter });
         }
 
+        // Xử lý quyền truy cập
         if (!canViewAll) {
-            whereCondition.AND.push({
+            andConditions.push({
                 OR: [
                     DonVi ? { maDonVi: DonVi } : {},
                     { phamVi: "CONGKHAI" }

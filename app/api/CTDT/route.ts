@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { stat } from "fs";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -51,7 +52,7 @@ export async function POST(
         return NextResponse.json(CTDT, { status: 200 });
 
     } catch (error) {
-        // console.error("CTDT", error);
+        console.error("CTDT", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
@@ -74,7 +75,12 @@ export async function GET(
         const pageSize = 10
         const skip = (page - 1) * pageSize;
 
-        let whereCondition: any = {
+        interface Condition {
+            OR?: Array<{ maCTDT?: { contains: string }; tenCTDT?: { contains: string } }>;
+            namDanhGia?: number;
+        }
+
+        const whereCondition: { AND: Condition[] } = {
             AND: []
         };
 
@@ -116,7 +122,100 @@ export async function GET(
         });
 
     } catch (error) {
-        // console.error("CTDT_GET", error);
+        console.error("CTDT_GET", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+export async function PATCH(
+    req: Request,
+) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const {
+            ma,
+            maCTDT,
+            tenCTDT,
+            moTa,
+            namDanhGia
+        } = await req.json();
+
+        const isQUANTRIVIEN = profile.vaiTro === "QUANTRIVIEN";
+
+        const isQUANLY = profile.vaiTro === "QUANLY";
+
+        const canEdit = isQUANTRIVIEN || isQUANLY;
+
+        if (!canEdit) {
+            return new NextResponse("Bạn không có quyền sửa", { status: 401 });
+        }
+
+        const maCTDTExist = await db.chuongTrinhDaoTao.findFirst({
+            where: {
+                maCTDT: maCTDT,
+            }
+        })
+
+        if (maCTDTExist && maCTDTExist.ma !== ma) {
+            return new NextResponse("Mã trình đào tạo đã được sử dụng!", { status: 400 });
+        }
+
+
+        const CTDT = await db.chuongTrinhDaoTao.update({
+            where: {
+                ma: ma,
+            },
+            data: {
+                maCTDT: maCTDT,
+                tenCTDT: tenCTDT,
+                moTa: moTa,
+                namDanhGia: namDanhGia
+            }
+        });
+
+        return NextResponse.json(CTDT);
+    } catch (error) {
+        console.error("DEPARMENT_PATCH", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+export async function DELETE(
+    req: Request,
+){
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const { ma } = await req.json();
+
+        const isQUANTRIVIEN = profile.vaiTro === "QUANTRIVIEN";
+
+        const isQUANLY = profile.vaiTro === "QUANLY";
+
+        const canDelete = isQUANTRIVIEN || isQUANLY;
+
+        if (!canDelete) {
+            return new NextResponse("Bạn không có quyền xóa", { status: 401 });
+        }
+
+        await db.chuongTrinhDaoTao.delete({
+            where: {
+                ma: ma
+            }
+        });
+
+        return new NextResponse("Xóa thành công", { status: 200 });
+    } catch (error) {
+        console.error("DEPARTMENT_DELETE", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

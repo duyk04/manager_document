@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 
@@ -62,12 +63,14 @@ export async function GET(req: Request) {
         const pageSize = 10
         const skip = (page - 1) * pageSize;
 
-        let whereCondition: any = {
+        const whereCondition: Prisma.MinhChungWhereInput = {
             AND: []
         };
 
+        const andConditions = whereCondition.AND as Prisma.MinhChungWhereInput[];
+
         if (keyword) {
-            whereCondition.AND.push({
+            andConditions.push({
                 OR: [
                     { maMinhChung: { contains: keyword } },
                     { tenMinhChung: { contains: keyword } }
@@ -76,13 +79,13 @@ export async function GET(req: Request) {
         }
 
         if (tieuChiFilter) {
-            whereCondition.AND.push({
+            andConditions.push({
                 maTieuChi: tieuChiFilter
             });
         }
 
         if (namDanhGiaFilter) {
-            whereCondition.AND.push({
+            andConditions.push({
                 namDanhGia: namDanhGiaFilter
             });
         }

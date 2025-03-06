@@ -65,7 +65,7 @@ export const EditDocumentModal = () => {
 
     const isModalOpen = isOpen && type === "editDocument";
 
-    const { id, updateUnitId, fieldId, textTypeId, textNumber, releaseLevelId, releaseDate, textName, describe, scope, documentFiles } = data;
+    const { id, updateUnitId, fieldId, textTypeId, textNumber, releaseLevelId, releaseDate, textName, describe, scope } = data;
 
     const [departments, setDepartments] = useState<Department[]>([]);
     const [fieldDocument, setFieldDocument] = useState<Field[]>([]);
@@ -91,12 +91,6 @@ export const EditDocumentModal = () => {
         };
         fetchData();
     }, [isModalOpen]);
-
-    // console.log(releaseDate)
-
-    const date = new Date("2025-01-12T00:00:00.000Z");
-    const formattedDate = date.toISOString().split('T')[0]; // Kết quả: "2025-01-12"
-    // console.log(formattedDate);
     
     const form = useForm({
         resolver: zodResolver(formSchema),

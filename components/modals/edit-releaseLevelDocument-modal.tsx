@@ -60,7 +60,7 @@ export const EditReleaseLevelDocumentModal = () => {
             form.setValue("tenCap", tenCap);
             form.setValue("moTa", moTa);
         }
-    }, [form, ma]);
+    }, [form, ma, moTa, tenCap]);
 
     const isLoading = form.formState.isSubmitting;
 

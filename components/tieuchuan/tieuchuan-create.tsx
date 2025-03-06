@@ -21,9 +21,7 @@ import { toast } from "@/hooks/use-toast";
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";

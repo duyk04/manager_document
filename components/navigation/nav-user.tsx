@@ -27,6 +27,7 @@ import {
 	SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { LogoutButton } from "../auth/logout-button";
+import Image from "next/image";
 
 interface UserProps {
 	profileUser: any
@@ -45,8 +46,21 @@ export const NavUser = ({
 							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
 							<Avatar className="h-8 w-8 rounded-lg">
-								<AvatarImage src={profileUser?.avatar} alt={profileUser?.hoTen} />
-								<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+								{/* <AvatarImage src={profileUser?.anhDaiDien} alt={profileUser?.hoTen} /> */}
+								{profileUser?.anhDaiDien ? (
+									<AvatarImage src={profileUser?.anhDaiDien} alt={profileUser?.hoTen}
+										className="rounded-full object-cover"
+									/>
+								) : (
+									<AvatarFallback className="rounded-lg">
+										{profileUser?.hoTen
+											?.split(" ") // Tách các từ trong tên thành mảng
+											.filter((word: string) => word.length > 0) // Lọc bỏ khoảng trắng thừa (nếu có)
+											.map((word: string, index: number, arr: string) => (index === 0 || index === arr.length - 1) ? word.charAt(0).toUpperCase() : "")
+											.join("")}
+									</AvatarFallback>
+
+								)}
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-semibold">{profileUser?.hoTen}</span>
@@ -63,8 +77,20 @@ export const NavUser = ({
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 								<Avatar className="h-8 w-8 rounded-lg">
-									<AvatarImage src={profileUser?.avatar} alt={profileUser?.hoTen} />
-									<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+									{profileUser?.anhDaiDien ? (
+										<AvatarImage src={profileUser?.anhDaiDien} alt={profileUser?.hoTen}
+											className="rounded-full object-cover"
+										/>
+									) : (
+										<AvatarFallback className="rounded-lg">
+											{profileUser?.hoTen
+												?.split(" ")
+												.filter((word: string) => word.length > 0)
+												.map((word: string, index: number, arr: string) => (index === 0 || index === arr.length - 1) ? word.charAt(0).toUpperCase() : "")
+												.join("")}
+										</AvatarFallback>
+
+									)}
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">{profileUser?.hoTen}</span>
@@ -97,7 +123,7 @@ export const NavUser = ({
 						<DropdownMenuSeparator />
 						<DropdownMenuItem>
 							<LogOut />
-							<LogoutButton/>
+							<LogoutButton />
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

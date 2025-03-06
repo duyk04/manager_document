@@ -1,4 +1,3 @@
-import { currentProfile } from "@/lib/current-profile";
 import { AppSidebar } from "@/components/navigation/app-sidebar"
 
 import {

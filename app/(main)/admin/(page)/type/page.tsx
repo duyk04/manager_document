@@ -1,9 +1,9 @@
 import { ListType } from "@/components/manage-type/type-list";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { RoleType, VaiTro } from "@prisma/client";
+import { VaiTro } from "@prisma/client";
 
-export const TypePage = async () => {
+const TypePage = async () => {
     const profile = await currentProfile();
 
     if (!profile) {

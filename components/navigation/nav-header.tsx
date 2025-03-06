@@ -4,8 +4,6 @@ import {
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -33,6 +31,7 @@ export const NavHeader = () => {
     const locationPath = usePathname();
     // console.log(locationPath);
     // vi du http://localhost:3000/admin/account
+    // ? sử dụng redux để lưu lại đường dẫn hiện tại 
     const pathParts = locationPath.split("/").filter((part) => part !== "");
     return (
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12

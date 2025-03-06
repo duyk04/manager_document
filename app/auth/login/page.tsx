@@ -1,13 +1,13 @@
 "use client";
 import { signIn } from "next-auth/react";
 import LoginForm from "@/components/auth/login-form";
-import { DEAFAULT_LOGIN_REDIRECT } from "@/routes";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import Link from "next/link";
 
 const LoginPage = () => {
 	const onclick = (providers: "google" | "null") => {
 		signIn(providers, {
-			callbackUrl: DEAFAULT_LOGIN_REDIRECT,
+			callbackUrl: DEFAULT_LOGIN_REDIRECT,
 		});
 	}
 	return (

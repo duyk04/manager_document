@@ -13,13 +13,11 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
 import { toast } from "@/hooks/use-toast";
-import { useModal } from "@/hooks/use-modal-store";
 import { Search } from "lucide-react";
 import { Combobox } from "../combobox";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -119,7 +117,6 @@ export const CreateProofDocumentModal = () => {
     const isLoading = form.formState.isSubmitting;
 
     //Phần hiển thị danh sách văn bản
-    const { onOpen } = useModal();
     const router = useRouter();
 
     const [documents, setDocuments] = useState<any[]>([]);

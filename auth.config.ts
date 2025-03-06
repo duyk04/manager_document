@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig } from "@/node_modules/next-auth";
 import Credential from "next-auth/providers/credentials"
 
 import Google from "next-auth/providers/google"

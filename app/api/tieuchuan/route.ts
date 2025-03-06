@@ -55,7 +55,7 @@ export async function POST(
         return NextResponse.json(tieuChuan, { status: 200 });
 
     } catch (error) {
-        // console.error("CTDT", error);
+        console.error("CTDT", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
@@ -174,7 +174,7 @@ export async function GET(
         });
 
     } catch (error) {
-        // console.error("CTDT_GET", error);
+        console.error("CTDT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

@@ -14,8 +14,10 @@ import { DeleteTypeDocumentModal } from "@/components/modals/delete-typeDocument
 import { CreateReleaseLevelDocumentModal } from "@/components/modals/creat-releaseLevelDocument-modal";
 import { EditReleaseLevelDocumentModal } from "@/components/modals/edit-releaseLevelDocument-modal";
 import { DeleteReleaseLevelDocumentModal } from "@/components/modals/delete-releaseLevelDocument-modal";
-import { EditDocumentModal } from "../modals/edit-document-modal";
-import { DeleteDocumentModal } from "../modals/delete-document-modal";
+import { EditDocumentModal } from "@/components/modals/edit-document-modal";
+import { DeleteDocumentModal } from "@/components/modals/delete-document-modal";
+import { EditCTDTModal } from "@/components/modals/edit-CTDT-modal";
+import { DeleteCTDTModal } from "@/components/modals/delete-CTDT-modal";
 
 
 export const ModalProvider = () => {
@@ -46,6 +48,8 @@ export const ModalProvider = () => {
             <DeleteReleaseLevelDocumentModal />
             <EditDocumentModal />
             <DeleteDocumentModal />
+            <EditCTDTModal />
+            <DeleteCTDTModal />
         </>
     );
 };

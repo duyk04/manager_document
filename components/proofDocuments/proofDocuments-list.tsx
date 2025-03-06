@@ -33,13 +33,10 @@ import {
 } from "@/components/ui/accordion"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
-import { useModal } from "@/hooks/use-modal-store";
 import { IconExcel, IconPdf, IconWord } from "../ui/file-icon";
 import Link from "next/link";
 
 export const ViewListProofDocument = () => {
-    const router = useRouter();
-    const { onOpen } = useModal();
 
     const [documents, setDocuments] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -77,13 +74,13 @@ export const ViewListProofDocument = () => {
         return () => clearTimeout(delaySearch);
     }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi]);
 
-    const onClickView = (soVanBan: string) => {
-        router.push(`/document/view/${soVanBan}`);
-    };
+    // const onClickView = (soVanBan: string) => {
+    //     router.push(`/document/view/${soVanBan}`);
+    // };
 
-    const onClickEdit = (soVanBan: string) => {
-        router.push(`/document/edit/${soVanBan}`);
-    };
+    // const onClickEdit = (soVanBan: string) => {
+    //     router.push(`/document/edit/${soVanBan}`);
+    // };
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({

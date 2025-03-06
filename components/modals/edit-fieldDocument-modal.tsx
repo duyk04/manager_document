@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 
 
@@ -63,7 +63,7 @@ export const EditFieldDocumentModal = () => {
             form.setValue("tenLinhVuc", tenLinhVuc);
             form.setValue("moTa", moTa);
         }
-    }, [form, ma]);
+    }, [form, ma, maLinhVuc, moTa, tenLinhVuc]);
 
     const isLoading = form.formState.isSubmitting;
 

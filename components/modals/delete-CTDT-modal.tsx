@@ -15,26 +15,28 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
 
-export const DeleteReleaseLevelDocumentModal= () => {
+
+
+export const DeleteCTDTModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
 
-    const isModalOpen = isOpen && type === "deleteReleaseLevel";
-    const { ma, tenCap } = data;
-    // console.log(id);
+    const isModalOpen = isOpen && type === "deleteCTDT";
+    const { ma, maCTDT, tenCTDT } = data;
 
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
         try {
             setIsLoading(true);
-            await axios.delete("/api/releaseLevel", {
+            await axios.delete("/api/CTDT", {
                 data: { ma },
             });
             toast({
                 variant: "success",
                 title: "Xóa thành công",
             });
+
             onClose();
         } catch (error) {
             // console.error(error);
@@ -48,17 +50,17 @@ export const DeleteReleaseLevelDocumentModal= () => {
             setIsLoading(false);
         }
     };
-    
+
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Xóa cấp ban hành
+                        Xóa khoa, đơn vị
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Bạn có muốn xóa cấp ban hành này không? <br/>
-                        <span className="text-indigo-500 font-semibold">{tenCap}</span>
+                        {maCTDT} - {tenCTDT}
+                        <span className="text-indigo-500 font-semibold"> {tenCTDT}</span> sẽ bị xóa.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="bg-gray-100 px-6 py-4">
