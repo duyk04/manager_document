@@ -40,7 +40,7 @@ export const DeleteFielDocumentModal= () => {
             });
             onClose();
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             toast({
                 variant: "destructive",
                 title: "Lỗi",

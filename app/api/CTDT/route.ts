@@ -1,6 +1,5 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { stat } from "fs";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -202,6 +201,18 @@ export async function DELETE(
         const isQUANLY = profile.vaiTro === "QUANLY";
 
         const canDelete = isQUANTRIVIEN || isQUANLY;
+
+        const isCTDTuse = await db.chuongTrinhDaoTao.findFirst({
+            where: {
+                ma: ma
+            },include: {
+                tieuChuan: true
+            }
+        });
+
+        if (isCTDTuse?.tieuChuan?.length != 0) {
+            return new NextResponse("Không thể xóa CTDT do đã được sử dụng!", { status: 400 });
+        }
 
         if (!canDelete) {
             return new NextResponse("Bạn không có quyền xóa", { status: 401 });
