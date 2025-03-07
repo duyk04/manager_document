@@ -23,6 +23,16 @@ export async function POST(
             danhSachTaiLieu
         } = await req.json();
 
+        const maMinhChungExist = await db.minhChung.findUnique({
+            where: {
+                maMinhChung: maMinhChung
+            }
+        })
+
+        if (maMinhChungExist) {
+            return new NextResponse("Mã minh chứng đã tồn tại", { status: 400 })
+        }
+
 
         const minhChung = await db.minhChung.create({
             data: {
@@ -43,7 +53,7 @@ export async function POST(
 
         return NextResponse.json(minhChung);
     } catch (error) {
-        console.error("DOCUMENT_POST", error);
+        console.error("PROOFDOCUMENT_POST", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
@@ -144,7 +154,149 @@ export async function GET(req: Request) {
         });
 
     } catch (error) {
-        console.error("DOCUMENT_GET", error);
+        console.error("PROOFDOCUMENT_GET", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+export async function PATCH(
+    req: Request
+) {
+    try {
+
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const QUANLY = profile?.vaiTro === 'QUANLY';
+        const canEdit = profile?.vaiTro === 'QUANTRIVIEN' || QUANLY;
+
+        if (!canEdit) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const {
+            ma,
+            tieuChi,
+            maMinhChung,
+            tenMinhChung,
+            moTa,
+            namDanhGia,
+            danhSachTaiLieu
+        } = await req.json();
+
+        // Kiểm tra nếu minhChung tồn tại
+        const existingMinhChung = await db.minhChung.findUnique({
+            where: {
+                ma: ma
+            }
+        });
+
+        if (!existingMinhChung) {
+            return new NextResponse("MinhChung không tồn tại", { status: 404 });
+        }
+
+        // Kiểm tra danh sách tài liệu
+        if (!Array.isArray(danhSachTaiLieu) || danhSachTaiLieu.length === 0) {
+            return new NextResponse("Danh sách tài liệu không hợp lệ", { status: 400 });
+        }
+
+        // Cập nhật dữ liệu trong bảng `MinhChung`
+        const updatedMinhChung = await db.minhChung.update({
+            where: {
+                ma: ma
+            },
+            data: {
+                maTieuChi: tieuChi,
+                maMinhChung: maMinhChung,
+                tenMinhChung: tenMinhChung,
+                moTa: moTa,
+                namDanhGia: namDanhGia,
+            }
+        });
+
+        // Xóa tất cả tài liệu cũ trong bảng liên kết `TaiLieuMinhChung`
+        await db.taiLieuMinhChung.deleteMany({
+            where: { maMinhChung: ma }
+        });
+
+        // Thêm mới các tài liệu vào bảng liên kết `TaiLieuMinhChung`
+        for (const taiLieu of danhSachTaiLieu) {
+            await db.taiLieuMinhChung.create({
+                data: {
+                    maMinhChung: ma,
+                    maTaiLieu: taiLieu.ma
+                }
+            });
+        }
+
+        // Lấy lại danh sách tài liệu đã cập nhật
+        const updatedTaiLieu = await db.taiLieuMinhChung.findMany({
+            where: { maMinhChung: ma },
+            include: { taiLieu: true }
+        });
+
+        return NextResponse.json({ ...updatedMinhChung, taiLieu: updatedTaiLieu });
+
+    } catch (error) {
+        console.error("PROOFDOCUMENT_PATCH", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+export async function DELETE(
+    req: Request
+) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const QUANLY = profile?.vaiTro === 'QUANLY';
+        const canDelete = profile?.vaiTro === 'QUANTRIVIEN' || QUANLY;
+
+        if (!canDelete) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const {
+            ma,
+            maMinhChung
+        } = await req.json();
+
+        // Kiểm tra nếu minhChung tồn tại
+        const existingMinhChung = await db.minhChung.findUnique({
+            where: {
+                ma: ma
+            }
+        });
+
+        // console.log(existingMinhChung);
+
+        if (!existingMinhChung) {
+            return new NextResponse("Minh chứng không tồn tại", { status: 404 });
+        }
+
+        // Xóa tất cả tài liệu của minhChung
+        // await db.taiLieuMinhChung.deleteMany({
+        //     where: {
+        //         maMinhChung: ma
+        //     }
+        // });
+
+        // Xóa minhChung
+        const deleteMinhChung = await db.minhChung.delete({
+            where: { ma: ma }
+        });
+
+        return NextResponse.json(deleteMinhChung);
+
+    } catch (error) {
+        console.error("PROOFDOCUMENT_DELETE", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

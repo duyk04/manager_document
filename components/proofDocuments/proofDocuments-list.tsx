@@ -35,9 +35,11 @@ import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { IconExcel, IconPdf, IconWord } from "../ui/file-icon";
 import Link from "next/link";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const ViewListProofDocument = () => {
-
+    const router = useRouter();
+    const { onOpen, isOpen } = useModal();
     const [documents, setDocuments] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -72,15 +74,15 @@ export const ViewListProofDocument = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi]);
+    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi, isOpen]);
 
     // const onClickView = (soVanBan: string) => {
     //     router.push(`/document/view/${soVanBan}`);
     // };
 
-    // const onClickEdit = (soVanBan: string) => {
-    //     router.push(`/document/edit/${soVanBan}`);
-    // };
+    const onClickEdit = (maMinhChung: string) => {
+        router.push(`/proofDocuments/edit/${maMinhChung}`);
+    };
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -152,9 +154,9 @@ export const ViewListProofDocument = () => {
                                     <TableCell className="text-start">{EvaluationCriterias.namDanhGia}</TableCell>
                                     <TableCell className="text-start">{new Date(EvaluationCriterias.ngayTao).toLocaleDateString()}</TableCell>
                                     <TableCell className="flex gap-4">
-                                        <Button variant="primary" onClick={() => { }}>Sửa</Button>
+                                        <Button variant="primary" onClick={()=> onClickEdit(EvaluationCriterias.maMinhChung)}>Sửa</Button>
                                         <Button variant="success" onClick={() => { }}>Xem</Button>
-                                        <Button variant="destructive" onClick={() => { }}>Xóa</Button>
+                                        <Button variant="destructive" onClick={() => onOpen("deleteMinhChung", EvaluationCriterias) }>Xóa</Button>
                                     </TableCell>
                                 </TableRow>
 
