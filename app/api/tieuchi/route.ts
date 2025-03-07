@@ -255,7 +255,7 @@ export async function DELETE(req: Request) {
             await db.tieuChi.delete({ where: { ma } });
             return NextResponse.json({ message: "Xóa tiêu chí thành công." }, { status: 200 });
         } catch (error) {
-            if (error.code === "P2003") {
+            if ((error as any).code === "P2003") {
                 return NextResponse.json({ error: "Không thể xóa tiêu chí vì đang được tham chiếu bởi minh chứng." }, { status: 400 });
             }
             throw error;
