@@ -18,6 +18,10 @@ import { EditDocumentModal } from "@/components/modals/edit-document-modal";
 import { DeleteDocumentModal } from "@/components/modals/delete-document-modal";
 import { EditCTDTModal } from "@/components/modals/edit-CTDT-modal";
 import { DeleteCTDTModal } from "@/components/modals/delete-CTDT-modal";
+import { EditTieuChiModal } from "@/components/modals/edit-tieuChi-modal";
+import { DeleteTieuChiModal } from "@/components/modals/delete-tieuChi-modal";
+import { EditTieuChuanModal } from "@/components/modals/edit-tieuChuan-modal";
+import { DeleteTieuChuanModal } from "@/components/modals/delete-tieuChuan-modal";
 
 
 export const ModalProvider = () => {
@@ -50,6 +54,11 @@ export const ModalProvider = () => {
             <DeleteDocumentModal />
             <EditCTDTModal />
             <DeleteCTDTModal />
+            <EditTieuChiModal/>
+            <DeleteTieuChiModal/>
+            <EditTieuChuanModal/>
+            <DeleteTieuChuanModal/>
+
         </>
     );
 };

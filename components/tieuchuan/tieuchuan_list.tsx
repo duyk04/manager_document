@@ -27,9 +27,11 @@ import {
 } from "@/components/ui/pagination"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const ViewListTieuChuan = () => {
     const router = useRouter();
+    const { onOpen, onClose, isOpen} = useModal();
 
     const [listTieuChuan, setListTieuChuan] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -57,10 +59,12 @@ export const ViewListTieuChuan = () => {
                     
                     },
                 });
+                
                 setListTieuChuan(response.data.listTieuChuan);
                 setLinhVuc(response.data.categories.linhVuc);
                 setCTDT(response.data.categories.CTDT);
                 setTotalPages(response.data.pagination.totalPages);
+                console.log(response.data);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
             }
@@ -68,7 +72,7 @@ export const ViewListTieuChuan = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedNamDanhGia, selectedLinhVuc, selectedCTDT]);
+    }, [search, currentPage, selectedNamDanhGia, selectedLinhVuc, selectedCTDT, isOpen]);
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -142,9 +146,9 @@ export const ViewListTieuChuan = () => {
                                 <TableCell className="text-start">{tieuchuan.namDanhGia}</TableCell>
 
                                 <TableCell className="flex gap-4">
-                                    <Button variant={"primary"} onClick={() => { }}>Sửa</Button>
+                                    <Button variant={"primary"} onClick={() => onOpen("editTieuChuan", tieuchuan)}>Sửa</Button>
                                     <Button variant={"success"} onClick={() => { }}>Xem</Button>
-                                    <Button variant={"destructive"} onClick={() => { }}>Xóa</Button>
+                                    <Button variant={"destructive"} onClick={() => onOpen("deleteTieuChuan", tieuchuan)}>Xóa</Button>
                                 </TableCell>
                             </TableRow>
                         ))
