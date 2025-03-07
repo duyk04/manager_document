@@ -435,8 +435,28 @@ export async function DELETE(
             }
         });
 
+        // console.log(document);
+
         if (!document) {
             return new NextResponse("Không tìm thấy tài liệu", { status: 404 });
+        }
+
+        const minhChungExist = await db.taiLieuMinhChung.findFirst({
+            where: {
+                maTaiLieu: document.ma,
+            }
+        });
+
+        const minhChung = await db.minhChung.findFirst({
+            where: {
+                ma: minhChungExist?.maMinhChung,
+            }
+        });
+
+        console.log(minhChungExist);
+
+        if (minhChungExist) {
+            return new NextResponse(`Tài liệu đã được sử dụng trong minh chứng ${minhChung?.maMinhChung} -  ${minhChung?.tenMinhChung} , không thể xóa`, { status: 400 });
         }
 
         const QUANLY_KHOA = profile?.vaiTro === 'QUANLY' && profile?.maDonVi === document.maDonVi;
