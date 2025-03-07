@@ -38,7 +38,7 @@ export async function POST(
         }
 
         if (tenTieuChiExist) {
-            return new NextResponse("Tên tiêu chuẩn đã tồn tại!", { status: 400 });
+            return new NextResponse("Tên tiêu chí đã tồn tại!", { status: 400 });
         }
 
         const tieuChi = await db.tieuChi.create({

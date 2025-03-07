@@ -33,7 +33,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 
 export const ViewDocumentModal = () => {
     const router = useRouter();
-    const { onOpen } = useModal();
+    const { onOpen, isOpen } = useModal();
 
     const [documents, setDocuments] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -78,7 +78,7 @@ export const ViewDocumentModal = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate]);
+    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate, isOpen]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
