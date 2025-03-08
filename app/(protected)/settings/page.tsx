@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 const SettingsPage = async () => {
     const session = await auth();
-    const role = session?.user.role;
+    const role = session?.user.vaiTro;
     return (
         <div className="bg-white p-4">
             {JSON.stringify(session)}

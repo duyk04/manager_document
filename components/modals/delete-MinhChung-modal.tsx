@@ -15,28 +15,25 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
 
-
-
-export const DeleteFielDocumentModal= () => {
+export const DeleteMinhChungModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
 
-    const isModalOpen = isOpen && type === "deleteFieldDocument";
-    const { ma, tenLinhVuc } = data;
-    // console.log(id);
+    const isModalOpen = isOpen && type === "deleteMinhChung";
+    const { ma, maMinhChung, tenMinhChung } = data;
+    // console.log(data);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
         try {
             setIsLoading(true);
-            await axios.delete("/api/fieldDocument", {
-                data: { ma },
+            await axios.delete("/api/proofDocuments", {
+                data: { ma, maMinhChung },
             });
             toast({
                 variant: "success",
-                title: "Thành công",
-                description: `Đã xóa lĩnh vực văn bản ${tenLinhVuc}`,
+                title: "Xóa thành công",
             });
             onClose();
         } catch (error) {
@@ -51,17 +48,17 @@ export const DeleteFielDocumentModal= () => {
             setIsLoading(false);
         }
     };
-    
+
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Xóa lĩnh vực văn bản
+                        Xóa minh chứng
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Lĩnh vực văn bản này sẽ bị xóa <br />
-                        <span className="text-indigo-500 font-semibold">{tenLinhVuc}</span>
+                        Bạn muốn xóa minh chứng này <br />
+                        <span className="text-indigo-500 font-semibold">{maMinhChung} - {tenMinhChung}</span>
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="bg-gray-100 px-6 py-4">
@@ -71,7 +68,7 @@ export const DeleteFielDocumentModal= () => {
                             onClick={onClose}
                             variant="ghost"
                         >
-                            Hủy 
+                            Hủy
                         </Button>
                         <Button
                             disabled={isLoading}

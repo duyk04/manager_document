@@ -56,11 +56,10 @@ export const DeleteCTDTModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Xóa khoa, đơn vị
+                        Xóa CTDT
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        {maCTDT} - {tenCTDT}
-                        <span className="text-indigo-500 font-semibold"> {tenCTDT}</span> sẽ bị xóa.
+                        <span className="text-indigo-500 font-semibold"> {maCTDT} - {tenCTDT}</span> sẽ bị xóa.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="bg-gray-100 px-6 py-4">

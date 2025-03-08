@@ -153,6 +153,18 @@ export async function DELETE(
             return new Response("Không thể xóa lĩnh vực này vì có tài liệu đang sử dụng lĩnh vực này", { status: 404 });
         }
 
+        const CTDTExist = await db.chuongTrinhDaoTao.findFirst({
+            where: {
+                ma: ma,
+            },include: {
+                tieuChuan: true
+            }
+        })
+
+        if (CTDTExist?.tieuChuan.length != 0) {
+            return new NextResponse("Không thể xóa lĩnh vực này vì có Tiêu chuẩn đang sử dụng lĩnh vực này", { status: 404 });
+        }
+
         const field = await db.linhVuc.delete({
             where: {
                 ma: ma,

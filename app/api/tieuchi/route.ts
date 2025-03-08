@@ -154,6 +154,7 @@ export async function GET(
         console.error("TIEUCHI_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
+
 }
 
 
@@ -265,3 +266,5 @@ export async function DELETE(req: Request) {
         return NextResponse.json({ error: "Lỗi hệ thống, vui lòng thử lại sau." }, { status: 500 });
     }
 }
+}
+

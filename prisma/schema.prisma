@@ -146,8 +146,8 @@ model TaiLieuMinhChung {
     maTaiLieu   Int
     maMinhChung Int
 
-    taiLieu     TaiLieu   @relation(fields: [maTaiLieu], references: [ma], onDelete: Cascade)
-    minhChung   MinhChung @relation(fields: [maMinhChung], references: [ma], onDelete: Cascade)
+    taiLieu     TaiLieu   @relation(fields: [maTaiLieu], references: [ma], onDelete: Cascade, onUpdate: Cascade)
+    minhChung   MinhChung @relation(fields: [maMinhChung], references: [ma], onDelete: Cascade, onUpdate: Cascade)
 
     @@id([maTaiLieu, maMinhChung]) // Khóa chính kết hợp
     @@index([maTaiLieu])

@@ -177,8 +177,6 @@ export async function GET(
         console.error("CTDT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
-}
-
 
 export async function PATCH(req: Request) {
     try {

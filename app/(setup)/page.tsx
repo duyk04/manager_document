@@ -6,7 +6,7 @@ const SetupPage = async () => {
     const session = await auth();
     const isUser = await db.nguoiDung.findFirst({
         where: {
-            ma: session?.user.id,
+            ma: session?.user.ma,
         },
     });
 

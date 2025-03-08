@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/pagination"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
+
 import { useModal } from "@/hooks/use-modal-store";
 
 export const ViewListTieuChuan = () => {
@@ -59,12 +60,10 @@ export const ViewListTieuChuan = () => {
                     
                     },
                 });
-                
                 setListTieuChuan(response.data.listTieuChuan);
                 setLinhVuc(response.data.categories.linhVuc);
                 setCTDT(response.data.categories.CTDT);
                 setTotalPages(response.data.pagination.totalPages);
-                console.log(response.data);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
             }
@@ -73,6 +72,7 @@ export const ViewListTieuChuan = () => {
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
     }, [search, currentPage, selectedNamDanhGia, selectedLinhVuc, selectedCTDT, isOpen]);
+
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({

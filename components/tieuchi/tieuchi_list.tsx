@@ -33,6 +33,7 @@ export const ViewListTieuChi = () => {
     const router = useRouter();
     const { onOpen, onClose, isOpen} = useModal();
 
+
     const [listTieuChi, setListTieuChi] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +45,6 @@ export const ViewListTieuChi = () => {
     // const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
     const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);
     const [selectedTieuChuan, setSelectedTieuChuan] = useState<string | null>(null);
-
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -68,7 +68,9 @@ export const ViewListTieuChi = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
+
     }, [search, currentPage, selectedNamDanhGia, selectedTieuChuan, isOpen ]);
+
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -82,7 +84,6 @@ export const ViewListTieuChi = () => {
             value: item.ma.toString(),
             label: item.tenTieuChuan,
         })),
-    ]
     
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -91,6 +92,7 @@ export const ViewListTieuChi = () => {
     const onClickEdit = (soVanBan: string) => {
         router.push(`/tieuchi/edit/${soVanBan}`);
     };
+
 
     return (
         <div className="w-full rounded-lg shadow-sm">
