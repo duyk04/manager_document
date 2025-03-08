@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const HomePage = async () => {
 	const profile = await currentProfile();
-	if (!profile) {
+	if (profile?.trangThai === false) {
 		return <div>Bạn cần liên hệ quản tri viên để đăng ký tài khoản</div>
 	}
 	return (

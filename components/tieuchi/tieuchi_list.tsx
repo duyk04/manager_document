@@ -27,9 +27,11 @@ import {
 } from "@/components/ui/pagination"
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const ViewListTieuChi = () => {
     const router = useRouter();
+    const { onOpen, onClose, isOpen } = useModal();
 
     const [listTieuChi, setListTieuChi] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -65,7 +67,7 @@ export const ViewListTieuChi = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedNamDanhGia, selectedTieuChuan ]);
+    }, [search, currentPage, selectedNamDanhGia, selectedTieuChuan, isOpen]);
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -80,6 +82,10 @@ export const ViewListTieuChi = () => {
             label: item.tenTieuChuan,
         })),
     ]
+
+    const onClickEdit = (maTieuChi: string) => {
+        router.push(`/tieuchi/edit/${maTieuChi}`);
+    };
 
 
     return (
@@ -131,9 +137,9 @@ export const ViewListTieuChi = () => {
                                 <TableCell className="text-start">{tieuchi.namDanhGia}</TableCell>
 
                                 <TableCell className="flex gap-4">
-                                    <Button variant={"primary"} onClick={() => { }}>Sửa</Button>
+                                    <Button variant={"primary"} onClick={() => onOpen("editTieuChi", tieuchi)}>Sửa</Button>
                                     <Button variant={"success"} onClick={() => { }}>Xem</Button>
-                                    <Button variant={"destructive"} onClick={() => { }}>Xóa</Button>
+                                    <Button variant={"destructive"} onClick={() => onOpen("deleteTieuChi", tieuchi)}>Xóa</Button>
                                 </TableCell>
                             </TableRow>
                         ))

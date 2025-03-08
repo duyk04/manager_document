@@ -155,3 +155,122 @@ export async function GET(
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
+
+export async function PATCH(req: Request) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const {
+            ma,
+            maTieuChi,
+            maTieuChuan,
+            tenTieuChi,
+            moTa,
+            namDanhGia,
+        } = await req.json();
+
+        const isQUANTRIVIEN = profile.vaiTro === "QUANTRIVIEN";
+        const isQUANLY = profile.vaiTro === "QUANLY";
+        const canEdit = isQUANTRIVIEN || isQUANLY;
+
+        if (!canEdit) {
+            return new NextResponse("Bạn không có quyền sửa", { status: 401 });
+        }
+
+        // Kiểm tra mã tiêu chí đã tồn tại (trừ bản ghi hiện tại)
+        const maTieuChiExist = await db.tieuChi.findFirst({
+            where: {
+                maTieuChi: maTieuChi,
+            },
+        });
+
+        if (maTieuChiExist && maTieuChiExist.ma !== ma) {
+            return new NextResponse("Mã tiêu chí đã được sử dụng!", { status: 400 });
+        }
+
+        // const minhChungExist = await db.minhChung.findMany({
+        //     where: {
+        //         maTieuChi: ma,
+        //     },
+        // });
+
+        // if (minhChungExist.length != 0) {
+        //     return new NextResponse("Không thể sửa tiêu chí đã được sử dụng!", { status: 400 });
+        // }
+
+        // Cập nhật bản ghi TieuChi dựa trên ma (khóa chính)
+        const tieuChi = await db.tieuChi.update({
+            where: {
+                ma: ma,
+            },
+            data: {
+                maTieuChi: maTieuChi,
+                maTieuChuan: maTieuChuan,
+                tenTieuChi: tenTieuChi,
+                moTa: moTa,
+                namDanhGia: namDanhGia
+            },
+        });
+
+        return NextResponse.json(tieuChi, { status: 200 });
+    } catch (error) {
+        console.error("TIEU_CHI_PATCH", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+
+
+export async function DELETE(req: Request) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return NextResponse.json({ error: "Bạn chưa đăng nhập." }, { status: 401 });
+        }
+
+        const { ma } = await req.json();
+
+        if (!ma) {
+            return NextResponse.json({ error: "Thiếu mã tiêu chí (ma)." }, { status: 400 });
+        }
+
+        const isQUANTRIVIEN = profile.vaiTro === "QUANTRIVIEN";
+        const isQUANLY = profile.vaiTro === "QUANLY";
+        if (!isQUANTRIVIEN && !isQUANLY) {
+            return NextResponse.json({ error: "Bạn không có quyền xóa tiêu chí này." }, { status: 403 });
+        }
+
+        const tieuChi = await db.tieuChi.findUnique({ where: { ma } });
+
+        if (!tieuChi) {
+            return NextResponse.json({ error: "Tiêu chí không tồn tại." }, { status: 404 });
+        }
+
+        const minhChungExist = await db.minhChung.findMany({
+            where: {
+                maTieuChi: ma,
+            },
+        })
+
+        if (minhChungExist.length != 0) {
+            return NextResponse.json({ error: "Không thể xóa tiêu chí đã được sử dụng trong một minh chứng khác." }, { status: 400 });
+        }
+
+        await db.tieuChi.delete({
+            where: {
+                ma
+            }
+        });
+        return NextResponse.json({ message: "Xóa tiêu chí thành công." }, { status: 200 });
+
+    } catch (error) {
+        console.error("Lỗi khi xóa tiêu chí:", error);
+        return NextResponse.json({ error: "Lỗi hệ thống, vui lòng thử lại sau." }, { status: 500 });
+    }
+}
+

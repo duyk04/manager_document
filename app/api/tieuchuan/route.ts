@@ -150,7 +150,7 @@ export async function GET(
             ),
             db.chuongTrinhDaoTao.findMany(
                 {
-                    select:{
+                    select: {
                         ma: true,
                         maCTDT: true,
                         tenCTDT: true
@@ -176,5 +176,199 @@ export async function GET(
     } catch (error) {
         console.error("CTDT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+export async function PATCH(req: Request) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return NextResponse.json(
+                { success: false, message: "Bạn chưa đăng nhập" },
+                { status: 401 }
+            );
+        }
+
+        const {
+            ma,
+            maTieuChuan,
+            tenTieuChuan,
+            maLinhVuc,
+            maCTDT,
+            moTa,
+            namDanhGia,
+        } = await req.json();
+
+        if (!ma) {
+            return NextResponse.json(
+                { success: false, message: "Thiếu mã tiêu chuẩn (ma)" },
+                { status: 400 }
+            );
+        }
+
+        const isQUANTRIVIEN = profile.vaiTro === "QUANTRIVIEN";
+        const isQUANLY = profile.vaiTro === "QUANLY";
+        const canEdit = isQUANTRIVIEN || isQUANLY;
+
+        if (!canEdit) {
+            return NextResponse.json(
+                { success: false, message: "Bạn không có quyền sửa tiêu chuẩn" },
+                { status: 403 }
+            );
+        }
+
+        // Kiểm tra mã tiêu chuẩn đã tồn tại (trừ bản ghi hiện tại)
+        const maTieuChuanExist = await db.tieuChuan.findFirst({
+            where: {
+                maTieuChuan: maTieuChuan,
+            },
+        });
+
+        if (maTieuChuanExist && maTieuChuanExist.ma !== ma) {
+            return NextResponse.json(
+                { success: false, message: "Mã tiêu chuẩn đã tồn tại" },
+                { status: 400 }
+            );
+        }
+
+        const linhVucExist = await db.linhVuc.findUnique({
+            where: { ma: maLinhVuc },
+        });
+
+        if (!linhVucExist) {
+            return NextResponse.json(
+                { success: false, message: "Lĩnh vực không tồn tại" },
+                { status: 400 }
+            );
+        }
+
+        const ctdtExist = await db.chuongTrinhDaoTao.findUnique({
+            where: { ma: maCTDT },
+        });
+
+        if (!ctdtExist) {
+            return NextResponse.json(
+                { success: false, message: "Chương trình đào tạo không tồn tại" },
+                { status: 400 }
+            );
+        }
+
+        const updatedTieuChuan = await db.tieuChuan.update({
+            where: { ma: ma },
+            data: {
+                maTieuChuan,
+                tenTieuChuan,
+                maLinhVuc,
+                maCTDT,
+                moTa,
+                namDanhGia,
+            },
+        });
+
+        return NextResponse.json(
+            { success: true, message: "Cập nhật tiêu chuẩn thành công", data: updatedTieuChuan },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error("TIEU_CHUAN_PATCH", error);
+        return NextResponse.json(
+            { success: false, message: "Có lỗi xảy ra khi cập nhật tiêu chuẩn" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        // 1. Xác thực người dùng
+        const profile = await currentProfile();
+        if (!profile) {
+            return NextResponse.json(
+                { success: false, message: "Bạn chưa đăng nhập" },
+                { status: 401 }
+            );
+        }
+
+        // 2. Kiểm tra quyền hạn (chỉ QUANTRIVIEN hoặc QUANLY được xóa)
+        const isQUANTRIVIEN = profile.vaiTro === "QUANTRIVIEN";
+        const isQUANLY = profile.vaiTro === "QUANLY";
+        const canDelete = isQUANTRIVIEN || isQUANLY;
+
+        if (!canDelete) {
+            return NextResponse.json(
+                { success: false, message: "Bạn không có quyền xóa tiêu chuẩn" },
+                { status: 403 }
+            );
+        }
+
+        // 3. Lấy dữ liệu từ request body
+        const { ma } = await req.json();
+
+        if (!ma || isNaN(ma)) {
+            return NextResponse.json(
+                { success: false, message: "Mã tiêu chuẩn (ma) không hợp lệ hoặc thiếu" },
+                { status: 400 }
+            );
+        }
+
+        // 4. Kiểm tra sự tồn tại của tiêu chuẩn
+        const tieuChuan = await db.tieuChuan.findUnique({
+            where: { ma: Number(ma) },
+            include: {
+                tieuChi: true, // Bao gồm danh sách tiêu chí liên quan
+            },
+        });
+
+        if (!tieuChuan) {
+            return NextResponse.json(
+                { success: false, message: "Tiêu chuẩn không tồn tại" },
+                { status: 404 }
+            );
+        }
+
+        // 5. Kiểm tra ràng buộc khóa ngoại với TieuChi
+        if (tieuChuan.tieuChi.length != 0) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: `Không thể xóa tiêu chuẩn ${tieuChuan.maTieuChuan} vì nó đang liên kết với ${tieuChuan.tieuChi.length} tiêu chí`,
+                },
+                { status: 400 }
+            );
+        }
+
+        await db.tieuChuan.delete({
+            where: {
+                ma: Number(ma)
+            },
+        });
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: `Tiêu chuẩn ${tieuChuan.maTieuChuan} đã được xóa thành công`,
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error("TIEU_CHUAN_DELETE", error);
+
+        // 8. Xử lý lỗi cụ thể
+        if ((error as any).code === "P2003") {
+            // Lỗi khóa ngoại từ Prisma
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Không thể xóa tiêu chuẩn do có dữ liệu liên quan (ràng buộc khóa ngoại)",
+                },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json(
+            { success: false, message: "Có lỗi xảy ra khi xóa tiêu chuẩn" },
+            { status: 500 }
+        );
     }
 }

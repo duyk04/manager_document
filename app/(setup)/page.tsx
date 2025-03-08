@@ -4,13 +4,21 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 const SetupPage = async () => {
     const session = await auth();
-    const isUser = await db.nguoiDung.findFirst({
+    // console.log("session",session);
+    const isUser = await db.nguoiDung.findUnique({
         where: {
-            ma: session?.user.ma,
+            email: session?.user.email,
         },
     });
+    
+    // console.log(isUser)
+    // const isActive = isUser?.trangThai === true
+    // Chỗ này sửa thành chuyển đến trang thông báo cho người dùng cần liên hệ quản trị viên để đăng ký tài khoản
+    if (!isUser || null) {
+        return redirect(`/home`);
+    }
 
-    if (isUser) {
+    if (isUser ) {
         return redirect(`/home`);
     }
 };
