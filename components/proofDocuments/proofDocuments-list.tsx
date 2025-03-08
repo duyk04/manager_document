@@ -35,6 +35,7 @@ import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { IconExcel, IconPdf, IconWord } from "../ui/file-icon";
 import Link from "next/link";
+
 import { useModal } from "@/hooks/use-modal-store";
 
 export const ViewListProofDocument = () => {
@@ -74,11 +75,13 @@ export const ViewListProofDocument = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
+
     }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi, isOpen]);
 
     // const onClickView = (soVanBan: string) => {
     //     router.push(`/document/view/${soVanBan}`);
     // };
+
 
     const onClickEdit = (maMinhChung: string) => {
         router.push(`/proofDocuments/edit/${maMinhChung}`);

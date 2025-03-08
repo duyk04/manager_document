@@ -5,6 +5,7 @@ import path from "node:path";
 
 export async function POST(req: Request) {
 	try {
+
 		const uploadDir = path.join(process.cwd(), "public/uploads");
 
 		// Kiểm tra thư mục uploads, nếu chưa có thì tạo mới

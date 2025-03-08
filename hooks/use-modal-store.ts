@@ -2,8 +2,7 @@ import { create } from "zustand";
 
 export type ModalType = "createDepartment" | "editDepartment" | "deleteDepartment" | "createAccount" | "editAccount" | "createFieldDocument" | "editFieldDocument" | "deleteFieldDocument" |
     "createTypeDocument" | "editTypeDocument" | "deleteTypeDocument" | "createReleaseLevel" | "editReleaseLevel" | "deleteReleaseLevel" |
-    "editDocument" | "deleteDocument" | "editCTDT" | "deleteCTDT"| "deleteMinhChung";
-
+    "editDocument" | "deleteDocument" | "editCTDT" | "deleteCTDT"| "deleteMinhChung" | "editTieuChi" | "deleteTieuChi" | "editTieuChuan" | "deleteTieuChuan";;
 interface ModalStore {
     type: ModalType | null;
     isOpen: boolean;
