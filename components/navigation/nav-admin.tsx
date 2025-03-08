@@ -77,7 +77,7 @@ const navAdmin = [
 			},
 			{
 				title: "Thêm mới",
-				url: "/admin/department",
+				url: "#",
 			},
 		],
 	},
