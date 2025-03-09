@@ -16,6 +16,7 @@ import { FileUpload } from "@/components/file-upload";
 import { PhamVi } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "../ui/textarea";
+import { FileUpload1 } from "../file-upload1";
 
 
 interface EditDocumentProps {
@@ -484,9 +485,10 @@ export const EditDocument = ({
                                             <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
                                                 File PDF {index + 1}
                                             </FormLabel>
-                                            <FileUpload
+                                            <FileUpload1
                                                 value={field.value[index]}
-                                                typeFile=".pdf"
+                                                // typeFile=".pdf"
+                                                endpoint="filePdf"
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
                                                     updatedFiles[index] = filePath;
@@ -507,9 +509,10 @@ export const EditDocument = ({
                                             <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
                                                 File GỐC {index + 1}
                                             </FormLabel>
-                                            <FileUpload
+                                            <FileUpload1
                                                 value={field.value[index]}
-                                                typeFile=".doc, .docx, .xls, .xlsx"
+                                                // typeFile=".doc, .docx, .xls, .xlsx"
+                                                endpoint="fileDocxAndExcel"
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
                                                     updatedFiles[index] = filePath;

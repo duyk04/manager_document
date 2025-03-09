@@ -36,6 +36,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
+import FileItem from "../fileItem";
 
 
 interface TieuChi {
@@ -507,7 +508,7 @@ export const EditProofDocument = ({
                                                 <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>
                                                 <TableCell>
                                                     <div className="flex gap-4">
-                                                        <HoverCard>
+                                                        {/* <HoverCard>
                                                             <HoverCardTrigger asChild>
                                                                 <button className="w-10 h-10 p-0">
                                                                     <IconFolder />
@@ -525,7 +526,6 @@ export const EditProofDocument = ({
                                                                                     rel="noreferrer noopener"
                                                                                     className="text-indigo-600 dark:text-indigo-400 hover:underline w-1/2"
                                                                                 >
-                                                                                    {/* {file.filePDF?.split("/").pop() || "No PDF file"} */}
                                                                                     <div className="flex items-center space-x-2">
                                                                                         <span><IconPdf /></span>
                                                                                         <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
@@ -551,6 +551,22 @@ export const EditProofDocument = ({
                                                                                     </div>
                                                                                 </a>
                                                                             </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                </div>
+                                                            </HoverCardContent>
+                                                        </HoverCard> */}
+                                                        <HoverCard>
+                                                            <HoverCardTrigger asChild>
+                                                                <button className="w-10 h-10 p-0">
+                                                                    <IconFolder />
+                                                                </button>
+                                                            </HoverCardTrigger>
+                                                            <HoverCardContent className="w-fit rounded-md">
+                                                                <div className="flex space-x-4">
+                                                                    <ul>
+                                                                        {document.file.map((file: any, index: number) => (
+                                                                            <FileItem key={index} filePDF={file.filePDF} fileGoc={file.fileGoc} index={index} />
                                                                         ))}
                                                                     </ul>
                                                                 </div>
