@@ -1,4 +1,4 @@
-import { ViewDocumentModal } from "@/components/documents/document-list";
+import { ViewListDocument } from "@/components/documents/document-list";
 import { currentProfile } from "@/lib/current-profile";
 import { redirect } from "next/navigation";
 
@@ -11,7 +11,7 @@ const DocumentPage = async () => {
     return (
         <div className="flex flex-col items-center">
             <p className="text-start w-full font-semibold text-2xl pt-5">Danh sách văn bản</p>
-            <ViewDocumentModal/>
+            <ViewListDocument />
         </div>
     );
 };

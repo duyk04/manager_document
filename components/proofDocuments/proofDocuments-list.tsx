@@ -36,6 +36,8 @@ import { Separator } from "../ui/separator";
 import { IconExcel, IconPdf, IconWord } from "../ui/file-icon";
 import Link from "next/link";
 import { useModal } from "@/hooks/use-modal-store";
+import useFetchFileName from "@/hooks/useFetchFileName";
+import FileItem from "../fileItem";
 
 export const ViewListProofDocument = () => {
     const router = useRouter();
@@ -175,40 +177,8 @@ export const ViewListProofDocument = () => {
                                                     </AccordionTrigger>
                                                     <AccordionContent>
                                                         {item.taiLieu.file.map((file: any, index: number) => (
-                                                            <div key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md">
-                                                                <p className="text-gray-600 w-[50px]">Tệp {index + 1}:</p>
-                                                                <a
-                                                                    href={file.filePDF ?? undefined}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-blue-600 hover:underline w-1/2"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <span><IconPdf /></span>
-                                                                        <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
-                                                                    </div>
-                                                                </a>
-
-                                                                <a
-                                                                    href={file.fileGoc ?? undefined}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-blue-600 hover:underline w-1/2"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        {(() => {
-                                                                            const fileExtension = file.fileGoc?.split(".").pop();
-                                                                            if (fileExtension === "docx" || fileExtension === "doc") {
-                                                                                return <span className="text-green-500"><IconWord /></span>
-                                                                            }
-                                                                            if (fileExtension === "xls" || fileExtension === "xlsx") {
-                                                                                return <span className="text-green-500"><IconExcel /></span>
-                                                                            }
-                                                                        })()}
-                                                                        <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
-                                                                    </div>
-                                                                </a>
-                                                                <br />
+                                                            <div key={index} className="gap-4">
+                                                                <FileItem key={index} filePDF={file.filePDF} fileGoc={file.fileGoc} index={index} />
                                                             </div>
                                                         ))}
                                                     </AccordionContent>

@@ -30,8 +30,9 @@ import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
 import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
+import FileItem from "../fileItem";
 
-export const ViewDocumentModal = () => {
+export const ViewListDocument = () => {
     const router = useRouter();
     const { onOpen, isOpen } = useModal();
 
@@ -79,6 +80,35 @@ export const ViewDocumentModal = () => {
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
     }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate, isOpen]);
+
+    const useFetchFileName = (fileUrl?: string) => {
+        const [fileName, setFileName] = useState<string | null>(null);
+        const [typeFile, setTypeFile] = useState<string | null>(null);
+
+        useEffect(() => {
+            const fetchFileName = async () => {
+                if (!fileUrl) return;
+
+                const fileKey = fileUrl.split("/").pop();
+                if (!fileKey) return;
+
+                try {
+                    const response = await axios.get(`https://api.uploadthing.com/v6/pollUpload/${fileKey}`);
+                    const fetchedFileName = response.data?.fileData?.fileName || null;
+
+                    setFileName(fetchedFileName);
+                    setTypeFile(fetchedFileName?.split(".").pop() || null);
+                } catch (error) {
+                    console.error("Lỗi khi fetch file:", error);
+                }
+            };
+
+            fetchFileName();
+        }, [fileUrl]);
+
+        return { fileName, typeFile };
+    };
+
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -175,8 +205,6 @@ export const ViewDocumentModal = () => {
                                 }</TableCell>
                                 <TableCell>
                                     <div className="flex gap-4">
-
-
                                         <HoverCard>
                                             <HoverCardTrigger asChild>
                                                 <button className="w-10 h-10 p-0">
@@ -187,69 +215,13 @@ export const ViewDocumentModal = () => {
                                                 <div className="flex space-x-4">
                                                     <ul>
                                                         {document.file.map((file: any, index: number) => (
-                                                            <li key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md w-[500px]">
-                                                                <p className="text-gray-600 w-[60px]">Tệp {index + 1}:</p>
-                                                                <a
-                                                                    href={file.filePDF}
-                                                                    target="_blank"
-                                                                    rel="noreferrer noopener"
-                                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline w-1/2"
-                                                                >
-                                                                    {/* {file.filePDF?.split("/").pop() || "No PDF file"} */}
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <span><IconPdf /></span>
-                                                                        <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
-                                                                    </div>
-                                                                </a>
-                                                                <a
-                                                                    href={file.fileGoc}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-blue-600 hover:underline w-1/2"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        {(() => {
-                                                                            const fileExtension = file.fileGoc?.split(".").pop();
-                                                                            if (fileExtension === "docx" || fileExtension === "doc") {
-                                                                                return <span className="text-green-500"><IconWord /></span>
-                                                                            }
-                                                                            if (fileExtension === "xls" || fileExtension === "xlsx") {
-                                                                                return <span className="text-green-500"><IconExcel /></span>
-                                                                            }
-                                                                        })()}
-                                                                        <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
-                                                                    </div>
-                                                                </a>
-                                                            </li>
+                                                            <FileItem key={index} filePDF={file.filePDF} fileGoc={file.fileGoc} index={index} />
                                                         ))}
                                                     </ul>
                                                 </div>
                                             </HoverCardContent>
                                         </HoverCard>
                                     </div>
-                                    {/* <ul>
-                                        {document.file.map((file: any, index: number) => (
-                                            <li key={index}>
-                                                <a
-                                                    href={file.filePDF}
-                                                    target="_blank"
-                                                    rel="noreferrer noopener"
-                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline"
-                                                >
-                                                    {file.filePDF?.split("/").pop() || "No PDF file"}
-                                                </a>
-                                                <br />
-                                                <a
-                                                    href={file.fileGoc}
-                                                    target="_blank"
-                                                    rel="noreferrer noopener"
-                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline"
-                                                >
-                                                    {file.fileGoc?.split("/").pop() || "No original file"}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul> */}
                                 </TableCell>
                                 <TableCell className="flex gap-4">
                                     <Button variant={"primary"} onClick={() => onClickEdit(document.soVanBan)}>Sửa</Button>
