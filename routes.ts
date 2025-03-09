@@ -4,7 +4,8 @@
  */
 export const publicRouters = [
     "/",
-    // "/api/proofDocuments"
+    "/api/proofDocuments",
+    "/api/documents",
     "/api/uploadthing"
 ]
 
