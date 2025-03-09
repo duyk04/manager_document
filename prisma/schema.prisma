@@ -9,7 +9,8 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    // provider = "mysql"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -119,25 +120,25 @@ model TieuChi {
 }
 
 model MinhChung {
-    ma           Int       @id @default(autoincrement())
-    maMinhChung  String    @unique
+    ma           Int      @id @default(autoincrement())
+    maMinhChung  String   @unique
     maTieuChi    Int
     tenMinhChung String
     moTa         String?
     namDanhGia   Int
-    ngayTao      DateTime  @default(now())
+    ngayTao      DateTime @default(now())
 
-    tieuChi      TieuChi   @relation(fields: [maTieuChi], references: [ma], onUpdate: Cascade)
-    taiLieu      TaiLieuMinhChung[]
+    tieuChi TieuChi            @relation(fields: [maTieuChi], references: [ma], onUpdate: Cascade)
+    taiLieu TaiLieuMinhChung[]
 
     @@index([maTieuChi])
 }
 
 model LoaiVanBan {
-    ma      Int       @id @default(autoincrement())
+    ma            Int       @id @default(autoincrement())
     tenLoaiVanBan String
-    moTa    String?
-    taiLieu TaiLieu[]
+    moTa          String?
+    taiLieu       TaiLieu[]
 
     @@index([ma]) // Thêm chỉ mục cho trường maLoaiVanBan
 }
@@ -146,8 +147,8 @@ model TaiLieuMinhChung {
     maTaiLieu   Int
     maMinhChung Int
 
-    taiLieu     TaiLieu   @relation(fields: [maTaiLieu], references: [ma], onDelete: Cascade, onUpdate: Cascade)
-    minhChung   MinhChung @relation(fields: [maMinhChung], references: [ma], onDelete: Cascade, onUpdate: Cascade)
+    taiLieu   TaiLieu   @relation(fields: [maTaiLieu], references: [ma], onDelete: Cascade, onUpdate: Cascade)
+    minhChung MinhChung @relation(fields: [maMinhChung], references: [ma], onDelete: Cascade, onUpdate: Cascade)
 
     @@id([maTaiLieu, maMinhChung]) // Khóa chính kết hợp
     @@index([maTaiLieu])
@@ -168,12 +169,12 @@ model TaiLieu {
     ngayTao      DateTime @default(now())
     ngayCapNhat  DateTime @updatedAt
 
-    donVi      DonVi      @relation(fields: [maDonVi], references: [ma], onUpdate: Cascade)
-    linhVuc    LinhVuc    @relation(fields: [maLinhVuc], references: [ma], onUpdate: Cascade)
-    capBanHanh CapBanHanh @relation(fields: [maCapBanHanh], references: [ma], onUpdate: Cascade)
-    loaiVanBan LoaiVanBan @relation(fields: [maLoaiVanBan], references: [ma], onUpdate: Cascade)
-    file       File[]     
-    minhChung  TaiLieuMinhChung[]// Mối quan hệ n-n với bảng MinhChung
+    donVi      DonVi              @relation(fields: [maDonVi], references: [ma], onUpdate: Cascade)
+    linhVuc    LinhVuc            @relation(fields: [maLinhVuc], references: [ma], onUpdate: Cascade)
+    capBanHanh CapBanHanh         @relation(fields: [maCapBanHanh], references: [ma], onUpdate: Cascade)
+    loaiVanBan LoaiVanBan         @relation(fields: [maLoaiVanBan], references: [ma], onUpdate: Cascade)
+    file       File[]
+    minhChung  TaiLieuMinhChung[] // Mối quan hệ n-n với bảng MinhChung
 
     @@index([ma]) // Thêm chỉ mục cho trường mâTàiLiệu
     @@index([soVanBan])
@@ -195,4 +196,3 @@ model File {
 
     @@index([maTaiLieu]) // Thêm chỉ mục cho trường maTaiLieu
 }
-
