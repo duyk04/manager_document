@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
+
+  runtime: 'nodejs',
 };
 
 export default nextConfig;
