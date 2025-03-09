@@ -37,6 +37,7 @@ const formSchema = z.object({
     email: z.string().email(),
     donVi: z.string(),
     vaiTro: z.nativeEnum(VaiTro),
+    trangThai: z.string(),
 });
 
 interface DonVi {
@@ -55,7 +56,7 @@ export const EditAccountModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
     // console.log(data);
-    const { ma, hoTen, email, donVi, vaiTro } = data;
+    const { ma, hoTen, email, donVi, vaiTro, trangThai } = data;
     const isModalOpen = isOpen && type === "editAccount";
     const [deparments, setDeparment] = useState<DonVi[]>([]);
 
@@ -79,7 +80,8 @@ export const EditAccountModal = () => {
             hoTen: hoTen,
             email: email,
             donVi: donVi?.ma.toString() || "",
-            vaiTro: vaiTro
+            vaiTro: vaiTro,
+            trangThai: trangThai,
         }
     });
 
@@ -100,15 +102,18 @@ export const EditAccountModal = () => {
             form.setValue(
                 "vaiTro", vaiTro,
             );
+            form.setValue(
+                "trangThai", trangThai,
+            );
         }
-    }, [form, vaiTro, donVi]);
+    }, [form, vaiTro, donVi, email, hoTen, ma, trangThai]);
 
 
     const isLoading = form.formState.isSubmitting;
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        // console.log(value);
+        console.log(value);
         try {
             await axios.patch("/api/account", value);
             form.reset();
@@ -129,6 +134,8 @@ export const EditAccountModal = () => {
             onClose();
         }
     }
+
+    console.log(trangThai)
 
     const handleClose = () => {
         form.reset();
@@ -226,10 +233,10 @@ export const EditAccountModal = () => {
                                             disabled={isLoading}
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
-                                            // defaultValue={field.value ? field.value.toString() : ""} // Chuyển giá trị sang string để hiển thị
-                                            // onValueChange={(value) => {
-                                            //     field.onChange(Number(value)); // Chuyển đổi value sang số
-                                            // }}
+                                        // defaultValue={field.value ? field.value.toString() : ""} // Chuyển giá trị sang string để hiển thị
+                                        // onValueChange={(value) => {
+                                        //     field.onChange(Number(value)); // Chuyển đổi value sang số
+                                        // }}
 
                                         >
                                             <FormControl>
@@ -279,6 +286,32 @@ export const EditAccountModal = () => {
                             >
 
                             </FormField>
+                            <FormField
+                                control={form.control}
+                                name="trangThai"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Trạng thái</FormLabel>
+                                        <Select
+                                            disabled={isLoading}
+                                            onValueChange={field.onChange}
+                                            defaultValue={String(field.value)} // Chuyển giá trị về string
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
+                                                    <SelectValue placeholder="Select a status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="true" className="capitalize">Active</SelectItem>
+                                                <SelectItem value="false" className="capitalize">Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
                         </div>
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>

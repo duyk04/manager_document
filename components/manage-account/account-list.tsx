@@ -23,6 +23,7 @@ interface Account {
     email: string;
     donVi: string | DonVi;
     vaiTro: VaiTro;
+    trangThai: boolean;
 }
 
 interface ListAccountProps {
