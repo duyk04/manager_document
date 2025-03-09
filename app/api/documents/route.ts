@@ -223,12 +223,12 @@ export async function POST(
 export async function GET(req: Request) {
     try {
         const profile = await currentProfile();
-        if (!profile) {
-            return new NextResponse("Unauthorized", { status: 401 });
-        }
+        // if (!profile) {
+        //     return new NextResponse("Unauthorized", { status: 401 });
+        // }
 
-        const canViewAll = profile.vaiTro === "QUANTRIVIEN";
-        const DonVi = profile.maDonVi ?? null;
+        const canViewAll = profile?.vaiTro === "QUANTRIVIEN";
+        const DonVi = profile?.maDonVi ?? null;
 
         const { searchParams } = new URL(req.url);
         const keyword = searchParams.get("keyword")?.trim() || "";
