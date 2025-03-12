@@ -29,20 +29,20 @@ const LoginPage = () => {
 					</div>
 					{/* Title */}
 					<h1 className="text-2xl font-bold mb-4 text-gray-800">
-						Login to your account
+						Đăng nhập
 					</h1>
-					<p className="text-sm text-gray-500 mb-8">
+					{/* <p className="text-sm text-gray-500 mb-8">
 						Chưa có tài khoản?{" "}
 						<Link href="/auth/register" className="text-indigo-600 hover:underline">
 							Đăng ký ngay
 						</Link>
-					</p>
+					</p> */}
 					{/* Form */}
 					<LoginForm />
 					{/* Divider */}
 					<div className="mt-6 flex items-center">
 						<div className="border-t border-gray-300 flex-grow" />
-						<p className="text-sm text-gray-500 mx-4">Or continue with</p>
+						<p className="text-sm text-gray-500 mx-4">Hoặc đăng nhập với</p>
 						<div className="border-t border-gray-300 flex-grow" />
 					</div>
 					{/* Social Login */}

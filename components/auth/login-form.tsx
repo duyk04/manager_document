@@ -74,7 +74,7 @@ const LoginForm = () => {
                                             className="mt-1 block w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                             type="email"
                                             id="email"
-                                            placeholder="you@example.com"
+                                            placeholder="you@email.com"
                                             required={true}
                                             autoComplete="email"
                                         />
@@ -126,7 +126,7 @@ const LoginForm = () => {
                         )}
                     />
                     <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center">
+                        {/* <div className="flex items-center">
                             <input
                                 id="remember-me"
                                 name="remember-me"
@@ -139,7 +139,7 @@ const LoginForm = () => {
                             >
                                 Remember me
                             </label>
-                        </div>
+                        </div> */}
                         <a href="#" className="text-sm text-indigo-600 hover:underline">
                             Quên mật khẩu?
                         </a>
