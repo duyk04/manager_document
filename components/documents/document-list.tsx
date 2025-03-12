@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -30,6 +30,7 @@ import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
 import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
+import { Skeleton } from "../ui/skeleton";
 
 export const ViewDocumentModal = () => {
     const router = useRouter();
@@ -51,8 +52,11 @@ export const ViewDocumentModal = () => {
     const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDocuments = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/documents", {
                     params: {
@@ -73,6 +77,8 @@ export const ViewDocumentModal = () => {
                 setTotalPages(response.data.pagination.totalPages);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -157,10 +163,26 @@ export const ViewDocumentModal = () => {
                         <TableHead className="font-semibold">Thao tác</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
-                    {documents.length === 0 ? (
+                <TableBody className="min-h-[600px]">
+                    {loading ? (
                         <TableRow>
-                            <TableCell colSpan={8}>Không có dữ liệu</TableCell>
+                            <TableCell colSpan={8}>
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    <p>Đang tải dữ liệu...</p>
+                                    <LoaderCircle className="animate-spin" />
+                                    <Skeleton className="h-4 w-4/5" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-4 w-2/3" />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : documents.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} className="text-center">
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    Không tìm thấy tài liệu!
+                                </div>
+                            </TableCell>
                         </TableRow>
                     ) : (
                         documents.map((document, index) => (
@@ -227,29 +249,6 @@ export const ViewDocumentModal = () => {
                                             </HoverCardContent>
                                         </HoverCard>
                                     </div>
-                                    {/* <ul>
-                                        {document.file.map((file: any, index: number) => (
-                                            <li key={index}>
-                                                <a
-                                                    href={file.filePDF}
-                                                    target="_blank"
-                                                    rel="noreferrer noopener"
-                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline"
-                                                >
-                                                    {file.filePDF?.split("/").pop() || "No PDF file"}
-                                                </a>
-                                                <br />
-                                                <a
-                                                    href={file.fileGoc}
-                                                    target="_blank"
-                                                    rel="noreferrer noopener"
-                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline"
-                                                >
-                                                    {file.fileGoc?.split("/").pop() || "No original file"}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul> */}
                                 </TableCell>
                                 <TableCell className="flex gap-4">
                                     <Button variant={"primary"} onClick={() => onClickEdit(document.soVanBan)}>Sửa</Button>

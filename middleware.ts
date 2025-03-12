@@ -7,6 +7,7 @@ import {
     authRouters,
     publicRouters
 } from "@/routes";
+import { db } from "./lib/db";
 
 const { auth } = NextAuth(authConfig);
 

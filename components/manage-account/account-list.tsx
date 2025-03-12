@@ -23,6 +23,7 @@ interface Account {
     email: string;
     donVi: string | DonVi;
     vaiTro: VaiTro;
+    trangThai: boolean;
 }
 
 interface ListAccountProps {
@@ -51,7 +52,8 @@ export const ListAccount = ({
                         <TableHead>Tên</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Khoa</TableHead>
-                        <TableHead>Role</TableHead>
+                        <TableHead>Chức vụ</TableHead>
+                        <TableHead>Trạng thái</TableHead>
                         <TableHead className="text-right">Hành động</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -68,20 +70,24 @@ export const ListAccount = ({
                             <TableCell>
                                 {roleMap[account.vaiTro]}
                             </TableCell>
+                            <TableCell>
+                                {account.trangThai ? <p className="bg-emerald-300 rounded-md text-center text-white">Active</p> : <p className="bg-red-300 rounded-md text-center text-white">NoActive</p>}
+                            </TableCell>
+
                             <TableCell className="text-right">
                                 <Button variant={"primary"} onClick={() => onOpen("editAccount", account)}>
-                                    Cập nhật    
+                                    Cập nhật
                                 </Button>
                             </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
                 <TableFooter>
-                    <TableRow>
+                    {/* <TableRow>
                         <TableCell colSpan={3}>Example</TableCell>
                         <TableCell colSpan={3}>Example</TableCell>
                         <TableCell className="text-right">Example</TableCell>
-                    </TableRow>
+                    </TableRow> */}
                 </TableFooter>
             </Table>
         </div>

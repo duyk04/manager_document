@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ import {
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
-import { set } from "date-fns";
+import { Skeleton } from "../ui/skeleton";
 
 export const ViewListCTDT = () => {
     const router = useRouter();
@@ -43,8 +43,11 @@ export const ViewListCTDT = () => {
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
     const [selectedNamDanhGia, setSelectedNamDanhGia] = useState<string | null>(null);;
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDocuments = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/CTDT", {
                     params: {
@@ -58,12 +61,14 @@ export const ViewListCTDT = () => {
                 setTotalPages(response.data.pagination.totalPages);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia,isOpen]);
+    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, isOpen]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -116,9 +121,25 @@ export const ViewListCTDT = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {listCTDT.length === 0 ? (
+                    {loading ? (
                         <TableRow>
-                            <TableCell colSpan={8}>Không có dữ liệu</TableCell>
+                            <TableCell colSpan={8}>
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    <p>Đang tải dữ liệu...</p>
+                                    <LoaderCircle className="animate-spin" />
+                                    <Skeleton className="h-4 w-4/5" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-4 w-2/3" />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : listCTDT.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} className="text-center">
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    Không tìm thấy dữ liệu!
+                                </div>
+                            </TableCell>
                         </TableRow>
                     ) : (
                         listCTDT.map((CTDT, index) => (
@@ -130,7 +151,7 @@ export const ViewListCTDT = () => {
                                 <TableCell className="text-start">{CTDT.namDanhGia}</TableCell>
 
                                 <TableCell className="flex gap-4">
-                                    <Button variant={"primary"} onClick={() =>  onOpen("editCTDT", CTDT)}>Sửa</Button>
+                                    <Button variant={"primary"} onClick={() => onOpen("editCTDT", CTDT)}>Sửa</Button>
                                     <Button variant={"success"} onClick={() => { }}>Xem</Button>
                                     <Button variant={"destructive"} onClick={() => onOpen("deleteCTDT", CTDT)}>Xóa</Button>
                                 </TableCell>

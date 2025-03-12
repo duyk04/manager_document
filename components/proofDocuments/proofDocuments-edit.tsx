@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
 import { toast } from "@/hooks/use-toast";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { Combobox } from "../combobox";
 import {
     Table,
@@ -36,6 +36,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
 
 
 interface TieuChi {
@@ -184,8 +185,11 @@ export const EditProofDocument = ({
     const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDocuments = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/documents", {
                     params: {
@@ -206,6 +210,8 @@ export const EditProofDocument = ({
                 setTotalPages(response.data.pagination.totalPages);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -493,77 +499,92 @@ export const EditProofDocument = ({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {documents.length === 0 ? (
+                                    {loading ? (
                                         <TableRow>
-                                            <TableCell colSpan={8}>Không có dữ liệu</TableCell>
+                                            <TableCell colSpan={8}>
+                                                <div className="space-y-2 w-full min-h-[500px] flex flex-col items-center justify-center">
+                                                    <p>Đang tải dữ liệu...</p>
+                                                    <LoaderCircle className="animate-spin" />
+                                                    <Skeleton className="h-4 w-4/5" />
+                                                    <Skeleton className="h-4 w-1/2" />
+                                                    <Skeleton className="h-4 w-2/3" />
+                                                </div>
+                                            </TableCell>
                                         </TableRow>
-                                    ) : (
-                                        documents.map((document, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
-                                                <TableCell className="text-start">{document.tenTaiLieu}</TableCell>
-                                                <TableCell className="text-start">{document.trichYeu}</TableCell>
-                                                <TableCell className="text-start">{document.donVi?.tenDonVi || "N/A"}</TableCell>
-                                                <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>
-                                                <TableCell>
-                                                    <div className="flex gap-4">
-                                                        <HoverCard>
-                                                            <HoverCardTrigger asChild>
-                                                                <button className="w-10 h-10 p-0">
-                                                                    <IconFolder />
-                                                                </button>
-                                                            </HoverCardTrigger>
-                                                            <HoverCardContent className="w-fit rounded-md">
-                                                                <div className="flex space-x-4">
-                                                                    <ul>
-                                                                        {document.file.map((file: any, index: number) => (
-                                                                            <li key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md w-[500px]">
-                                                                                <p className="text-gray-600 w-[60px]">Tệp {index + 1}:</p>
-                                                                                <a
-                                                                                    href={file.filePDF}
-                                                                                    target="_blank"
-                                                                                    rel="noreferrer noopener"
-                                                                                    className="text-indigo-600 dark:text-indigo-400 hover:underline w-1/2"
-                                                                                >
-                                                                                    {/* {file.filePDF?.split("/").pop() || "No PDF file"} */}
-                                                                                    <div className="flex items-center space-x-2">
-                                                                                        <span><IconPdf /></span>
-                                                                                        <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
-                                                                                    </div>
-                                                                                </a>
-                                                                                <a
-                                                                                    href={file.fileGoc}
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                    className="text-blue-600 hover:underline w-1/2"
-                                                                                >
-                                                                                    <div className="flex items-center space-x-2">
-                                                                                        {(() => {
-                                                                                            const fileExtension = file.fileGoc?.split(".").pop();
-                                                                                            if (fileExtension === "docx" || fileExtension === "doc") {
-                                                                                                return <span className="text-green-500"><IconWord /></span>
-                                                                                            }
-                                                                                            if (fileExtension === "xls" || fileExtension === "xlsx") {
-                                                                                                return <span className="text-green-500"><IconExcel /></span>
-                                                                                            }
-                                                                                        })()}
-                                                                                        <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
-                                                                                    </div>
-                                                                                </a>
-                                                                            </li>
-                                                                        ))}
-                                                                    </ul>
-                                                                </div>
-                                                            </HoverCardContent>
-                                                        </HoverCard>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="flex gap-4">
-                                                    <Button variant={"success"} onClick={() => onClickView(document.soVanBan)}>Xem</Button>
-                                                    <Button variant={"primary"} onClick={() => onClickAdd(document)}>Thêm</Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                    ) : documents.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={8} className="text-center">
+                                                <div className="space-y-2 w-full min-h-[500px] flex flex-col items-center justify-center">
+                                                    Không tìm thấy tài liệu nào
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (documents.map((document, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
+                                            <TableCell className="text-start">{document.tenTaiLieu}</TableCell>
+                                            <TableCell className="text-start">{document.trichYeu}</TableCell>
+                                            <TableCell className="text-start">{document.donVi?.tenDonVi || "N/A"}</TableCell>
+                                            <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-4">
+                                                    <HoverCard>
+                                                        <HoverCardTrigger asChild>
+                                                            <button className="w-10 h-10 p-0">
+                                                                <IconFolder />
+                                                            </button>
+                                                        </HoverCardTrigger>
+                                                        <HoverCardContent className="w-fit rounded-md">
+                                                            <div className="flex space-x-4">
+                                                                <ul>
+                                                                    {document.file.map((file: any, index: number) => (
+                                                                        <li key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md w-[500px]">
+                                                                            <p className="text-gray-600 w-[60px]">Tệp {index + 1}:</p>
+                                                                            <a
+                                                                                href={file.filePDF}
+                                                                                target="_blank"
+                                                                                rel="noreferrer noopener"
+                                                                                className="text-indigo-600 dark:text-indigo-400 hover:underline w-1/2"
+                                                                            >
+                                                                                {/* {file.filePDF?.split("/").pop() || "No PDF file"} */}
+                                                                                <div className="flex items-center space-x-2">
+                                                                                    <span><IconPdf /></span>
+                                                                                    <p className="truncate w-1/2">{file.filePDF?.split("/").pop() || "No PDF file"}</p>
+                                                                                </div>
+                                                                            </a>
+                                                                            <a
+                                                                                href={file.fileGoc}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="text-blue-600 hover:underline w-1/2"
+                                                                            >
+                                                                                <div className="flex items-center space-x-2">
+                                                                                    {(() => {
+                                                                                        const fileExtension = file.fileGoc?.split(".").pop();
+                                                                                        if (fileExtension === "docx" || fileExtension === "doc") {
+                                                                                            return <span className="text-green-500"><IconWord /></span>
+                                                                                        }
+                                                                                        if (fileExtension === "xls" || fileExtension === "xlsx") {
+                                                                                            return <span className="text-green-500"><IconExcel /></span>
+                                                                                        }
+                                                                                    })()}
+                                                                                    <p className="truncate w-4/5">{file.fileGoc?.split("/").pop() || "File gốc trống"}</p>
+                                                                                </div>
+                                                                            </a>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        </HoverCardContent>
+                                                    </HoverCard>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="flex gap-4">
+                                                <Button variant={"success"} onClick={() => onClickView(document.soVanBan)}>Xem</Button>
+                                                <Button variant={"primary"} onClick={() => onClickAdd(document)}>Thêm</Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
                                     )}
                                 </TableBody>
                             </Table>

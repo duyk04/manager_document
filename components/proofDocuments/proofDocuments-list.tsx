@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Paperclip, Search } from "lucide-react";
+import { LoaderCircle, Paperclip, Search } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ import { Separator } from "../ui/separator";
 import { IconExcel, IconPdf, IconWord } from "../ui/file-icon";
 import Link from "next/link";
 import { useModal } from "@/hooks/use-modal-store";
+import { Skeleton } from "../ui/skeleton";
 
 export const ViewListProofDocument = () => {
     const router = useRouter();
@@ -52,8 +53,12 @@ export const ViewListProofDocument = () => {
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
     const [selectedTieuChi, setSelectedTieuChi] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState(true);
+
+
     useEffect(() => {
         const fetchDocuments = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/proofDocuments", {
                     params: {
@@ -69,6 +74,8 @@ export const ViewListProofDocument = () => {
                 setTieuChi(response.data.categories.tieuChi);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -137,9 +144,25 @@ export const ViewListProofDocument = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {documents.length === 0 ? (
+                    {loading ? (
                         <TableRow>
-                            <TableCell colSpan={8}>Không có dữ liệu</TableCell>
+                            <TableCell colSpan={8}>
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    <p>Đang tải dữ liệu...</p>
+                                    <LoaderCircle className="animate-spin" />
+                                    <Skeleton className="h-4 w-4/5" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-4 w-2/3" />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : documents.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} className="text-center">
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    Không tìm thấy minh chứng!
+                                </div>
+                            </TableCell>
                         </TableRow>
                     ) : (
                         documents.map((EvaluationCriterias, index) => (
@@ -154,9 +177,9 @@ export const ViewListProofDocument = () => {
                                     <TableCell className="text-start">{EvaluationCriterias.namDanhGia}</TableCell>
                                     <TableCell className="text-start">{new Date(EvaluationCriterias.ngayTao).toLocaleDateString()}</TableCell>
                                     <TableCell className="flex gap-4">
-                                        <Button variant="primary" onClick={()=> onClickEdit(EvaluationCriterias.maMinhChung)}>Sửa</Button>
+                                        <Button variant="primary" onClick={() => onClickEdit(EvaluationCriterias.maMinhChung)}>Sửa</Button>
                                         <Button variant="success" onClick={() => { }}>Xem</Button>
-                                        <Button variant="destructive" onClick={() => onOpen("deleteMinhChung", EvaluationCriterias) }>Xóa</Button>
+                                        <Button variant="destructive" onClick={() => onOpen("deleteMinhChung", EvaluationCriterias)}>Xóa</Button>
                                     </TableCell>
                                 </TableRow>
 
@@ -166,7 +189,7 @@ export const ViewListProofDocument = () => {
                                     <TableCell colSpan={7} className="p-4">
                                         <div className="flex items-center">
                                             <Paperclip className="w-4 h-4 me-2" /> <span>Văn bản đính kèm</span>
-                                        </div> 
+                                        </div>
                                         {EvaluationCriterias.taiLieu.map((item: any, index: number) => (
                                             <Accordion key={index} type="single" collapsible className="w-full ps-6">
                                                 <AccordionItem value="item-1">

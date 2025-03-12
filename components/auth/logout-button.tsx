@@ -16,7 +16,7 @@ export const LogoutButton = () => {
 	};
 
 	return (
-		<button onClick={onClickSignOut} className="flex items-center w-full">
+		<button onClick={onClickSignOut} className="w-full text-left">
 			Log out
 		</button>
 	);

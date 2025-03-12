@@ -35,6 +35,20 @@ export const currentProfile = async () => {
     const profile = await db.nguoiDung.findUnique({
         where: {
             ma: userId
+        }, select: {
+            ma: true,
+            maDonVi: true,
+            vaiTro: true,
+            hoTen: true,
+            email: true,
+            anhDaiDien: true,
+            trangThai: true,
+            donVi: {
+                select: {
+                    ma: true,
+                    tenDonVi: true
+                }
+            },
         }
     });
 

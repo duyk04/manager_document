@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
 import { toast } from "@/hooks/use-toast";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { Combobox } from "../combobox";
 import {
     Table,
@@ -36,6 +36,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
 
 
 interface TieuChi {
@@ -135,8 +136,11 @@ export const CreateProofDocumentModal = () => {
     const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDocuments = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/documents", {
                     params: {
@@ -157,7 +161,10 @@ export const CreateProofDocumentModal = () => {
                 setTotalPages(response.data.pagination.totalPages);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
+            } finally {
+                setLoading(false);
             }
+
         };
 
         const delaySearch = setTimeout(fetchDocuments, 300);
@@ -448,9 +455,25 @@ export const CreateProofDocumentModal = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {documents.length === 0 ? (
+                                    {loading ? (
                                         <TableRow>
-                                            <TableCell colSpan={8}>Không có dữ liệu</TableCell>
+                                            <TableCell colSpan={8}>
+                                                <div className="space-y-2 w-full min-h-[500px] flex flex-col items-center justify-center">
+                                                    <p>Đang tải dữ liệu...</p>
+                                                    <LoaderCircle className="animate-spin" />
+                                                    <Skeleton className="h-4 w-4/5" />
+                                                    <Skeleton className="h-4 w-1/2" />
+                                                    <Skeleton className="h-4 w-2/3" />
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : documents.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={8} className="text-center">
+                                                <div className="space-y-2 w-full min-h-[500px] flex flex-col items-center justify-center">
+                                                    Không tìm thấy tài liệu nào
+                                                </div>
+                                            </TableCell>
                                         </TableRow>
                                     ) : (
                                         documents.map((document, index) => (

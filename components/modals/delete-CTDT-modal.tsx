@@ -15,8 +15,6 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
 
-
-
 export const DeleteCTDTModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();

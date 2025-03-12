@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import LoginForm from "@/components/auth/login-form";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import Link from "next/link";
+import Image from "next/image";
 
 const LoginPage = () => {
 	const onclick = (providers: "google" | "null") => {
@@ -17,7 +18,14 @@ const LoginPage = () => {
 				<div className="w-full max-w-md">
 					{/* Logo */}
 					<div className="mb-6">
-						<img src="https://placehold.co/40" alt="Logo" className="h-10" />
+						{/* <img src="https://placehold.co/40" alt="Logo" className="h-10" /> */}
+						<Image
+							src="/logo.png"
+							alt="Logo"
+							width={40}
+							height={40}
+						/>
+						
 					</div>
 					{/* Title */}
 					<h1 className="text-2xl font-bold mb-4 text-gray-800">
@@ -62,9 +70,17 @@ const LoginPage = () => {
 			</div>
 			{/* Right Section */}
 			<div className="lg:w-3/5 hidden lg:block">
-				<img
+				{/* <img
 					src="https://placehold.co/800x600"
 					alt="Background"
+					className="w-full h-full object-cover"
+				/> */}
+				<Image
+					src="/images/hunre.jpg"
+					alt="Background"
+					objectFit="cover"
+					width={800}
+					height={600}
 					className="w-full h-full object-cover"
 				/>
 			</div>

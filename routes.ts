@@ -14,7 +14,7 @@ export const publicRouters = [
  */
 export const authRouters = [
     "/auth/login",
-    "/auth/register",
+    // "/auth/register",
 ]
 
 /**

@@ -37,7 +37,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
             data: {
                 vaiTro: isRootExists ? VaiTro.NHANVIEN : VaiTro.QUANTRIVIEN,
                 hoTen: name,
-                email,
+                email: email,
                 matKhau: hashedPassword,
             },
         });

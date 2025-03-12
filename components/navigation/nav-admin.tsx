@@ -60,10 +60,6 @@ const navAdmin = [
 				title: "Thêm mới",
 				url: "/admin/account/create-account",
 			},
-			{
-				title: "Quantum",
-				url: "#",
-			},
 		],
 	},
 	{

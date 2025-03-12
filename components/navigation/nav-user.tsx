@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/sidebar"
 import { LogoutButton } from "../auth/logout-button";
 import Image from "next/image";
+import Link from "next/link";
 
 interface UserProps {
 	profileUser: any
@@ -109,7 +110,9 @@ export const NavUser = ({
 						<DropdownMenuGroup>
 							<DropdownMenuItem>
 								<BadgeCheck />
-								Account
+								<Link href="/profile/information">
+									Account
+								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem>
 								<CreditCard />

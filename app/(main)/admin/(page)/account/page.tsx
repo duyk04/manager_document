@@ -27,6 +27,7 @@ const AccountPage = async () => {
             hoTen: true,
             email: true,
             vaiTro: true,
+            trangThai: true,
             donVi: {
                 select: {
                     ma: true,

@@ -23,11 +23,14 @@ export async function PATCH(
             hoTen,
             email,
             vaiTro,
+            trangThai
         } = await req.json();
 
         // console.log(ma, donVi, hoTen, email, vaiTro);
 
         const maDonVi = typeof donVi === 'string' ? Number(donVi) : donVi;
+
+        const activeUser = trangThai === 'true' ? true : false;
 
         const user = await db.nguoiDung.update({
             where: {
@@ -40,7 +43,8 @@ export async function PATCH(
                         ma: maDonVi,
                     },
                 },
-                vaiTro: vaiTro
+                vaiTro: vaiTro,
+                trangThai: activeUser,
             }
         });
 

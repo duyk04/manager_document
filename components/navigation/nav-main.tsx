@@ -62,10 +62,6 @@ const navMain = [
 				title: "Thêm mới",
 				url: "/CTDT/create",
 			},
-			{
-				title: "Quantum",
-				url: "#",
-			},
 		],
 	},
 	{
@@ -80,10 +76,6 @@ const navMain = [
 			{
 				title: "Thêm mới",
 				url: "/tieuchi/create",
-			},
-			{
-				title: "Quantum",
-				url: "#",
 			},
 		],
 	},
@@ -101,14 +93,6 @@ const navMain = [
 				title: "Thêm mới",
 				url: "/document",
 			},
-			{
-				title: "Settings",
-				url: "#",
-			},
-			{
-				title: "Test",
-				url: "#",
-			},
 		],
 	},
 	{
@@ -124,10 +108,6 @@ const navMain = [
 			{
 				title: "Thêm mới",
 				url: "/tieuchuan/create",
-			},
-			{
-				title: "Settings",
-				url: "#",
 			},
 		],
 	},
@@ -155,18 +135,6 @@ const navMain = [
 				title: "Introduction",
 				url: "#",
 			},
-			{
-				title: "Get Started",
-				url: "#",
-			},
-			{
-				title: "Tutorials",
-				url: "#",
-			},
-			{
-				title: "Changelog",
-				url: "#",
-			},
 		],
 	},
 	{
@@ -180,10 +148,6 @@ const navMain = [
 			},
 			{
 				title: "Thêm mới",
-				url: "#",
-			},
-			{
-				title: "Quantum",
 				url: "#",
 			},
 		],

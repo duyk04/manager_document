@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -28,6 +28,7 @@ import {
 import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
+import { Skeleton } from "../ui/skeleton";
 
 export const ViewListTieuChuan = () => {
     const router = useRouter();
@@ -46,8 +47,11 @@ export const ViewListTieuChuan = () => {
     const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
     const [selectedCTDT, setSelectedCTDT] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDocuments = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/tieuchuan", {
                     params: {
@@ -65,6 +69,8 @@ export const ViewListTieuChuan = () => {
                 setTotalPages(response.data.pagination.totalPages);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -128,9 +134,25 @@ export const ViewListTieuChuan = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {listTieuChuan.length === 0 ? (
+                    {loading ? (
                         <TableRow>
-                            <TableCell colSpan={8}>Không có dữ liệu</TableCell>
+                            <TableCell colSpan={8}>
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    <p>Đang tải dữ liệu...</p>
+                                    <LoaderCircle className="animate-spin" />
+                                    <Skeleton className="h-4 w-4/5" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-4 w-2/3" />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : listTieuChuan.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} className="text-center">
+                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                    Không tìm thấy tài liệu nào
+                                </div>
+                            </TableCell>
                         </TableRow>
                     ) : (
                         listTieuChuan.map((tieuchuan, index) => (

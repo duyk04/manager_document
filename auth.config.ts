@@ -23,8 +23,8 @@ export default {
 
                     const user = await getUserByEmail(email)
 
-                     // Kiểm tra kiểu dữ liệu user
-                     if (!user || !("matKhau" in user) || !user.matKhau) {
+                    // Kiểm tra kiểu dữ liệu user
+                    if (!user || !("matKhau" in user) || !user.matKhau) {
                         return null;
                     }
 
@@ -36,16 +36,16 @@ export default {
                     if (passwordMatch) {
                         // Chỉ trả về các thuộc tính cần thiết theo kiểu User
                         return {
-                          id: user.ma,
-                          name: user.hoTen,
-                          email: user.email,
-                          image: user.anhDaiDien || undefined,
-                          ma: user.ma,
-                          vaiTro: user.vaiTro,
-                          hoTen: user.hoTen,
-                          trangThai: user.trangThai,
+                            ma: user.ma,
+                            //   id: user.ma,
+                            name: user.hoTen,
+                            email: user.email,
+                            image: user.anhDaiDien || undefined,
+                            vaiTro: user.vaiTro,
+                            hoTen: user.hoTen,
+                            trangThai: user.trangThai,
                         };
-                      }
+                    }
                 }
 
                 return null;
