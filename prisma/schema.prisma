@@ -13,11 +13,11 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "./erd.png"  // Định dạng và vị trí file đầu ra
-  format   = "png"        // Có thể chọn svg, pdf, hoặc mermaid
-}
+// generator erd {
+//   provider = "prisma-erd-generator"
+//   output   = "./erd.png"  // Định dạng và vị trí file đầu ra
+//   format   = "png"        // Có thể chọn svg, pdf, hoặc mermaid
+// }
 
 
 enum VaiTro {
