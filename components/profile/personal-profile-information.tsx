@@ -18,10 +18,10 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { start } from "repl";
 import { changeInfo } from "@/actions/changeInfo";
 import { toast } from "@/hooks/use-toast";
 import { useModal } from "@/hooks/use-modal-store";
+import { useRouter } from "next/navigation";
 
 interface PersonalProfileInformation {
     ma: string;
@@ -76,6 +76,7 @@ const PersonalProfileInformation = ({
     user
 }: UserProps) => {
     const { onOpen, isOpen } = useModal();
+    const router = useRouter();
 
     const [isEditingName, setIsEditingName] = useState(false);
     const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -128,6 +129,8 @@ const PersonalProfileInformation = ({
                             title: data.success,
                             description: "Thông tin tài khoản đã được cập nhật",
                         });
+                        form.reset();
+                        router.refresh();
                     }
                 });
         });

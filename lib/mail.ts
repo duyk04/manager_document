@@ -1,21 +1,33 @@
-import { Resend } from "resend"
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const email = process.env.EMAIL_USER;
+const password = process.env.EMAIL_PASS;
 
 export const sendMail = async (
     subject: string,
-    email: string,
-    content: string
-
+    userEmail: string,
+    text: string,
 ) => {
     try {
-        await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: email,
-            subject: "Reset password",
-            html: `Password: ${content}`
-        })
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: email, // Email gửi
+                pass: password, // Mật khẩu ứng dụng (App Password)
+            },
+        });
+
+        const mailOptions = {
+            from: email,
+            to: userEmail,
+            subject: subject,
+            text: text,
+        };
+
+        await transporter.sendMail(mailOptions);
+
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 }

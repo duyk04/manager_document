@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
 import { resetPassword } from "@/actions/resetPassword";
+import { sub } from "date-fns";
 
 export const ResetPasswordModal = () => {
     const { isOpen, onClose, type, data } = useModal();
@@ -29,35 +30,56 @@ export const ResetPasswordModal = () => {
 
     const onClick = async () => {
 
-        startTransition(() => {
-            resetPassword({ ma , email })
-                .then((data) => {
-                    if (data.error) {
-                        // setError(data.error);
-                        toast({
-                            variant: "destructive",
-                            title: data.error,
-                            description: "Vui lòng thử lại sau!",
-                        });
-                        onClose();
-                    } else if (data.success) {
-                        toast({
-                            variant: "success",
-                            title: data.success,
-                            description:`Mật khẩu mới đã được gửi tới email ${email}!`,
-                        });
-                        onClose();
-                        router.refresh();
-                    } else {
-                        toast({
-                            variant: "warning",
-                            title:"Oh noo!",
-                            description: data.warning,
-                        });
-                        onClose();
-                    }
-                });
-        });
+        try {
+            await axios.post("/api/send-mail", {
+                ma,
+                email,
+                subject: "Thay đổi mật khẩu",
+            });
+            toast({
+                variant: "success",
+                title: "Thành công!",
+                description: `Mật khẩu mới đã được gửi tới email ${email}!`,
+            });
+            onClose();
+            router.refresh();
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Oh noo!",
+                description: "Vui lòng thử lại sau!",
+            });
+        }
+
+        // startTransition(() => {
+        //     resetPassword({ ma , email })
+        //         .then((data) => {
+        //             if (data.error) {
+        //                 // setError(data.error);
+        //                 toast({
+        //                     variant: "destructive",
+        //                     title: data.error,
+        //                     description: "Vui lòng thử lại sau!",
+        //                 });
+        //                 onClose();
+        //             } else if (data.success) {
+        //                 toast({
+        //                     variant: "success",
+        //                     title: data.success,
+        //                     description:`Mật khẩu mới đã được gửi tới email ${email}!`,
+        //                 });
+        //                 onClose();
+        //                 router.refresh();
+        //             } else {
+        //                 toast({
+        //                     variant: "warning",
+        //                     title:"Oh noo!",
+        //                     description: data.warning,
+        //                 });
+        //                 onClose();
+        //             }
+        //         });
+        // });
     };
 
     return (

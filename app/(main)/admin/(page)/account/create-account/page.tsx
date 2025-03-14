@@ -1,4 +1,5 @@
-import { CreatAccount } from "@/components/manage-account/account-create";
+
+import { CreateAccount } from "@/components/manage-account/account-create";
 import { currentProfile } from "@/lib/current-profile";
 
 const CreateAccountPage = async () => {
@@ -14,7 +15,7 @@ const CreateAccountPage = async () => {
     return (
         <div>
            <p>Tạo mới tài khoản</p>
-            <CreatAccount />
+            <CreateAccount />
         </div>
     )
 }

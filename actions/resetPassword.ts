@@ -1,6 +1,6 @@
 "use server";
 import { db } from '@/lib/db';
-import { sendMail } from '@/lib/mail';
+// import { sendMail } from '@/lib/mail';
 import bcrypt from 'bcrypt';
 
 export const resetPassword = async (info: { ma: string; email: string }) => {
