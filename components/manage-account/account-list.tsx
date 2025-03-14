@@ -48,7 +48,7 @@ export const ListAccount = ({
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
-                        <TableHead>ID</TableHead>
+                        {/* <TableHead>ID</TableHead> */}
                         <TableHead>Tên</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Khoa</TableHead>
@@ -61,7 +61,7 @@ export const ListAccount = ({
                     {listAccount?.map((account: Account, index: number) => (
                         <TableRow key={account.ma}>
                             <TableCell className="font-medium text-center">{index + 1}</TableCell>
-                            <TableCell>{account.ma}</TableCell>
+                            {/* <TableCell>{account.ma}</TableCell> */}
                             <TableCell>{account.hoTen}</TableCell>
                             <TableCell>{account.email}</TableCell>
                             <TableCell>

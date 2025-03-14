@@ -31,7 +31,7 @@ export async function POST(
             const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const lowercase = "abcdefghijklmnopqrstuvwxyz";
             const numbers = "0123456789";
-            const specialChars = "@#$%^&*()_+!";
+            const specialChars = "@#&";
 
             // Chọn ít nhất 1 ký tự từ mỗi tập
             const randomUpper = uppercase[Math.floor(Math.random() * uppercase.length)];
