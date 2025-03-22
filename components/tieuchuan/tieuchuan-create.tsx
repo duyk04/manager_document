@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "../ui/textarea";
 import { useEffect, useState } from "react";
+import { set } from "date-fns";
 
 const formSchema = z.object({
     maTieuChuan: z.string().nonempty({ message: "Mã tiêu chuẩn không được để trống" }),
@@ -63,7 +64,7 @@ export const Create_TieuChuan = () => {
             try {
                 const [CTDTRes, fieldRes,] = await Promise.all([
                     axios.get("/api/CTDT"),
-                    axios.get("/api/fieldDocument"),
+                    axios.get("/api/fieldDocument?all=true"),
                 ]);
 
                 setCTDT(CTDTRes.data.listCTDT);
@@ -83,7 +84,7 @@ export const Create_TieuChuan = () => {
             maCTDT: 0,
             tenTieuChuan: "",
             moTa: "",
-            namDanhGia: new Date().getFullYear(),
+            namDanhGia: 0,
         }
     });
 
@@ -115,6 +116,21 @@ export const Create_TieuChuan = () => {
         label: (currentYear - i).toString(),
     }));
 
+    // Sử dụng watch để theo dõi sự thay đổi của namDanhGia
+    const selectedYear = form.watch("namDanhGia");
+
+    const [filterCTDT, setFilterCTDT] = useState<CTDT[]>();
+
+    useEffect(() => {
+        if (selectedYear) {
+            setFilterCTDT(CTDT.filter((item) => item.namDanhGia === selectedYear
+            ));
+        }
+    }, [selectedYear]);
+
+    // useEffect(() => {
+    //     console.log(filterCTDT);
+    // }, [filterCTDT]);
 
     return (
         <Form {...form}>
@@ -180,42 +196,6 @@ export const Create_TieuChuan = () => {
                     />
                     <FormField
                         control={form.control}
-                        name="maCTDT"
-                        render={({ field }) => (
-                            <FormItem className="row-start-2">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500
-                                        dark:text-secondary/70">
-                                    Chương trình đào tạo
-                                </FormLabel>
-                                <Select
-                                    disabled={isLoading}
-                                    defaultValue={field.value ? field.value.toString() : ""}
-                                    onValueChange={(value) => {
-                                        field.onChange(Number(value));
-                                    }
-                                    }
-                                >
-                                    <FormControl>
-                                        <SelectTrigger
-                                            className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
-                                        >
-                                            <SelectValue placeholder="Chọn chương trình đào tạo" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {CTDT?.map((item, index) => (
-                                            <SelectItem key={index} value={item.ma.toString()} className="capitalize">
-                                                {item.maCTDT} - {item.tenCTDT}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
                         name="namDanhGia"
                         render={({ field }) => (
                             <FormItem className="row-start-2">
@@ -244,6 +224,42 @@ export const Create_TieuChuan = () => {
                                         ))}
                                     </SelectContent>
 
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="maCTDT"
+                        render={({ field }) => (
+                            <FormItem className="row-start-2">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500
+                                        dark:text-secondary/70">
+                                    Chương trình đào tạo
+                                </FormLabel>
+                                <Select
+                                    disabled={isLoading}
+                                    defaultValue={field.value ? field.value.toString() : ""}
+                                    onValueChange={(value) => {
+                                        field.onChange(Number(value));
+                                    }
+                                    }
+                                >
+                                    <FormControl>
+                                        <SelectTrigger
+                                            className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
+                                        >
+                                            <SelectValue placeholder="Chọn chương trình đào tạo" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {filterCTDT?.map((item, index) => (
+                                            <SelectItem key={index} value={item.ma.toString()} className="capitalize">
+                                                {item.maCTDT} - {item.tenCTDT}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
                                 </Select>
                                 <FormMessage />
                             </FormItem>

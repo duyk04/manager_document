@@ -32,7 +32,7 @@ const teams = [
   {
     name: "Hunre",
     logo: GalleryVerticalEnd,
-    plan: "University",
+    plan: "Tài nguyên và Môi trường Hà Nội",
   },
   {
     name: "Acme Corp.",

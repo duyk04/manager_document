@@ -1,6 +1,5 @@
 import { ListType } from "@/components/manage-type/type-list";
 import { currentProfile } from "@/lib/current-profile";
-import { db } from "@/lib/db";
 import { VaiTro } from "@prisma/client";
 
 const TypePage = async () => {
@@ -19,14 +18,6 @@ const TypePage = async () => {
         );
     }
 
-    const listTypes = await db.loaiVanBan.findMany({
-        select: {
-            ma: true,
-            tenLoaiVanBan: true,
-            moTa: true,
-        },
-    });
-
     return (
         <div className="w-full">
             <div>
@@ -34,7 +25,7 @@ const TypePage = async () => {
                 <p className="text-zinc-400 text-md">Tạo và quản lý các loại văn bản và các thông tin liên quan</p>
             </div>
             <div>
-                <ListType listType={listTypes} />
+                <ListType />
             </div>
         </div>
     )

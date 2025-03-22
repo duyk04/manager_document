@@ -37,35 +37,64 @@ import { IconExcel, IconFolder, IconPdf, IconWord } from "../ui/file-icon";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
+import { Textarea } from "../ui/textarea";
 
+interface TieuChuan {
+    ma: number;
+    maTieuChuan: string;
+    maLinhVuc: number;
+    maCTDT: number;
+    tenTieuChuan: string;
+    moTa: string;
+    namDanhGia: number;
+}
+
+interface CTDT {
+    ma: number;
+    maCTDT: string;
+    tenCTDT: string;
+    moTa: string;
+    namDanhGia: number;
+}
 
 interface TieuChi {
     ma: number,
     maTieuChi: string,
+    maTieuChuan: number,
     tenTieuChi: string,
     moTa: string,
+    namDanhGia: number
 }
 
 const formSchema = z.object({
-    tieuChi: z.number().int().positive(),
-    tenMinhChung: z.string().nonempty(),
-    maMinhChung: z.string().nonempty(),
+    tieuChi: z.number().int().min(1, { message: "Tiêu chí không hợp lệ" }),
+    tenMinhChung: z.string().nonempty({ message: "Tên minh chứng không được để trống" }),
+    maMinhChung: z.string().nonempty({ message: "Mã minh chứng không được để trống" }),
     namDanhGia: z.number().int().min(1900, { message: "Năm đánh giá không hợp lệ" }),
-    moTa: z.string().nonempty(),
+    moTa: z.string().nonempty({ message: "Mô không được để trống" }),
     danhSachTaiLieu: z.array(z.object({})),
 });
 
 
 export const CreateProofDocumentModal = () => {
     const [isMounted, setMounted] = useState(false);
-    const [evaluationCriteria, setEvaluationCriteria] = useState<TieuChi[]>([]);
+    const [CTDT, setCTDT] = useState<CTDT[]>([]);
+    const [tieuchuan, setTieuChuan] = useState<TieuChuan[]>([]);
+    const [tieuChi, setTieuChi] = useState<TieuChi[]>([]);
+    // console.log(tieuChi)
 
     useEffect(() => {
         setMounted(true);
         const fetchDeparment = async () => {
             try {
-                const evaluationCriteria = await axios.get("/api/evaluationCriteria")
-                setEvaluationCriteria(evaluationCriteria.data);
+                const [CTDTRes, TieuChuanRes, TieuChiRes] = await Promise.all([
+                    axios.get("/api/CTDT"),
+                    axios.get("/api/tieuchuan"),
+                    axios.get("/api/evaluationCriteria")
+                ])
+                setCTDT(CTDTRes.data.listCTDT);
+                setTieuChuan(TieuChuanRes.data.listTieuChuan);
+                setTieuChi(TieuChiRes.data);
             } catch (error) {
                 console.error(error);
             }
@@ -78,10 +107,12 @@ export const CreateProofDocumentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            maCTDT: 0,
+            maTieuChuan: 0,
             tieuChi: 0,
             tenMinhChung: "",
             maMinhChung: "",
-            namDanhGia: new Date().getFullYear(),
+            namDanhGia: 0,
             moTa: "",
             danhSachTaiLieu: [] as string[],
         }
@@ -99,7 +130,7 @@ export const CreateProofDocumentModal = () => {
             // Gửi dữ liệu đến API
             await axios.post("/api/proofDocuments", updateValues);
             // Reset form sau khi thành công
-            console.log(updateValues);
+            // console.log(updateValues);
             // form.reset();
             // Thông báo thành công
             toast({
@@ -241,6 +272,37 @@ export const CreateProofDocumentModal = () => {
     //     console.log(list_MinhChung);
     // }, [list_MinhChung]);
 
+    const selectedYear = form.watch("namDanhGia");
+    const selectedCTDT = form.watch("maCTDT");
+    const selectedTieuChuan = form.watch("maTieuChuan");
+
+
+    const [filterCTDT, setFilterCTDT] = useState<CTDT[]>()
+    const [filterTieuChuan, setFilterTieuChuan] = useState<TieuChuan[]>()
+    const [filterTieuChi, setFilerTieuChi] = useState<TieuChi[]>()
+
+
+    useEffect(() => {
+        // form.setValue("tieuChi", 0)
+        if (selectedYear) {
+            setFilterCTDT(CTDT.filter((item) => item.namDanhGia === selectedYear));
+            setFilerTieuChi([])
+        }
+        if (filterCTDT) {
+            setFilterTieuChuan(tieuchuan.filter((item) => item.maCTDT === selectedCTDT));
+        } 
+        if (filterTieuChuan) {
+            setFilerTieuChi(tieuChi.filter((item) => item.maTieuChuan === selectedTieuChuan));
+        }
+    }, [selectedYear, selectedCTDT, selectedTieuChuan]);
+
+    // useEffect(() => {
+    //     console.log(filterTieuChuan);
+    //     console.log(filterCTDT);
+    //     console.log(filterTieuChi);
+
+    // }, [filterTieuChuan, filterCTDT, filterTieuChi])
+
     return (
         <div>
             <div className="w-full">
@@ -251,6 +313,108 @@ export const CreateProofDocumentModal = () => {
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                     <div className=" px-6 grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="namDanhGia"
+                                            render={({ field }) => (
+                                                <FormItem className="row-start-1">
+                                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                                                        Năm đánh giá
+                                                    </FormLabel>
+                                                    <Select
+                                                        defaultValue={field.value.toString()}
+                                                        onValueChange={(value) => {
+                                                            field.onChange(Number(value));
+                                                        }}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger
+                                                                className="bg-zinc-300/50 border-0 "
+                                                            >
+                                                                <SelectValue placeholder="Năm đánh giá" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {years.map((item) => (
+                                                                <SelectItem key={item.value} value={item.value}>
+                                                                    {item.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="maCTDT"
+                                            render={({ field }) => (
+                                                <FormItem className="row-start-1">
+                                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                                                        Chương trình đào tạo
+                                                    </FormLabel>
+                                                    <Select
+                                                        disabled={isLoading}
+                                                        defaultValue={field.value ? field.value.toString() : ""}
+                                                        onValueChange={(value) => {
+                                                            field.onChange(Number(value));
+                                                        }}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger
+                                                                className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
+                                                            >
+                                                                <SelectValue placeholder="Chọn chương trình đào tạo" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {filterCTDT?.map((item, index) => (
+                                                                <SelectItem key={index} value={item.ma.toString()} className="capitalize">
+                                                                    {item.maCTDT} - {item.tenCTDT}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="maTieuChuan"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                                                        Tiêu chuẩn
+                                                    </FormLabel>
+                                                    <Select
+                                                        disabled={isLoading}
+                                                        defaultValue={field.value ? field.value.toString() : ""}
+                                                        onValueChange={(value) => {
+                                                            field.onChange(Number(value));
+                                                        }}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger
+                                                                className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
+                                                            >
+                                                                <SelectValue placeholder="Chọn tiêu chuẩn" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {filterTieuChuan?.map((item, index) => (
+                                                                <SelectItem key={index} value={item.ma.toString()} className="capitalize">
+                                                                    {item.maTieuChuan} - {item.tenTieuChuan}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                         <FormField
                                             control={form.control}
                                             name="tieuChi"
@@ -274,7 +438,7 @@ export const CreateProofDocumentModal = () => {
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            {evaluationCriteria?.map((item, index) => (
+                                                            {filterTieuChi?.map((item, index) => (
                                                                 <SelectItem key={index} value={item.ma.toString()} className="capitalize">
                                                                     {item.maTieuChi} - {item.tenTieuChi}
                                                                 </SelectItem>
@@ -321,41 +485,7 @@ export const CreateProofDocumentModal = () => {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
-                                            control={form.control}
-                                            name="namDanhGia"
-                                            render={({ field }) => (
-                                                <FormItem className="row-start-2">
-                                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500
-                                        dark:text-secondary/70">
-                                                        Năm đánh giá
-                                                    </FormLabel>
-                                                    <Select
-                                                        defaultValue={field.value.toString()}
-                                                        onValueChange={(value) => {
-                                                            field.onChange(Number(value));
-                                                        }}
-                                                    >
-                                                        <FormControl>
-                                                            <SelectTrigger
-                                                                className="bg-zinc-300/50 border-0 "
-                                                            >
-                                                                <SelectValue placeholder="Năm đánh giá" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {years.map((item) => (
-                                                                <SelectItem key={item.value} value={item.value}>
-                                                                    {item.label}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
 
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
                                         <FormField
                                             control={form.control}
                                             name="moTa"
@@ -364,7 +494,7 @@ export const CreateProofDocumentModal = () => {
                                                     <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
                                                         Mô tả
                                                     </FormLabel>
-                                                    <Input
+                                                    <Textarea
                                                         disabled={isLoading}
                                                         className="bg-zinc-300/50 border-0
                                                 focus-visible:ring-0 text-black

@@ -83,10 +83,10 @@ export const EditDocument = ({
         const fetchDeparment = async () => {
             try {
                 const [departmentRes, fieldRes, typeRes, releaseRes] = await Promise.all([
-                    axios.get("/api/department"),
-                    axios.get("/api/fieldDocument"),
-                    axios.get("/api/typeDocument"),
-                    axios.get("/api/releaseLevel"),
+                    axios.get("/api/department?all=true"),
+                    axios.get("/api/fieldDocument?all=true"),
+                    axios.get("/api/typeDocument?all=true"),
+                    axios.get("/api/releaseLevel?all=true"),
                 ]);
 
                 setDeparment(departmentRes.data);
@@ -207,9 +207,9 @@ export const EditDocument = ({
     const isLoading = form.formState.isSubmitting;
 
     return (
-        <div>
+        <div className="flex justify-center items-center h-full">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-3/5">
                     <div className=" px-6 grid grid-cols-2 gap-4">
                         <FormField
                             control={form.control}

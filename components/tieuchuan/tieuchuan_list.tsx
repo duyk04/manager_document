@@ -29,6 +29,7 @@ import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
 
 export const ViewListTieuChuan = () => {
     const router = useRouter();
@@ -102,25 +103,30 @@ export const ViewListTieuChuan = () => {
         <div className="w-full rounded-lg shadow-sm">
             <div className="flex flex-row gap-4 justify-between">
                 <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
-                    <Input
-                        placeholder="Nhập mã hoặc tên tiêu chuẩn"
-                        className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-                    />
-                    <button className="absolute right-0 p-2">
-                        <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
-                    </button>
+                    <Link href="/tieuchuan/create">
+                        <Button variant={"primary"} onClick={() => { }}>Thêm</Button>
+                    </Link>
                 </div>
                 {/* tính năng lọc tìm kiếm */}
-                <div className="flex gap-4 my-4">
+                <div className="flex gap-4 my-4 relative items-center justify-end w-3/5">
                     <Combobox options={CTDTOptions} label="Chương trình đào tạo" onChange={setSelectedCTDT} />
                     <Combobox options={linhVucOptions} label="Lĩnh vực" onChange={setSelectedLinhVuc} />
                     <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
                     {/* <Combobox options={sortDateOptions} label="Mới nhất." onChange={setSelectedSortDate} /> */}
+                    <div className="w-1/3 relative flex items-cente">
+                        <Input
+                            placeholder="Nhập mã hoặc tên tiêu chuẩn"
+                            className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+                        />
+                        <button className="absolute right-0 p-2">
+                            <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
+                        </button>
+                    </div>
                 </div>
             </div>
             <Table className="w-full text-center items-center">
-                <TableCaption>Danh sách văn bản</TableCaption>
+                <TableCaption>Danh sách tiêu chuẩn</TableCaption>
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>

@@ -1,6 +1,5 @@
 import { ListReleaseLevel } from "@/components/manage-release/type-list";
 import { currentProfile } from "@/lib/current-profile";
-import { db } from "@/lib/db";
 import { VaiTro } from "@prisma/client";
 
 const TypePage = async () => {
@@ -19,22 +18,14 @@ const TypePage = async () => {
         );
     }
 
-    const listReleaseLevel = await db.capBanHanh.findMany({
-        select: {
-            ma: true,
-            tenCap: true,
-            moTa: true,
-        },
-    });
-
     return (
         <div className="w-full">
-            <div className="mb-8">
+            <div className="mb-5">
                 <p className="text-2xl">Quản lý cấp ban hành</p>
                 <p className="text-zinc-400 text-md">Tạo và quản lý các cấp ban hành</p>
             </div>
             <div>
-                <ListReleaseLevel listReleaseLevel={listReleaseLevel} />
+                <ListReleaseLevel/>
             </div>
         </div>
     )

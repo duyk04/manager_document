@@ -48,15 +48,29 @@ interface TieuChuan {
     namDanhGia: number;
 }
 
+
+interface CTDT {
+    ma: number;
+    maCTDT: string;
+    tenCTDT: string;
+    moTa: string;
+    namDanhGia: number;
+}
+
 export const Create_TieuChi = () => {
     const router = useRouter();
     const [isMounted, setMounted] = useState(false);
     const [tieuchuan, setTieuChuan] = useState<TieuChuan[]>([]);
+    const [CTDT, setCTDT] = useState<CTDT[]>([]);
     useEffect(() => {
         setMounted(true);
         const fetchDeparment = async () => {
             try {
-                const TieuChuanRes = await axios.get("/api/tieuchuan");
+                const [CTDTRes, TieuChuanRes,] = await Promise.all([
+                    axios.get("/api/CTDT"),
+                    axios.get("/api/tieuchuan")
+                ])
+                setCTDT(CTDTRes.data.listCTDT);
                 setTieuChuan(TieuChuanRes.data.listTieuChuan);
             } catch (error) {
                 console.error(error);
@@ -70,9 +84,10 @@ export const Create_TieuChi = () => {
         defaultValues: {
             maTieuChi: "",
             maTieuChuan: 0,
+            maCTDT: 0,
             tenTieuChi: "",
             moTa: "",
-            namDanhGia: new Date().getFullYear(),
+            namDanhGia: 0,
         }
     });
 
@@ -104,6 +119,31 @@ export const Create_TieuChi = () => {
         label: (currentYear - i).toString(),
     }));
 
+    // Sử dụng watch để theo dõi sự thay đổi của namDanhGia
+    const selectedYear = form.watch("namDanhGia");
+    const selectedCTDT = form.watch("maCTDT");
+
+    const [filterTieuChuan, setFilterTieuChuan] = useState<TieuChuan[]>();
+    const [filterCTDT, setFilterCTDT] = useState<CTDT[]>();
+    // console.log(tieuchuan);
+
+    useEffect(() => {
+        form.setValue("maTieuChuan", 0)
+        if (selectedYear) {
+            setFilterCTDT(CTDT.filter((item) => item.namDanhGia === selectedYear));
+            setFilterTieuChuan(tieuchuan.filter((item) => item.maCTDT === selectedCTDT));
+        }
+        // if (selectedCTDT) {
+            
+        //     // console.log(selectedCTDT)
+        // }
+    }, [selectedYear, selectedCTDT]);
+
+    // useEffect(() => {
+    //     console.log(filterCTDT);
+    //     console.log(filterTieuChuan);
+    // }, [filterCTDT, filterTieuChuan]);
+
 
     return (
         <Form {...form}>
@@ -111,23 +151,70 @@ export const Create_TieuChi = () => {
                 <div className="px-6 grid grid-cols-2 gap-6 w-1/2 m-auto">
                     <FormField
                         control={form.control}
-                        name="maTieuChi"
+                        name="namDanhGia"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="row-start-1">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500
                                         dark:text-secondary/70">
-                                    Mã tiêu chí
+                                    Năm đánh giá
                                 </FormLabel>
-                                <FormControl>
-                                    <Input
-                                        disabled={isLoading}
-                                        className="bg-zinc-300/50 border-0
-                                                focus-visible:ring-0 text-black
-                                                focus-visible:ring-offset-0"
-                                        placeholder="Mã tiêu chuẩn"
-                                        {...field}
-                                    />
-                                </FormControl>
+                                <Select
+                                    defaultValue={field.value.toString()}
+                                    onValueChange={(value) => {
+                                        field.onChange(Number(value));
+                                    }}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger
+                                            className="bg-zinc-300/50 border-0 "
+                                        >
+                                            <SelectValue placeholder="Năm đánh giá" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {years.map((item) => (
+                                            <SelectItem key={item.value} value={item.value}>
+                                                {item.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="maCTDT"
+                        render={({ field }) => (
+                            <FormItem className="row-start-1">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500
+                                        dark:text-secondary/70">
+                                    Chương trình đào tạo
+                                </FormLabel>
+                                <Select
+                                    disabled={isLoading}
+                                    defaultValue={field.value ? field.value.toString() : ""}
+                                    onValueChange={(value) => {
+                                        field.onChange(Number(value));
+                                    }}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger
+                                            className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
+                                        >
+                                            <SelectValue placeholder="Chọn chương trình đào tạo" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {filterCTDT?.map((item, index) => (
+                                            <SelectItem key={index} value={item.ma.toString()} className="capitalize">
+                                                {item.maCTDT} - {item.tenCTDT}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -156,13 +243,37 @@ export const Create_TieuChi = () => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {tieuchuan?.map((item, index) => (
+                                        {filterTieuChuan?.map((item, index) => (
                                             <SelectItem key={index} value={item.ma.toString()} className="capitalize">
                                                 {item.maTieuChuan} - {item.tenTieuChuan}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <br />
+                    <FormField
+                        control={form.control}
+                        name="maTieuChi"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="uppercase 3 text-xs font-bold text-zinc-500
+                                        dark:text-secondary/70">
+                                    Mã tiêu chí
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        disabled={isLoading}
+                                        className="bg-zinc-300/50 border-0
+                                                focus-visible:ring-0 text-black
+                                                focus-visible:ring-offset-0"
+                                        placeholder="Mã tiêu chuẩn"
+                                        {...field}
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -186,41 +297,6 @@ export const Create_TieuChi = () => {
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="namDanhGia"
-                        render={({ field }) => (
-                            <FormItem className="row-start-2">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500
-                                        dark:text-secondary/70">
-                                    Năm đánh giá
-                                </FormLabel>
-                                <Select
-                                    defaultValue={field.value.toString()}
-                                    onValueChange={(value) => {
-                                        field.onChange(Number(value));
-                                    }}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger
-                                            className="bg-zinc-300/50 border-0 "
-                                        >
-                                            <SelectValue placeholder="Năm đánh giá" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {years.map((item) => (
-                                            <SelectItem key={item.value} value={item.value}>
-                                                {item.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-
-                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

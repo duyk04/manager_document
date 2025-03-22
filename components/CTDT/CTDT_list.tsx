@@ -29,6 +29,7 @@ import { Combobox } from "../combobox";
 import { Separator } from "../ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
 
 export const ViewListCTDT = () => {
     const router = useRouter();
@@ -92,20 +93,27 @@ export const ViewListCTDT = () => {
     return (
         <div className="w-full rounded-lg shadow-sm">
             <div className="flex flex-row gap-4 justify-between">
-                <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
-                    <Input
-                        placeholder="Nhập mã hoặc tên chương trình đào tạo"
-                        className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-                    />
-                    <button className="absolute right-0 p-2">
-                        <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
-                    </button>
+                <div className="relative flex items-center w-2/5 py-4 bg-white dark:bg-gray-800">
+                    <div className="mr-2">
+                        <Link href="/CTDT/create">
+                            <Button variant={"primary"} onClick={() => { }}>Thêm</Button>
+                        </Link>
+                    </div>
                 </div>
                 {/* tính năng lọc tìm kiếm */}
-                <div className="flex gap-4 my-4">
+                <div className="flex gap-4 my-4 relative items-center justify-end w-2/5">
                     <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
                     {/* <Combobox options={sortDateOptions} label="Mới nhất." onChange={setSelectedSortDate} /> */}
+                    <div className="w-1/2 relative flex items-cente">
+                        <Input
+                            placeholder="Nhập mã hoặc tên chương trình đào tạo"
+                            className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+                        />
+                        <button className="absolute right-0 p-2">
+                            <Search className="h-6 w-6 text-gray-400 dark:text-gray-500" />
+                        </button>
+                    </div>
                 </div>
             </div>
             <Table className="w-full text-center items-center">
@@ -113,7 +121,7 @@ export const ViewListCTDT = () => {
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>
-                        <TableHead className="font-semibold">Mã chương trình đào tạo</TableHead>
+                        <TableHead className="font-semibold">Mã</TableHead>
                         <TableHead className="font-semibold">Tên chương trình đào tạo</TableHead>
                         <TableHead className="font-semibold">Mô tả</TableHead>
                         <TableHead className="font-semibold">Năm đánh giá</TableHead>

@@ -50,7 +50,7 @@ export async function POST(
 }
 
 export async function GET(
-    // req: Request,
+    req: Request,
 ) {
     try {
         const profile = await currentProfile();
@@ -59,16 +59,63 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const field = await db.linhVuc.findMany({
+        const { searchParams } = new URL(req.url);
+        const getAll = searchParams.get("all") === "true";
+        const keyword = searchParams.get("keyword")?.trim() || "";
+
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize
+
+        if (getAll) {
+            const linhVuc = await db.linhVuc.findMany({
+                select: {
+                    ma: true,
+                    maLinhVuc: true,
+                    tenLinhVuc: true,
+                    moTa: true,
+                }
+            });
+            return NextResponse.json(linhVuc);
+        }
+
+        let whereCondition: any = {
+            AND: []
+        };
+
+        if (keyword) {
+            whereCondition.AND.push({
+                OR: [
+                    { maLinhVuc: { contains: keyword } },
+                    { tenLinhVuc: { contains: keyword } },
+                    { moTa: { contains: keyword } }
+                ]
+            });
+        }
+
+        const linhVuc = await db.linhVuc.findMany({
+            where: whereCondition,
             select: {
                 ma: true,
                 maLinhVuc: true,
                 tenLinhVuc: true,
                 moTa: true,
-            }
+            },
+            take: pageSize,
+            skip: skip,
         });
 
-        return NextResponse.json(field);
+        const totalRecords = await db.linhVuc.count({ where: whereCondition });
+        const totalPages = Math.ceil(totalRecords / pageSize);
+
+        return NextResponse.json(
+            {
+                linhVuc: linhVuc,
+                totalRecords: totalRecords,
+                totalPages: totalPages,
+                page: page,
+            }
+        );
     } catch (error) {
         console.error("FIELD_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
@@ -156,7 +203,7 @@ export async function DELETE(
         const CTDTExist = await db.chuongTrinhDaoTao.findFirst({
             where: {
                 ma: ma,
-            },include: {
+            }, include: {
                 tieuChuan: true
             }
         })

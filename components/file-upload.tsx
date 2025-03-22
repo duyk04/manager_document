@@ -139,7 +139,7 @@ export const FileUpload = ({
 				required={required}
 			/>
 			<Button className="col-span-1" variant="primary" onClick={handleUpload}>
-				Up file
+				Tải lên
 			</Button>
 		</div>
 	);

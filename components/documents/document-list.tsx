@@ -150,7 +150,7 @@ export const ViewDocumentModal = () => {
                 </div>
             </div>
             <Table className="w-full text-center items-center">
-                <TableCaption>Danh sách văn bản</TableCaption>
+                <TableCaption className="mb-10">Danh sách văn bản</TableCaption>
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>
@@ -262,27 +262,29 @@ export const ViewDocumentModal = () => {
             </Table>
 
             {/* Phân trang */}
-            <Separator />
-            <Pagination>
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
-                    </PaginationItem>
-                    {[...Array(totalPages)].map((_, index) => (
-                        <PaginationItem key={index}>
-                            <PaginationLink onClick={() => setCurrentPage(index + 1)}>
-                                {index + 1}
-                            </PaginationLink>
+            <div className="absolute bottom-0 right-0 w-full">
+                <Separator />
+                <Pagination >
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
                         </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+                        {[...Array(totalPages)].map((_, index) => (
+                            <PaginationItem key={index}>
+                                <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                                    {index + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+            </div>
         </div>
     );
 };

@@ -64,7 +64,9 @@ export async function GET(
                 ma: true,
                 maTieuChi: true,
                 tenTieuChi: true,
+                maTieuChuan: true,
                 moTa: true,
+                namDanhGia: true
             }
         });
 

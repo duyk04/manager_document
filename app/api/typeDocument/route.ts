@@ -56,15 +56,60 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const type = await db.loaiVanBan.findMany({
+        const { searchParams } = new URL(req.url);
+        const getAll = searchParams.get("all") === "true";
+        const keyword = searchParams.get("keyword")?.trim() || "";
+
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize
+
+        if (getAll) {
+            const loaiVanBan = await db.loaiVanBan.findMany({
+                select: {
+                    ma: true,
+                    tenLoaiVanBan: true,
+                    moTa: true,
+                }
+            });
+            return NextResponse.json(loaiVanBan);
+        }
+
+        let whereCondition: any = {
+            AND: []
+        };
+
+        if (keyword) {
+            whereCondition.AND.push({
+                OR: [
+                    { tenLoaiVanBan: { contains: keyword } },
+                    { moTa: { contains: keyword } }
+                ]
+            });
+        }
+
+        const loaiVanBan = await db.loaiVanBan.findMany({
+            where: whereCondition,
             select: {
                 ma: true,
                 tenLoaiVanBan: true,
                 moTa: true,
-            }
+            },
+            take: pageSize,
+            skip: skip,
         });
 
-        return NextResponse.json(type);
+        const totalRecords = await db.loaiVanBan.count({ where: whereCondition });
+        const totalPages = Math.ceil(totalRecords / pageSize);
+
+        return NextResponse.json(
+            {
+                loaiVanBan: loaiVanBan,
+                totalRecords: totalRecords,
+                totalPages: totalPages,
+                page: page,
+            }
+        );
     } catch (error) {
         console.error("TYPE_DOCUMENT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
@@ -97,7 +142,7 @@ export async function PATCH(
             }
         });
 
-        if ( typeExist && typeExist.ma != ma) {
+        if (typeExist && typeExist.ma != ma) {
             return new NextResponse("Loại văn bản này đã tồn tại", { status: 400 });
         }
 
@@ -138,7 +183,7 @@ export async function DELETE(
         const typeExist = await db.loaiVanBan.findFirst({
             where: {
                 ma: ma,
-            },include: {
+            }, include: {
                 taiLieu: true,
             }
         });

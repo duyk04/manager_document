@@ -17,7 +17,7 @@ export const LogoutButton = () => {
 
 	return (
 		<button onClick={onClickSignOut} className="w-full text-left">
-			Log out
+			Đăng xuất
 		</button>
 	);
 };

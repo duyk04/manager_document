@@ -48,7 +48,7 @@ export async function POST(
 }
 
 export async function GET(
-    // req: Request,
+    req: Request,
 ) {
     try {
         const profile = await currentProfile();
@@ -57,15 +57,60 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const releaseLevel = await db.capBanHanh.findMany({
+        const { searchParams } = new URL(req.url);
+        const getAll = searchParams.get("all") === "true";
+        const keyword = searchParams.get("keyword")?.trim() || "";
+
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize
+
+        if (getAll) {
+            const capBanHanh = await db.capBanHanh.findMany({
+                select: {
+                    ma: true,
+                    tenCap: true,
+                    moTa: true,
+                }
+            });
+            return NextResponse.json(capBanHanh);
+        }
+
+        let whereCondition: any = {
+            AND: []
+        };
+
+        if (keyword) {
+            whereCondition.AND.push({
+                OR: [
+                    { tenCap: { contains: keyword } },
+                    { moTa: { contains: keyword } }
+                ]
+            });
+        }
+
+        const capBanHanh = await db.capBanHanh.findMany({
+            where: whereCondition,
             select: {
                 ma: true,
                 tenCap: true,
                 moTa: true,
-            }
+            },
+            take: pageSize,
+            skip: skip,
         });
 
-        return NextResponse.json(releaseLevel);
+        const totalRecords = await db.capBanHanh.count({ where: whereCondition });
+        const totalPages = Math.ceil(totalRecords / pageSize);
+
+        return NextResponse.json(
+            {
+                capBanHanh: capBanHanh,
+                totalRecords: totalRecords,
+                totalPages: totalPages,
+                page: page,
+            }
+        );
     } catch (error) {
         console.error("RELEASE_LEVEL_DOCUMENT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
@@ -139,7 +184,7 @@ export async function DELETE(
         const releaseLevelExist = await db.capBanHanh.findFirst({
             where: {
                 ma: ma,
-            },include: {
+            }, include: {
                 taiLieu: true,
             }
         });

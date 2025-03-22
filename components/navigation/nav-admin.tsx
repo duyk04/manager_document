@@ -136,7 +136,7 @@ export function NavAdmin() {
 						</SidebarMenuItem>
 					</Collapsible>
 				))}
-				{projects.map((item) => (
+				{/* {projects.map((item) => (
 					<SidebarMenuItem key={item.name}>
 						<SidebarMenuButton asChild>
 							<a href={item.url}>
@@ -172,7 +172,7 @@ export function NavAdmin() {
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</SidebarMenuItem>
-				))}
+				))} */}
 				<SidebarMenuItem>
 					<SidebarMenuButton className="text-sidebar-foreground/70">
 						<MoreHorizontal className="text-sidebar-foreground/70" />

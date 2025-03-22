@@ -9,7 +9,7 @@ export async function POST(
     try {
         const { ma, email, subject, conten } = await req.json();
 
-        console.log(ma, email, subject, conten);
+        // console.log(ma, email, subject, conten);
 
         if (!ma) {
             return new NextResponse("Invalid fields!", { status: 400 });

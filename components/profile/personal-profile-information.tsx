@@ -110,9 +110,7 @@ const PersonalProfileInformation = ({
     // console.log(isPending);
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-
         // console.log(values); 
-
         startTransition(() => {
             changeInfo(values)
                 .then((data) => {
@@ -129,6 +127,7 @@ const PersonalProfileInformation = ({
                             title: data.success,
                             description: "Thông tin tài khoản đã được cập nhật",
                         });
+                        setIsEditingName(false);
                         form.reset();
                         router.refresh();
                     }
@@ -171,12 +170,14 @@ const PersonalProfileInformation = ({
                                         onClick={() => {
                                             if (isEditingName) {
                                                 form.setValue("hoTen", field.value);
+                                            } setIsEditingName(!isEditingName);
+                                            if (!isEditingEmail) {
+                                                form.setValue("hoTen", user?.hoTen ?? "");
                                             }
-                                            setIsEditingName(!isEditingName);
                                         }}
                                         className="ml-4 mb-4"
                                     >
-                                        {isEditingName ? "Lưu" : "Chỉnh sửa"}
+                                        {isEditingName ? "Hủy " : "Chỉnh sửa"}
                                     </Button>
                                 </div>
                             </FormItem>
@@ -315,7 +316,7 @@ const PersonalProfileInformation = ({
                         <div className="flex items-center justify-between mb-6">
                             <Button
                                 type="button"
-                                onClick={() =>onOpen("resetPassword", { ma: user?.ma, email: user?.email })}
+                                onClick={() => onOpen("resetPassword", { ma: user?.ma, email: user?.email })}
                                 variant="ghost"
                                 className="text-indigo-600 hover:underline"
                             >

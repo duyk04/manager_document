@@ -70,7 +70,7 @@ export async function GET(req: Request) {
         const page = parseInt(searchParams.get("page") || "1", 10);
         const namDanhGiaFilter = parseInt(searchParams.get("namDanhGia") || "0", 0) || null;
         const tieuChiFilter = parseInt(searchParams.get("tieuChi") || "0", 0) || null;
-        const pageSize = 10
+        const pageSize = 10;
         const skip = (page - 1) * pageSize;
 
         const whereCondition: Prisma.MinhChungWhereInput = {
@@ -117,7 +117,10 @@ export async function GET(req: Request) {
                             select: {
                                 tenTaiLieu: true,
                                 soVanBan: true,
-                                file: true
+                                ngayBanHanh: true,
+                                capBanHanh: true,
+                                file: true,
+                              
                             }
                         }
                     }

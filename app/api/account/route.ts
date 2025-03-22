@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from 'bcrypt';
 import { sendMail } from '@/lib/mail';
+import { Prisma, VaiTro } from "@prisma/client";
 
 export async function PATCH(
     req: Request,
@@ -27,8 +28,6 @@ export async function PATCH(
             vaiTro,
             trangThai
         } = await req.json();
-
-        // console.log(ma, donVi, hoTen, email, vaiTro);
 
         const maDonVi = typeof donVi === 'string' ? Number(donVi) : donVi;
 
@@ -55,6 +54,111 @@ export async function PATCH(
 
     } catch (error) {
         console.error("ACCOUNT_POST", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
+}
+
+export async function GET(
+    req: Request,
+) {
+    try {
+        const profile = await currentProfile();
+
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (profile.vaiTro !== "QUANTRIVIEN") {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const { searchParams } = new URL(req.url);
+        const keyword = searchParams.get("keyword")?.trim() || "";
+        const donViFilter = parseInt(searchParams.get("donVi") || "0", 0) || null;
+        const trangThaiFilter = searchParams.get("trangThai") || "";
+        const vaiTroFilter = searchParams.get("vaiTro") as VaiTro || undefined;
+
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize;
+
+        const whereCondition: Prisma.NguoiDungWhereInput = {
+            AND: []
+        };
+
+        const andConditions = whereCondition.AND as Prisma.NguoiDungWhereInput[];
+
+        if (keyword) {
+            andConditions.push({
+                OR: [
+                    { hoTen: { contains: keyword } },
+                    { email: { contains: keyword } }
+                ]
+            });
+        }
+
+        if (donViFilter) {
+            andConditions.push({
+                donVi: {
+                    ma: donViFilter,
+                }
+            });
+        }
+
+        if (trangThaiFilter) {
+            andConditions.push({
+                trangThai: trangThaiFilter === "true" ? true : false,
+            });
+        }
+
+        if (vaiTroFilter) {
+            andConditions.push({
+                vaiTro: vaiTroFilter,
+            });
+        }
+
+        const users = await db.nguoiDung.findMany({
+            where: whereCondition,
+            select: {
+                ma: true,
+                hoTen: true,
+                email: true,
+                vaiTro: true,
+                trangThai: true,
+                donVi: {
+                    select: {
+                        ma: true,
+                        tenDonVi: true,
+                    }
+                }
+            },
+            take: pageSize,
+            skip: skip,
+        });
+
+        // Đếm tổng số bản ghi
+        const totalRecords = await db.nguoiDung.count({ where: whereCondition });
+        const totalPages = Math.ceil(totalRecords / pageSize);
+
+        const donVi = await db.donVi.findMany({
+            select: {
+                ma: true,
+                tenDonVi: true,
+            }
+        });
+
+        return NextResponse.json(
+            {
+                users,
+                donVi,
+                totalRecords,
+                totalPages,
+                page,
+            }
+        );
+
+    } catch (error) {
+        console.error("ACCOUNT_GET", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
@@ -115,7 +219,7 @@ export async function POST(
                 Mật khẩu của bạn là: ${newPassword} \n
                 Truy cập vào hệ thống tại http://localhost:3000`
             )
-            const user = await db.nguoiDung.create({
+            await db.nguoiDung.create({
                 data: {
                     hoTen: email,
                     email: email,

@@ -232,16 +232,11 @@ export const EditAccountModal = () => {
                                         <Select
                                             disabled={isLoading}
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        // defaultValue={field.value ? field.value.toString() : ""} // Chuyển giá trị sang string để hiển thị
-                                        // onValueChange={(value) => {
-                                        //     field.onChange(Number(value)); // Chuyển đổi value sang số
-                                        // }}
-
+                                            defaultValue={field.value}                    
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
-                                                    <SelectValue placeholder="Select a department" />
+                                                    <SelectValue placeholder="Chọn đơn vị, phòng ban" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>

@@ -111,16 +111,16 @@ export const NavUser = ({
 							<DropdownMenuItem>
 								<BadgeCheck />
 								<Link href="/profile/information">
-									Account
+									Tài khoản
 								</Link>
 							</DropdownMenuItem>
-							<DropdownMenuItem>
+							{/* <DropdownMenuItem>
 								<CreditCard />
 								Billing
-							</DropdownMenuItem>
+							</DropdownMenuItem> */}
 							<DropdownMenuItem>
 								<Bell />
-								Notifications
+								Thông báo
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />

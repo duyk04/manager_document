@@ -42,7 +42,7 @@ export const CreateAccount = () => {
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const response = await axios.get("/api/department");
+                const response = await axios.get("/api/department?all=true");
                 setDonVi(response.data);
             } catch (error) {
                 console.error("Lỗi khi tải tài liệu:", error);
@@ -83,67 +83,69 @@ export const CreateAccount = () => {
     const isLoading = form.formState.isSubmitting;
 
     return (
-        <div>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                    {/* Email input */}
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        {...field}
-                                        disabled={isLoading}
-                                        className="mt-1 block w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                        placeholder="Nhập email, cách nhau bằng dấu phẩy hoặc xuống dòng"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Khoa selection */}
-                    <FormField
-                        control={form.control}
-                        name="donVi"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Khoa</FormLabel>
-                                <Select
-                                    disabled={isLoading}
-                                    defaultValue={field.value ? field.value.toString() : ""}
-                                    onValueChange={(value) => field.onChange(Number(value))}
-                                >
+        <div className="flex items-center justify-center">
+            <div className="w-2/5">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                        {/* Email input */}
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
-                                            <SelectValue placeholder="Chọn khoa" />
-                                        </SelectTrigger>
+                                        <Textarea
+                                            {...field}
+                                            disabled={isLoading}
+                                            className="mt-1 block w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                            placeholder="Nhập email, cách nhau bằng dấu phẩy hoặc xuống dòng"
+                                        />
                                     </FormControl>
-                                    <SelectContent>
-                                        {donVi?.map((item) => (
-                                            <SelectItem key={item.ma} value={item.ma.toString()} className="capitalize">
-                                                {item.tenDonVi}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    <Button
-                        disabled={isLoading}
-                        className="mt-5 w-full bg-emerald-500 font-semibold text-white py-2 px-4 rounded-md shadow hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Đăng ký
-                    </Button>
-                </form>
-            </Form>
+                        {/* Khoa selection */}
+                        <FormField
+                            control={form.control}
+                            name="donVi"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Khoa</FormLabel>
+                                    <Select
+                                        disabled={isLoading}
+                                        defaultValue={field.value ? field.value.toString() : ""}
+                                        onValueChange={(value) => field.onChange(Number(value))}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
+                                                <SelectValue placeholder="Chọn khoa" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {donVi?.map((item) => (
+                                                <SelectItem key={item.ma} value={item.ma.toString()} className="capitalize">
+                                                    {item.tenDonVi}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <Button
+                            disabled={isLoading}
+                            className="mt-5 w-full bg-emerald-500 font-semibold text-white py-2 px-4 rounded-md shadow hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            Đăng ký
+                        </Button>
+                    </form>
+                </Form>
+            </div>
         </div>
     );
 };

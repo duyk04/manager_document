@@ -18,36 +18,14 @@ const AccountPage = async () => {
         return null;
     }
 
-    // const page = 1;
-    // const pageSize = 10;
-
-    const listAccount = await db.nguoiDung.findMany({
-        select: {
-            ma: true,
-            hoTen: true,
-            email: true,
-            vaiTro: true,
-            trangThai: true,
-            donVi: {
-                select: {
-                    ma: true,
-                    tenDonVi: true,
-                },
-            },
-        }
-        // skip: (page - 1) * pageSize, // Bỏ qua các bản ghi trước đó
-        // take: pageSize, // Giới hạn số lượng bản ghi
-    });
-
     return (
         <div>
             <div>
                 <p className="text-2xl">Quản lý tài khoản</p>
-                <p className="text-zinc-400 text-md">Create and manage users, their settings and their information</p>
+                {/* <p className="text-zinc-400 text-md">Create and manage users, their settings and their information</p> */}
             </div>
-            <Separator className="my-4" />
             <div>
-                <ListAccount listAccount={listAccount} />
+                <ListAccount />
             </div>
         </div>
     )

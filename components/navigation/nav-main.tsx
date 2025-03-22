@@ -50,7 +50,7 @@ const navMain = [
 		],
 	},
 	{
-		title: "Đánh giá CTDT",
+		title: "Chương trình đào tạo",
 		url: "#",
 		icon: ListCheck,
 		items: [
@@ -61,37 +61,6 @@ const navMain = [
 			{
 				title: "Thêm mới",
 				url: "/CTDT/create",
-			},
-		],
-	},
-	{
-		title: "Quản lý tiêu chí",
-		url: "#",
-		icon: University,
-		items: [
-			{
-				title: "Danh sách",
-				url: "/tieuchi/view",
-			},
-			{
-				title: "Thêm mới",
-				url: "/tieuchi/create",
-			},
-		],
-	},
-	{
-
-		title: "Quản lý văn bản",
-		url: "#",
-		icon: BookText,
-		items: [
-			{
-				title: "Danh sách",
-				url: "/document/view",
-			},
-			{
-				title: "Thêm mới",
-				url: "/document",
 			},
 		],
 	},
@@ -112,6 +81,21 @@ const navMain = [
 		],
 	},
 	{
+		title: "Quản lý tiêu chí",
+		url: "#",
+		icon: University,
+		items: [
+			{
+				title: "Danh sách",
+				url: "/tieuchi/view",
+			},
+			{
+				title: "Thêm mới",
+				url: "/tieuchi/create",
+			},
+		],
+	},
+	{
 		title: "Quản lý minh chứng",
 		url: "#",
 		icon: BookCheck,
@@ -124,6 +108,22 @@ const navMain = [
 				title: "Thêm mới",
 				url: "/proofDocuments/create",
 			}
+		],
+	},
+	{
+
+		title: "Quản lý văn bản",
+		url: "#",
+		icon: BookText,
+		items: [
+			{
+				title: "Danh sách",
+				url: "/document/view",
+			},
+			{
+				title: "Thêm mới",
+				url: "/document",
+			},
 		],
 	},
 	{
@@ -152,29 +152,29 @@ const navMain = [
 			},
 		],
 	},
-	{
-		title: "Settings",
-		url: "#",
-		icon: Settings2,
-		items: [
-			{
-				title: "General",
-				url: "#",
-			},
-			{
-				title: "Team",
-				url: "#",
-			},
-			{
-				title: "Billing",
-				url: "#",
-			},
-			{
-				title: "Limits",
-				url: "#",
-			},
-		],
-	},
+	// {
+	// 	title: "Settings",
+	// 	url: "#",
+	// 	icon: Settings2,
+	// 	items: [
+	// 		{
+	// 			title: "General",
+	// 			url: "#",
+	// 		},
+	// 		{
+	// 			title: "Team",
+	// 			url: "#",
+	// 		},
+	// 		{
+	// 			title: "Billing",
+	// 			url: "#",
+	// 		},
+	// 		{
+	// 			title: "Limits",
+	// 			url: "#",
+	// 		},
+	// 	],
+	// },
 ]
 export function NavMain() {
 	return (

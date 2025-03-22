@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 const SetupPage = async () => {
     const session = await auth();
     // console.log("session",session);
+    const userId = session?.user.ma;
 
     if (!session) {
         return redirect("/auth/login");
@@ -16,6 +17,25 @@ const SetupPage = async () => {
             email: session?.user.email,
         },
     });
+
+    const imageProfileExist = await db.nguoiDung.findUnique({
+        where: {
+            ma: userId
+        }, select: {
+            anhDaiDien: true
+        }
+    })
+
+    if (imageProfileExist?.anhDaiDien == null && session?.user.anhDaiDien) {
+        await db.nguoiDung.update({
+            where: {
+                ma: userId
+            },
+            data: {
+                anhDaiDien: session?.user.anhDaiDien
+            }
+        })
+    }
 
     // console.log(isUser)
     // const isActive = isUser?.trangThai === true

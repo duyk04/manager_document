@@ -74,10 +74,10 @@ export const CreateDocumentModal = () => {
         const fetchDeparment = async () => {
             try {
                 const [departmentRes, fieldRes, typeRes, releaseRes] = await Promise.all([
-                    axios.get("/api/department"),
-                    axios.get("/api/fieldDocument"),
-                    axios.get("/api/typeDocument"),
-                    axios.get("/api/releaseLevel"),
+                    axios.get("/api/department?all=true"),
+                    axios.get("/api/fieldDocument?all=true"),
+                    axios.get("/api/typeDocument?all=true"),
+                    axios.get("/api/releaseLevel?all=true"),
                 ]);
 
                 setDeparment(departmentRes.data);
@@ -176,9 +176,9 @@ export const CreateDocumentModal = () => {
 
 
     return (
-        <div>
+        <div className="flex justify-center">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-3/5">
                     <div className=" px-6 grid grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
@@ -493,10 +493,10 @@ export const CreateDocumentModal = () => {
                                 <Button
                                     type="button"
                                     variant="secondary"
-                                    className="h-8 w-8 pl-10 text-red-500"
+                                    className="h-8 w-fit text-red-500"
                                     onClick={() => removeFileField(file.id)}
                                 >
-                                    Remove file {index + 1}
+                                    Loại bỏ file {index + 1}
                                 </Button>
                             </div>
                         ))}
@@ -509,7 +509,7 @@ export const CreateDocumentModal = () => {
                             onClick={addFileField}
                             disabled={isLoading}
                         >
-                            Add file
+                            Thêm file
                         </Button>
 
                     </div>

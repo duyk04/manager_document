@@ -1,6 +1,5 @@
 import { ListField } from "@/components/manage-field/field-list";
 import { currentProfile } from "@/lib/current-profile";
-import { db } from "@/lib/db";
 import { VaiTro } from "@prisma/client";
 
 const FieldPage = async () => {
@@ -14,23 +13,14 @@ const FieldPage = async () => {
         return null;
     }
 
-    const listFiels = await db.linhVuc.findMany({
-        select: {
-            ma: true,
-            maLinhVuc: true,
-            tenLinhVuc: true,
-            moTa: true,
-        },
-    });
-
     return (
         <div className="w-full">
             <div>
                 <p className="text-2xl">Quản lý lĩnh vực văn bản</p>
-                <p className="text-zinc-400 text-md">Create and manage deparment, their settings and their information</p>
+                {/* <p className="text-zinc-400 text-md">Create and manage deparment, their settings and their information</p> */}
             </div>
             <div>
-                <ListField listField={listFiels} />
+                <ListField />
             </div>
         </div>
     )
