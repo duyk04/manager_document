@@ -87,7 +87,7 @@ export const ResetPasswordModal = () => {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Reset mật khẩu
+                        Xác nhận email
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
                         Vui lòng xác nhận email

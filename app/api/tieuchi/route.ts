@@ -72,12 +72,18 @@ export async function GET(
 
         const { searchParams } = new URL(req.url);
         const keyword = searchParams.get("keyword")?.trim() || "";
+        const getAll = searchParams.get("all") === "true";
         const namDanhGiaFiler = parseInt(searchParams.get("namDanhGia") || "0", 0) || null;
         const tieuChuanFilter = parseInt(searchParams.get("tieuChuan") || "0", 0) || null;
         const sort = searchParams.get("sort") || "newest";
         const page = parseInt(searchParams.get("page") || "1", 10);
         const pageSize = 10
         const skip = (page - 1) * pageSize;
+
+        if (getAll) {
+            const tieuChi = await db.tieuChi.findMany();
+            return NextResponse.json(tieuChi);       
+        }
 
         const whereCondition: Prisma.TieuChiWhereInput = {
             AND: []

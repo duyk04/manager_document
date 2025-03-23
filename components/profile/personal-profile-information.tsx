@@ -45,6 +45,7 @@ const formSchema = z.object({
     anhDaiDien: z.string().optional(),
     hoTen: z.string().nonempty("Họ tên không được để trống"),
     email: z.string().email("Email không hợp lệ"),
+    passwordOld: z.string().optional(),
     password: z.string()
         .optional()
         .refine((value) => (value ?? "") === "" || (value ?? "").length >= 8, {
@@ -82,6 +83,7 @@ const PersonalProfileInformation = ({
     const [isEditingEmail, setIsEditingEmail] = useState(false);
     const [isEditingPassword, setIsEditingPassword] = useState(false);
 
+    const [showPasswordOld, setShowPasswordOld] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
@@ -91,6 +93,7 @@ const PersonalProfileInformation = ({
             ma: user?.ma ?? "",
             hoTen: user?.hoTen ?? "",
             email: user?.email ?? "",
+            passwordOld: "",
             password: "",
             passwordConfirm: "",
             anhDaiDien: user?.anhDaiDien ?? "",
@@ -101,6 +104,7 @@ const PersonalProfileInformation = ({
         form.setValue("hoTen", user?.hoTen ?? "");
         form.setValue("email", user?.email ?? "");
         form.setValue("anhDaiDien", user?.anhDaiDien ?? "");
+        form.setValue("passwordOld", "");
         form.setValue("password", "");
         form.setValue("passwordConfirm", "");
     }, [user, form]);
@@ -119,7 +123,7 @@ const PersonalProfileInformation = ({
                         toast({
                             variant: "destructive",
                             title: data.error,
-                            description: "Vui lòng thử lại sau!",
+                            description: "Vui lòng thử lại!",
                         });
                     } else {
                         toast({
@@ -248,6 +252,38 @@ const PersonalProfileInformation = ({
                     )}>
                         <FormField
                             control={form.control}
+                            name="passwordOld"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <div className="mb-4">
+                                        <label htmlFor="old-password" className="block text-md font-medium text-gray-700 pb-2">
+                                            Mật khẩu cũ
+                                        </label>
+                                        <div className="flex relative items-center">
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    className="mt-1 block w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    id="old-password"
+                                                    autoComplete="current-password"
+                                                    type={showPasswordOld ? "text" : "password"}
+                                                />
+                                            </FormControl>
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                                                onClick={() => setShowPasswordOld((prev) => !prev)}
+                                            >
+                                                {showPasswordOld ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                                            </button>
+                                        </div>
+                                        <FormMessage />
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
@@ -317,11 +353,11 @@ const PersonalProfileInformation = ({
                             <Button
                                 type="button"
                                 onClick={() => onOpen("resetPassword", { ma: user?.ma, email: user?.email })}
-                                variant="ghost"
+                                variant="outline"
                                 className="text-indigo-600 hover:underline"
                             >
                                 <a href="#" className="text-sm text-indigo-600 hover:underline">
-                                    Reset mật khẩu ?
+                                    Bạn quên mật khẩu ?
                                 </a>
                             </Button>
 

@@ -72,6 +72,7 @@ export async function GET(
 
         const { searchParams } = new URL(req.url);
         const keyword = searchParams.get("keyword")?.trim() || "";
+        const getAll = searchParams.get("all") === "true";
         const namDanhGiaFilter = parseInt(searchParams.get("namDanhGia") || "0", 0) || null;
         const linhVucFilter = parseInt(searchParams.get("linhVuc") || "0", 0) || null;
         const CTDTFilter = parseInt(searchParams.get("CTDT") || "0", 0) || null;
@@ -79,6 +80,11 @@ export async function GET(
         const page = parseInt(searchParams.get("page") || "1", 10);
         const pageSize = 10
         const skip = (page - 1) * pageSize;
+
+        if (getAll) {
+            const tieuChuan = await db.tieuChuan.findMany();
+            return NextResponse.json(tieuChuan);
+        }
 
         let whereCondition: any = {
             AND: []

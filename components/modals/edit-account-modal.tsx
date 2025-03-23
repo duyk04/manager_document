@@ -64,7 +64,7 @@ export const EditAccountModal = () => {
         if (!isModalOpen) return;
         const fetchDeparment = async () => {
             try {
-                const response = await axios.get("/api/department");
+                const response = await axios.get("/api/department?all=true");
                 setDeparment(response.data);
             } catch (error) {
                 console.error(error);

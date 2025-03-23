@@ -88,12 +88,12 @@ export const CreateProofDocumentModal = () => {
         const fetchDeparment = async () => {
             try {
                 const [CTDTRes, TieuChuanRes, TieuChiRes] = await Promise.all([
-                    axios.get("/api/CTDT"),
-                    axios.get("/api/tieuchuan"),
-                    axios.get("/api/evaluationCriteria")
+                    axios.get("/api/CTDT?all=true"),
+                    axios.get("/api/tieuchuan?all=true"),
+                    axios.get("/api/tieuchi?all=true"),
                 ])
-                setCTDT(CTDTRes.data.listCTDT);
-                setTieuChuan(TieuChuanRes.data.listTieuChuan);
+                setCTDT(CTDTRes.data);
+                setTieuChuan(TieuChuanRes.data);
                 setTieuChi(TieuChiRes.data);
             } catch (error) {
                 console.error(error);

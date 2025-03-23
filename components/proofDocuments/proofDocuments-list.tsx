@@ -101,7 +101,7 @@ export const ViewListProofDocument = () => {
     const tieuChiOptions = [
         ...tieuChi.map((item) => ({
             value: item.ma.toString(),
-            label: item.tenTieuChi,
+            label:`${item.maTieuChi} - ${item.tenTieuChi}`,
         })),
     ]
 
@@ -127,7 +127,7 @@ export const ViewListProofDocument = () => {
                 <div className="flex gap-4 my-4">
                     <Combobox options={tieuChiOptions} label="Tiêu chí" onChange={setSelectedTieuChi} />
                     <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
-                    <Combobox options={sortDateOptions} label="Ngày ban hành..." onChange={setSelectedSortDate} />
+                    <Combobox options={sortDateOptions} label="Ngày tạo" onChange={setSelectedSortDate} />
                 </div>
             </div>
             <div>

@@ -23,16 +23,34 @@ const EditMinhChung = async ({
     const maMinhChung = decodeURIComponent((await params).maMinhChung);
 
     const minhChung = await db.minhChung.findUnique({
-        where: {
-            maMinhChung: maMinhChung,
-        }, include: {
+        where: { maMinhChung },
+        include: {
             tieuChi: {
                 select: {
                     ma: true,
                     maTieuChi: true,
+                    maTieuChuan:true,
                     tenTieuChi: true,
                     moTa: true,
-                }
+                    tieuChuan: {
+                        select: {
+                            ma: true,
+                            maTieuChuan: true,
+                            maCTDT:true,
+                            tenTieuChuan: true,
+                            moTa: true,
+                            ChuongTrinhDaoTao: {
+                                select: {
+                                    ma: true,
+                                    maCTDT: true,
+                                    tenCTDT: true,
+                                    moTa: true,
+                                    namDanhGia: true,
+                                },
+                            },
+                        },
+                    },
+                },
             },
             taiLieu: {
                 select: {
@@ -44,12 +62,19 @@ const EditMinhChung = async ({
                             trichYeu: true,
                             ngayBanHanh: true,
                             // file: true
-                        }
-                    }
-                }
-            }
-        }
+                        },
+                    },
+                },
+            },
+        },
     });
+
+    
+    // Kiểm tra nếu không tìm thấy dữ liệu
+    if (!minhChung) {
+        throw new Error("Không tìm thấy minh chứng!");
+    }
+    
     // console.log(minhChung);
     const QUANLY = profile?.vaiTro === 'QUANLY';
 
@@ -67,13 +92,7 @@ const EditMinhChung = async ({
     return (
         <div>
             <EditProofDocument
-                ma={minhChung.ma}
-                maMinhChung={minhChung.maMinhChung}
-                tenMinhChung={minhChung.tenMinhChung}
-                tieuChi={minhChung.tieuChi}
-                taiLieu={minhChung.taiLieu}
-                moTa={minhChung?.moTa ?? ""}
-                namDanhGia={minhChung.namDanhGia}
+                minhchung={minhChung}
             />
         </div>
     )

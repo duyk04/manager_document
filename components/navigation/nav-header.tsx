@@ -17,8 +17,25 @@ const hrefs = [
     { title: "Tài khoản", url: "/admin/account" },
     { title: "Danh sách tài khoản", url: "/admin/account/list" },
     { title: "Thêm tài khoản", url: "/admin/account/create-account" },
-    { title: "Chỉnh sửa tài khoản", url: "/admin/account/edit" }
-
+    { title: "Chỉnh sửa tài khoản", url: "/admin/account/edit" },
+    { title: "Quản lí đơn vị, khoa", url: "/admin/department" },
+    { title: "Quản lí lĩnh vực văn bản", url: "/admin/field" },
+    { title: "Quản lí loại văn bản", url: "/admin/type" },
+    { title: "Quản lí cấp ban hành", url: "/admin/release-level" },
+    { title: "Danh sách chương trình đào tạo", url: "/CTDT" },
+    { title: "Tạo mới", url: "/CTDT/create" },
+    { title: "Danh sách tiêu chuẩn", url: "/tieuchuan/view" },
+    { title: "Tạo mới tiêu chuẩn", url: "/tieuchuan/create" },
+    { title: "Danh sách tiêu chí", url: "/tieuchi/view" },
+    { title: "Thêm mới tiêu chí", url: "/tieuchi/create" },
+    { title: "Danh sách minh chứng", url: "/proofDocuments" },
+    { title: "Thêm mới minh chứng", url: "/proofDocuments/create" },
+    { title: "Chỉnh sửa minh chứng", url: "/proofDocuments/edit" },
+    { title: "Danh sách văn bản", url: "/document/view" },
+    { title: "Chỉnh sửa văn bản", url: "/document/edit" },
+    { title: "Xem chi tiết văn bản", url: "/document/view/" },
+    { title: "Thông tin tài khoản", url: "/profile/information" },
+    { title: "Thêm mới tài liệu, văn bản", url: "/document" },
 ];
 
 export const NavHeader = () => {

@@ -27,9 +27,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/hunre.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -37,9 +36,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_1.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -47,9 +45,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_2.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -57,9 +54,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_3.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -67,9 +63,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_4.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -77,9 +72,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_5.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -87,9 +81,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_6.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -97,9 +90,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/hunre.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>
@@ -107,9 +99,8 @@ const HomePage = async () => {
 						<Image
 							src="/images/anh_3.jpg"
 							alt="Background"
-							objectFit="cover"
-							width={800}
-							height={600}
+							fill
+							style={{ objectFit: "cover" }}
 							className="w-full h-full object-cover"
 						/>
 					</div>

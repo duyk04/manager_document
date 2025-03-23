@@ -63,11 +63,11 @@ export const Create_TieuChuan = () => {
         const fetchDeparment = async () => {
             try {
                 const [CTDTRes, fieldRes,] = await Promise.all([
-                    axios.get("/api/CTDT"),
+                    axios.get("/api/CTDT?all=true"),
                     axios.get("/api/fieldDocument?all=true"),
                 ]);
 
-                setCTDT(CTDTRes.data.listCTDT);
+                setCTDT(CTDTRes.data);
                 setFieldDocument(fieldRes.data);
             } catch (error) {
                 console.error(error);

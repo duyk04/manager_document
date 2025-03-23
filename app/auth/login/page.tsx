@@ -25,7 +25,7 @@ const LoginPage = () => {
 							width={40}
 							height={40}
 						/>
-						
+
 					</div>
 					{/* Title */}
 					<h1 className="text-2xl font-bold mb-4 text-gray-800">
@@ -78,7 +78,7 @@ const LoginPage = () => {
 				<Image
 					src="/images/hunre.jpg"
 					alt="Background"
-					objectFit="cover"
+					style={{ objectFit: "cover" }}
 					width={800}
 					height={600}
 					className="w-full h-full object-cover"

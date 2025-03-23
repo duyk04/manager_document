@@ -89,5 +89,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
     },
     // adapter: PrismaAdapter(db),
+    trustHost: true,
     ...authConfig
 })

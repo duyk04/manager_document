@@ -70,6 +70,7 @@ export async function GET(req: Request) {
         const page = parseInt(searchParams.get("page") || "1", 10);
         const namDanhGiaFilter = parseInt(searchParams.get("namDanhGia") || "0", 0) || null;
         const tieuChiFilter = parseInt(searchParams.get("tieuChi") || "0", 0) || null;
+        const sort = searchParams.get("sort") || "newest";
         const pageSize = 10;
         const skip = (page - 1) * pageSize;
 
@@ -100,6 +101,8 @@ export async function GET(req: Request) {
             });
         }
 
+        const orderBy = sort === "oldest" ? { ngayTao: "asc" as const } : { ngayTao: "desc" as const };
+
         const listEvaluationCriteria = await db.minhChung.findMany({
             where: whereCondition,
             include: {
@@ -128,6 +131,7 @@ export async function GET(req: Request) {
             },
             skip,
             take: pageSize,
+            orderBy
         });
 
         const totalRecords = await db.minhChung.count();

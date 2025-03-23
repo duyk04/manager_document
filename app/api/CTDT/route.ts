@@ -68,11 +68,17 @@ export async function GET(
 
         const { searchParams } = new URL(req.url);
         const keyword = searchParams.get("keyword")?.trim() || "";
+        const getAll = searchParams.get("all") === "true";
         const namDanhGiaFilter = parseInt(searchParams.get("namDanhGia") || "0", 0) || null;
         const sort = searchParams.get("sort") || "newest";
         const page = parseInt(searchParams.get("page") || "1", 10);
         const pageSize = 10
         const skip = (page - 1) * pageSize;
+
+        if (getAll) {
+            const getAllCTDT = await db.chuongTrinhDaoTao.findMany();
+            return NextResponse.json(getAllCTDT);
+        }
 
         interface Condition {
             OR?: Array<{ maCTDT?: { contains: string }; tenCTDT?: { contains: string } }>;
@@ -111,7 +117,7 @@ export async function GET(
         const totalPages = Math.ceil(totalRecords / pageSize);
 
         return NextResponse.json({
-            listCTDT: CTDT,
+            listCTDT: CTDT ,
             pagination: {
                 totalRecords,
                 totalPages,
