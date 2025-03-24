@@ -70,10 +70,10 @@ export const EditTieuChuanModal = () => {
         if (!isModalOpen) return;
         const fetchOptions = async () => {
             try {
-                const linhVucResponse = await axios.get("/api/fieldDocument");
-                const ctdtResponse = await axios.get("/api/CTDT");
+                const linhVucResponse = await axios.get("/api/fieldDocument?all=true");
+                const ctdtResponse = await axios.get("/api/CTDT?all=true");
                 setLinhVucOptions(linhVucResponse.data || []);
-                setCtdtOptions(ctdtResponse.data.listCTDT || []);
+                setCtdtOptions(ctdtResponse.data || []);
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
                 toast({

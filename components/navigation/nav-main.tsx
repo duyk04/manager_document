@@ -122,7 +122,7 @@ const navMain = [
 			},
 			{
 				title: "Thêm mới",
-				url: "/document",
+				url: "/document/create",
 			},
 		],
 	},

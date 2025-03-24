@@ -76,7 +76,7 @@ const viewVanBan = async ({
                         </div>
                         <div>
                             <p className="text-gray-600">Loại văn bản</p>
-                            <p className="font-semibold">{vanBan.capBanHanh.tenCap}</p>
+                            <p className="font-semibold">{vanBan.loaiVanBan.tenLoaiVanBan}</p>
                         </div>
                         <div>
                             <p className="text-gray-600">Cấp ban hành</p>

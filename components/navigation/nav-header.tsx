@@ -35,7 +35,7 @@ const hrefs = [
     { title: "Chỉnh sửa văn bản", url: "/document/edit" },
     { title: "Xem chi tiết văn bản", url: "/document/view/" },
     { title: "Thông tin tài khoản", url: "/profile/information" },
-    { title: "Thêm mới tài liệu, văn bản", url: "/document" },
+    { title: "Thêm mới tài liệu, văn bản", url: "/document/create" },
 ];
 
 export const NavHeader = () => {
