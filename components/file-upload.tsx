@@ -39,11 +39,12 @@ export const FileUpload = ({
 		formData.append("file", file);
 
 		try {
-			const response = await axios.post("/api/upload", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
+			const response = await axios.post("/api/upload",
+				formData,
+				{
+					headers: { "Content-Type": "multipart/form-data" },
+				}
+			);
 
 			setUploadStatus("Upload successful");
 			setResponse(response.data);
@@ -63,15 +64,15 @@ export const FileUpload = ({
 			<div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10 border border-indigo-200 dark:border-indigo-400">
 
 				{(typeFile === "pdf") && (
-					<IconPdf/>
+					<IconPdf />
 				)}
 
 				{(typeFile === "doc" || typeFile === "docx") && (
-					<IconWord/>
+					<IconWord />
 				)}
 
 				{(typeFile === "xls" || typeFile === "xlsx") && (
-					<IconExcel/>
+					<IconExcel />
 				)}
 
 				<a
@@ -99,15 +100,15 @@ export const FileUpload = ({
 		return (
 			<div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10 border border-indigo-200 dark:border-indigo-400">
 				{(typeFile === "pdf") && (
-					<IconPdf/>
+					<IconPdf />
 				)}
 
 				{(typeFile === "doc" || typeFile === "docx") && (
-					<IconWord/>
+					<IconWord />
 				)}
 
 				{(typeFile === "xls" || typeFile === "xlsx") && (
-					<IconExcel/>
+					<IconExcel />
 				)}
 				<a
 					href={value}

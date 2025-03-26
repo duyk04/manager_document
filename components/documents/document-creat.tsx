@@ -174,7 +174,6 @@ export const CreateDocumentModal = () => {
 
     const isLoading = form.formState.isSubmitting;
 
-
     return (
         <div className="flex justify-center">
             <Form {...form}>
@@ -453,7 +452,7 @@ export const CreateDocumentModal = () => {
                                             </FormLabel>
                                             <FileUpload
                                                 value={field.value[index]}
-                                                typeFile={'.pdf'}
+                                                typeFile={'.pdf'}                                     
                                                 required={true}
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];

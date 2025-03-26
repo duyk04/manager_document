@@ -191,7 +191,7 @@ export const ListAccount = () => {
                                     {account.trangThai ? <p className="bg-emerald-300 rounded-md text-center text-white">Active</p> : <p className="bg-red-300 rounded-md text-center text-white">NoActive</p>}
                                 </TableCell>
 
-                                <TableCell className="text-center">
+                                <TableCell className="text-center space-x-2">
                                     <Button variant={"primary"} onClick={() => onOpen("editAccount", account)}>
                                         Cập nhật
                                     </Button>
