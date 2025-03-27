@@ -32,7 +32,5 @@ npx prisma db push
 
 npm run dev
 
-✨ Đóng Góp & Phát Triển Mọi đóng góp đều được chào đón! Nếu bạn muốn cải thiện hoặc bổ sung tính năng, vui lòng gửi Pull Request hoặc tạo Issue trong repository này.
-
 📩 Liên hệ: khuongduy5307@gmail.com.com
 
