@@ -38,6 +38,7 @@ import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 import { Textarea } from "../ui/textarea";
+import { generateFilePath } from "../path-file";
 
 interface TieuChuan {
     ma: number;
@@ -242,7 +243,8 @@ export const CreateProofDocumentModal = () => {
     }));
 
     const onClickView = (soVanBan: string) => {
-        router.push(`/document/view/${soVanBan}`);
+        const url = `/document/view/${encodeURIComponent(soVanBan)}`;
+        window.open(url, "_blank");
     };
 
     const onClickAdd = (document: any) => {
@@ -290,7 +292,7 @@ export const CreateProofDocumentModal = () => {
         }
         if (filterCTDT) {
             setFilterTieuChuan(tieuchuan.filter((item) => item.maCTDT === selectedCTDT));
-        } 
+        }
         if (filterTieuChuan) {
             setFilerTieuChi(tieuChi.filter((item) => item.maTieuChuan === selectedTieuChuan));
         }
@@ -312,7 +314,7 @@ export const CreateProofDocumentModal = () => {
                         <div>
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                    <div className=" px-6 grid grid-cols-2 gap-4">
+                                    <div className="px-0 grid grid-cols-2 gap-4">
                                         <FormField
                                             control={form.control}
                                             name="namDanhGia"
@@ -521,9 +523,9 @@ export const CreateProofDocumentModal = () => {
                                         <TableHead>STT</TableHead>
                                         <TableHead className="font-semibold">Số văn bản</TableHead>
                                         <TableHead className="font-semibold">Tên tài liệu</TableHead>
-                                        <TableHead className="font-semibold">Mô tả</TableHead>
-                                        <TableHead className="font-semibold">Ngày ban hành</TableHead>
-                                        <TableHead className="font-semibold">Thao tác</TableHead>
+                                        {/* <TableHead className="font-semibold">Mô tả</TableHead> */}
+                                        <TableHead className="font-semibold text-center">Ngày ban hành</TableHead>
+                                        <TableHead className="font-semibold text-center">Thao tác</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -537,8 +539,8 @@ export const CreateProofDocumentModal = () => {
                                                 <TableCell>{index + 1}</TableCell>
                                                 <TableCell className="text-start">{document.soVanBan}</TableCell>
                                                 <TableCell className="text-start">{document.tenTaiLieu}</TableCell>
-                                                <TableCell className="text-start">{document.trichYeu}</TableCell>
-                                                <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>
+                                                {/* <TableCell className="text-start">{document.trichYeu}</TableCell> */}
+                                                <TableCell className="text-center">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>
                                                 <TableCell className="flex gap-4">
                                                     <Button variant={"success"} onClick={() => onClickView(document.soVanBan)}>Xem</Button>
                                                     <Button variant={"destructive"} onClick={() => onClickRemove(document.ma)}>Xóa</Button>
@@ -580,8 +582,8 @@ export const CreateProofDocumentModal = () => {
                                         <TableHead className="font-semibold">Mô tả</TableHead>
                                         <TableHead className="font-semibold">Đơn vị</TableHead>
                                         <TableHead className="font-semibold">Ngày ban hành</TableHead>
-                                        <TableHead className="font-semibold">File</TableHead>
-                                        <TableHead className="font-semibold">Thao tác</TableHead>
+                                        <TableHead className="font-semibold text-center">File</TableHead>
+                                        <TableHead className="font-semibold text-center">Thao tác</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -628,7 +630,7 @@ export const CreateProofDocumentModal = () => {
                                                                             <li key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md w-[500px]">
                                                                                 <p className="text-gray-600 w-[60px]">Tệp {index + 1}:</p>
                                                                                 <a
-                                                                                    href={file.filePDF}
+                                                                                    href={"/" + generateFilePath(document.donVi.tenDonVi, document.soVanBan) + "/" + file.filePDF}
                                                                                     target="_blank"
                                                                                     rel="noreferrer noopener"
                                                                                     className="text-indigo-600 dark:text-indigo-400 hover:underline w-1/2"
@@ -640,7 +642,7 @@ export const CreateProofDocumentModal = () => {
                                                                                     </div>
                                                                                 </a>
                                                                                 <a
-                                                                                    href={file.fileGoc}
+                                                                                    href={"/" + generateFilePath(document.donVi.tenDonVi, document.soVanBan) + "/" + file.fileGoc}
                                                                                     target="_blank"
                                                                                     rel="noopener noreferrer"
                                                                                     className="text-blue-600 hover:underline w-1/2"
@@ -668,7 +670,11 @@ export const CreateProofDocumentModal = () => {
                                                 </TableCell>
                                                 <TableCell className="flex gap-4">
                                                     <Button variant={"success"} onClick={() => onClickView(document.soVanBan)}>Xem</Button>
-                                                    <Button variant={"primary"} onClick={() => onClickAdd(document)}>Thêm</Button>
+                                                    <Button variant={"primary"} onClick={() => onClickAdd(document)}
+                                                        disabled={list_MinhChung.some(item => item.soVanBan === document.soVanBan)}
+                                                    >
+                                                        Thêm
+                                                    </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))
@@ -676,7 +682,7 @@ export const CreateProofDocumentModal = () => {
                                 </TableBody>
                             </Table>
                             {/* Phân trang */}
-                            <Separator />
+                            <Separator className="mb-2" />
                             <Pagination>
                                 <PaginationContent>
                                     <PaginationItem>
@@ -684,7 +690,7 @@ export const CreateProofDocumentModal = () => {
                                     </PaginationItem>
                                     {[...Array(totalPages)].map((_, index) => (
                                         <PaginationItem key={index}>
-                                            <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                                            <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-black" : ""}>
                                                 {index + 1}
                                             </PaginationLink>
                                         </PaginationItem>

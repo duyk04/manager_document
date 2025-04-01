@@ -10,26 +10,27 @@ import { Toaster } from "@/components/ui/toaster";
 const font = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Manage Documents",
-  description: "Hunre",
+	title: "Manage Documents",
+	description: "Hunre",
 };
 
-export default function RootLayout({
-  children,
+export default async function RootLayout({
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-      <html lang="en">
-        <body className={cn(font.className,
-          "bg-black dark:bg-[#313338]"
-        )}>
-          <ModalProvider/>
-          <QueryProvider>
-            {children}
-          </QueryProvider>
-          <Toaster />
-        </body>
-      </html>
-  );
+
+	return (
+		<html lang="en">
+			<body className={cn(font.className,
+				"bg-white dark:bg-[#313338]"
+			)}>
+				<ModalProvider />
+				<QueryProvider>
+					{children}
+				</QueryProvider>
+				<Toaster />
+			</body>
+		</html>
+	);
 }

@@ -36,7 +36,7 @@ const formSchema = z.object({
 });
 
 export const EditReleaseLevelDocumentModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     // console.log(data);
 
@@ -66,7 +66,8 @@ export const EditReleaseLevelDocumentModal = () => {
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
+        // console.log(value);
+        onSave();
         try {
             await axios.patch("/api/releaseLevel", value);
 
@@ -75,7 +76,7 @@ export const EditReleaseLevelDocumentModal = () => {
                 title: "Sửa thành công",
             });
             form.reset();
-            router.refresh();
+            // router.refresh();
         } catch (error) {
             // console.error(error);
             toast({

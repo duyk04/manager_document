@@ -1,4 +1,5 @@
 import { ListField } from "@/components/manage-field/field-list";
+import { NoAccess, NoPermission } from "@/components/notification_ui/notification";
 import { currentProfile } from "@/lib/current-profile";
 import { VaiTro } from "@prisma/client";
 
@@ -9,9 +10,17 @@ const FieldPage = async () => {
         return null;
     }
 
-    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA) {
-        return null;
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
     }
+
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA && profile.vaiTro !== VaiTro.QUANLY) {
+        return (
+            <NoPermission />
+        );
+    }
+
+
 
     return (
         <div className="w-full">

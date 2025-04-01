@@ -33,17 +33,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // console.log("Session", session);
             // console.log("Token", token);
             if (token.id && session.user) {
-                session.user.ma = token.id as string;
-                session.user.vaiTro = token.role as string;
-                session.user.email = token.email as string;
-                session.user.anhDaiDien = token.picture as string;
+                session.user = {
+                    ...session.user,
+                    ma: token.id as string,
+                    vaiTro: token.role as string,
+                    trangThai: token.trangThai as boolean,
+                    email: token.email as string,
+                    anhDaiDien: token.picture as string,
+                };
             }
-
             // // Kiểm tra nếu token đã hết hạn
             // if (token.exp && Date.now() / 1000 > token.exp) {
             //     return { ...session, user: { ...session.user, ma: '', vaiTro: '', email: '', anhDaiDien: '' } }; // Hết hạn -> Xóa session
             // }
             // session.user.customField = "customField";
+            // console.log("Session", session);
+            // console.log("Token", token);
             return session;
         },
         async jwt({ token, user }) {
@@ -54,18 +59,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.id = user.ma;
                 token.role = user.vaiTro;
                 token.email = user.email;
+                token.picture = user.anhDaiDien;
+                token.trangThai = user.trangThai;
             }
 
-            // console.log("user", user);
-
-            // if (!token.id) return token;
             if (token.id) {
-                const existingUserById = await getUserById(token.id as string);
-                // console.log("Existing user", existingUserById);
-
-                if (!existingUserById) return token;
-                if ('vaiTro' in existingUserById) {
-                    token.role = existingUserById.vaiTro;
+                const existingUser = await getUserById(token.id as string);
+                if (existingUser) {
+                    if ('trangThai' in existingUser) {
+                        token.trangThai = existingUser.trangThai;
+                    }
                 }
             } else if (token.email) {
                 const existingUserByEmail = await getUserByEmail(token.email as string);
@@ -78,13 +81,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     if ('vaiTro' in existingUserByEmail && existingUserByEmail.vaiTro) {
                         token.role = existingUserByEmail.vaiTro;
                     }
+                    if ('trangThai' in existingUserByEmail && existingUserByEmail.trangThai) {
+                        token.trangThai = existingUserByEmail.trangThai;
+                    }
                 } else {
                     // Nếu không tìm thấy người dùng qua email, trả về token ban đầu
                     return token;
+
                 }
             }
-
-            // console.log("Token", token);
+            // console.log("Token2", token);
             return token;
         }
     },

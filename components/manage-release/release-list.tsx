@@ -33,7 +33,7 @@ interface CapBanHanh {
 }
 
 export const ListReleaseLevel = () => {
-    const { onOpen, isOpen } = useModal();
+    const { onOpen, isOpen, isSubmit } = useModal();
 
     const [listCapBanHanh, setListCapBanHanh] = useState<CapBanHanh[]>([]);
     const [search, setSearch] = useState("");
@@ -62,7 +62,7 @@ export const ListReleaseLevel = () => {
         };
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, isOpen]);
+    }, [search, currentPage, isSubmit]);
     return (
         <div>
             <div className="flex flex-row gap-4 justify-between">
@@ -81,11 +81,11 @@ export const ListReleaseLevel = () => {
                 </div>
             </div>
             <Table>
-                <TableCaption className="mb-10">Danh sách cấp ban hành</TableCaption>
-                <TableHeader>
+                <TableCaption className="mb-4">Danh sách cấp ban hành</TableCaption>
+                <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
-                        <TableHead>Tên cấp ban hành</TableHead>
+                        <TableHead>Tên nơi, cấp ban hành</TableHead>
                         <TableHead>Mô tả</TableHead>
                         <TableHead className="text-center">Hành động</TableHead>
                     </TableRow>
@@ -94,7 +94,7 @@ export const ListReleaseLevel = () => {
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[540px] flex flex-col items-center justify-center">
                                     <p>Đang tải dữ liệu...</p>
                                     <LoaderCircle className="animate-spin" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -106,7 +106,7 @@ export const ListReleaseLevel = () => {
                     ) : listCapBanHanh.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} className="text-center">
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[540px] flex flex-col items-center justify-center">
                                     Không tìm thấy dữ liệu!
                                 </div>
                             </TableCell>
@@ -130,14 +130,14 @@ export const ListReleaseLevel = () => {
             </Table>
             <div className="absolute bottom-0 right-0 w-full">
                 <Separator />
-                <Pagination >
+                <Pagination className="mb-2">
                     <PaginationContent>
                         <PaginationItem>
                             <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
                         </PaginationItem>
                         {[...Array(totalPages)].map((_, index) => (
                             <PaginationItem key={index}>
-                                <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                                <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-dark" : ""}>
                                     {index + 1}
                                 </PaginationLink>
                             </PaginationItem>

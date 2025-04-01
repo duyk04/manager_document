@@ -4,18 +4,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { IconExcel, IconPdf, IconWord } from "./ui/file-icon";
+import { toast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
 	value?: string;
 	onChange?: (filePath: string) => void;
 	typeFile?: '.pdf' | '.doc' | '.docx' | '.xls' | '.xlsx' | '.doc, .docx, .xls, .xlsx';
 	required?: boolean;
+	// soVanBan?: string;
 }
 
 export const FileUpload = ({
 	value,
 	typeFile,
 	required,
+	// soVanBan,
 	onChange
 }: FileUploadProps) => {
 	const [file, setFile] = useState<File | null>(null);
@@ -35,15 +38,26 @@ export const FileUpload = ({
 			return;
 		}
 
+		// if (!soVanBan) {
+		// 	toast({
+        //         variant: "warning",
+        //         title: "Chú ý!",
+		// 		description: "Vui lòng nhập số văn bản!",
+        //     });
+		// 	return;
+		// }
+
 		const formData = new FormData();
 		formData.append("file", file);
 
 		try {
-			const response = await axios.post("/api/upload", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
+			const response = await axios.post("/api/upload",
+				formData,
+				{
+					// params: { soVanBan: soVanBan },
+					headers: { "Content-Type": "multipart/form-data" },
+				}
+			);
 
 			setUploadStatus("Upload successful");
 			setResponse(response.data);
@@ -58,20 +72,21 @@ export const FileUpload = ({
 	};
 
 	if (response?.status === "success") {
-		const typeFile = response.filePath.split(".").pop();
+		// const typeFile = response.filePath.split(".").pop();
+		const typeFile = (response.filePath ?? "").split('.').pop()?.split('?')[0];
 		return (
 			<div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10 border border-indigo-200 dark:border-indigo-400">
 
 				{(typeFile === "pdf") && (
-					<IconPdf/>
+					<IconPdf />
 				)}
 
 				{(typeFile === "doc" || typeFile === "docx") && (
-					<IconWord/>
+					<IconWord />
 				)}
 
 				{(typeFile === "xls" || typeFile === "xlsx") && (
-					<IconExcel/>
+					<IconExcel />
 				)}
 
 				<a
@@ -80,7 +95,7 @@ export const FileUpload = ({
 					rel="noreferrer noopener"
 					className="ml-2 w-[380px] text-indigo-500 text-sm dark:text-indigo-400 hover:underline overflow-hidden whitespace-nowrap"
 				>
-					{response.filePath.split("/").pop()}
+					{response.filePath?.split('/').pop()?.split('?')[0] || ""}
 				</a>
 				<button
 					onClick={() => { setResponse(null); onChange && onChange("") }}
@@ -94,23 +109,26 @@ export const FileUpload = ({
 		);
 	}
 
+	const filePath = value?.replace(/\\/g, "/");
+
+	
 	if (value) {
 		const typeFile = value.split(".").pop();
 		return (
 			<div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10 border border-indigo-200 dark:border-indigo-400">
 				{(typeFile === "pdf") && (
-					<IconPdf/>
+					<IconPdf />
 				)}
 
 				{(typeFile === "doc" || typeFile === "docx") && (
-					<IconWord/>
+					<IconWord />
 				)}
 
 				{(typeFile === "xls" || typeFile === "xlsx") && (
-					<IconExcel/>
+					<IconExcel />
 				)}
 				<a
-					href={value}
+					href={filePath}
 					target="_blank"
 					rel="noreferrer noopener"
 					className="ml-2 w-[380px] text-indigo-500 text-sm dark:text-indigo-400 hover:underline overflow-hidden whitespace-nowrap"
@@ -130,7 +148,7 @@ export const FileUpload = ({
 	}
 
 	return (
-		<div className="px-6 grid grid-cols-6 gap-4">
+		<div className="px-6 grid grid-cols-5 gap-4">
 			<Input
 				type="file"
 				onChange={handleFileChange}

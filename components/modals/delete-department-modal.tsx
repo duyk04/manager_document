@@ -18,7 +18,7 @@ import { toast } from "@/hooks/use-toast";
 
 
 export const DeleteDepartmentModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "deleteDepartment";
@@ -28,6 +28,7 @@ export const DeleteDepartmentModal = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
+        onSave();
         try {
             setIsLoading(true);
             await axios.delete("/api/department", {
@@ -38,7 +39,6 @@ export const DeleteDepartmentModal = () => {
                 title: "Xóa thành công khoa, đơn vị",
                 description: `Khoa, đơn vị ${tenDonVi} đã được xóa.`,
             });
-            onClose();
         } catch (error) {
             // console.error(error);
             toast({
@@ -48,7 +48,6 @@ export const DeleteDepartmentModal = () => {
             });
         } finally {
             onClose();
-            router.refresh();
             setIsLoading(false);
         }
     };
@@ -77,7 +76,7 @@ export const DeleteDepartmentModal = () => {
                         <Button
                             disabled={isLoading}
                             onClick={handleDelete}
-                            variant="primary"
+                            variant="destructive"
                         >
                             Xác nhận
                         </Button>

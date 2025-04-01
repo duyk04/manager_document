@@ -1,4 +1,5 @@
 import { EditDocument } from "@/components/documents/document-edit";
+import { NoAccess } from "@/components/notification_ui/notification";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
@@ -14,9 +15,8 @@ const EditVanBan = async ({
     //Lấy thông tin người dùng hiện tại
     const profile = await currentProfile();
 
-    //Kiểm tra nếu không có thông tin người dùng
-    if (!profile) {
-        redirect("/home");
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
     }
 
     //Lấy số văn bản từ params và giải mã

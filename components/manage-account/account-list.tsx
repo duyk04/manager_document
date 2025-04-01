@@ -25,9 +25,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
-import { LoaderCircle, Search } from "lucide-react";
+import { KeyRound, LoaderCircle, Search } from "lucide-react";
 import { Combobox } from "../combobox";
 import { Skeleton } from "../ui/skeleton";
+import { ActionTooltip } from "../action-tooltip";
+
 
 interface DonVi {
     ma: number;
@@ -43,12 +45,6 @@ interface Account {
     trangThai: boolean;
 }
 
-interface ListAccountProps {
-    listAccount: any;
-}
-
-
-
 const roleMap = {
     [VaiTro.QUANTRIVIEN]: "Quản trị viên",
     [VaiTro.THANHTRA]: "Thanh tra",
@@ -57,7 +53,7 @@ const roleMap = {
 }
 
 export const ListAccount = () => {
-    const { onOpen, isOpen } = useModal();
+    const { onOpen, isOpen, isSubmit } = useModal();
 
     const [listAccount, setListAccount] = useState<Account[]>([]);
     const [listDonVi, setListDonVi] = useState<DonVi[]>([]);
@@ -95,7 +91,7 @@ export const ListAccount = () => {
         };
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedDonVi, selectedVaiTro, selectedTrangThai, isOpen]);
+    }, [search, currentPage, selectedDonVi, selectedVaiTro, selectedTrangThai, isSubmit]);
 
     const donViOptions = [
         { value: "", label: "Tất cả" },
@@ -134,14 +130,14 @@ export const ListAccount = () => {
                 </div>
                 {/* tính năng lọc tìm kiếm */}
                 <div className="flex gap-4 my-4">
-                    <Combobox options={donViOptions} label="Đơn vị" onChange={setSelectedDonVi} />
-                    <Combobox options={vaiTroOptions} label="Chức vụ" onChange={setSelectedVaiTro} />
-                    <Combobox options={trangThaiOptions} label="Trạng thái" onChange={setSelectedTrangThai} />
+                    <Combobox options={donViOptions} label="Đơn vị" onChange={(value) => { setSelectedDonVi(value); setCurrentPage(1) }} />
+                    <Combobox options={vaiTroOptions} label="Chức vụ" onChange={(value) => { setSelectedVaiTro(value); setCurrentPage(1) }} />
+                    <Combobox options={trangThaiOptions} label="Trạng thái" onChange={(value) => { setSelectedTrangThai(value); setCurrentPage(1) }} />
                 </div>
             </div>
             <Table>
-                <TableCaption className="mb-10" >Danh sách tài khoản</TableCaption>
-                <TableHeader>
+                <TableCaption className="mb-6" >Danh sách tài khoản</TableCaption>
+                <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
                         {/* <TableHead>ID</TableHead> */}
@@ -157,7 +153,7 @@ export const ListAccount = () => {
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[565px] flex flex-col items-center justify-center">
                                     <p>Đang tải dữ liệu...</p>
                                     <LoaderCircle className="animate-spin" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -169,7 +165,7 @@ export const ListAccount = () => {
                     ) : listAccount.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} className="text-center">
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[565px] flex flex-col items-center justify-center">
                                     Không tìm thấy dữ liệu!
                                 </div>
                             </TableCell>
@@ -191,10 +187,15 @@ export const ListAccount = () => {
                                     {account.trangThai ? <p className="bg-emerald-300 rounded-md text-center text-white">Active</p> : <p className="bg-red-300 rounded-md text-center text-white">NoActive</p>}
                                 </TableCell>
 
-                                <TableCell className="text-center">
+                                <TableCell className="flex text-center items-center justify-center space-x-2">
                                     <Button variant={"primary"} onClick={() => onOpen("editAccount", account)}>
                                         Cập nhật
                                     </Button>
+                                    <ActionTooltip label="Đặt lại mật khẩu" side="top">
+                                        <Button variant={"outline"} onClick={() => onOpen("resetPassword_Admin", account)} className="w-[40px] h-[40px] flex items-center justify-center">
+                                            <KeyRound />
+                                        </Button>
+                                    </ActionTooltip>
                                 </TableCell>
                             </TableRow>
                         ))
@@ -211,15 +212,15 @@ export const ListAccount = () => {
 
             {/* Phân trang */}
             <div className="absolute bottom-0 right-0 w-full">
-                <Separator />
-                <Pagination >
+                <Separator/>
+                <Pagination className="my-2" >
                     <PaginationContent>
                         <PaginationItem>
                             <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
                         </PaginationItem>
                         {[...Array(totalPages)].map((_, index) => (
                             <PaginationItem key={index}>
-                                <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                                <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-dark" : ""}>
                                     {index + 1}
                                 </PaginationLink>
                             </PaginationItem>

@@ -1,7 +1,9 @@
+import { NoAccess } from "@/components/notification_ui/notification";
 import { IconExcel, IconPdf, IconWord } from "@/components/ui/file-icon";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
+import path from "path";
 
 interface SoVanBanPageProps {
     params: Promise<{
@@ -14,13 +16,13 @@ const viewVanBan = async ({
     //Lấy thông tin người dùng hiện tại
     const profile = await currentProfile();
 
-    //Kiểm tra nếu không có thông tin người dùng
-    if (!profile) {
-        redirect("/home");
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
     }
 
     //Lấy số văn bản từ params và giải mã
     const soVanBan = decodeURIComponent((await params).soVanBan);
+    // console.log(soVanBan);
     // console.log(profile);
 
     //Lấy thông tin văn bản từ số văn bản
@@ -51,6 +53,29 @@ const viewVanBan = async ({
         return <div>Bạn không có quyền xem văn bản này</div>
     }
 
+    // loại bỏ dâu tiếng việt và thay khoảng trắng bằng dấu _
+    const removeVietnameseTones = (str: string) => {
+        return str.normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "_");
+    }
+
+    //lấy tên khoa và tên số văn bản chuyển thành path folder
+    const profile_DonVi = vanBan?.donVi?.tenDonVi;
+    const nameDonVi = removeVietnameseTones(profile_DonVi || "");
+    const nameSoVanBan = removeVietnameseTones(vanBan.soVanBan);
+    const [so, loaiVaKyHieu] = soVanBan ? soVanBan.split("/") : ["", ""];
+    // chuyển thành path folder
+    // Đường dẫn đầy đủ gốc
+    const fullPath = path.join(process.cwd(), "data_uploads", nameDonVi, loaiVaKyHieu || "", so || "");
+
+    // console.log(fullPath);
+
+    // Chuyển thành "files\Khoa_Cong_nghe_thong_tin\2025_2345"
+    const relativePath = path.relative(path.join(process.cwd(), "data_uploads"), fullPath);
+    const finalPath = path.join("files", relativePath);
+
+    // console.log(finalPath);
     return (
         <div>
             <p className="text-2xl">Chi tiết văn bản</p>
@@ -58,10 +83,10 @@ const viewVanBan = async ({
                 <div className="w-full mx-auto bg-white shadow-lg rounded-lg p-6 space-y-4">
                     <h2 className="text-xl font-bold text-gray-800">Thông Tin Văn Bản</h2>
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
+                        {/* <div>
                             <p className="text-gray-600">Mã:</p>
                             <p className="font-semibold">{vanBan.ma}</p>
-                        </div>
+                        </div> */}
                         <div>
                             <p className="text-gray-600">Tên văn bản</p>
                             <p className="font-semibold">{vanBan.tenTaiLieu}</p>
@@ -76,7 +101,7 @@ const viewVanBan = async ({
                         </div>
                         <div>
                             <p className="text-gray-600">Loại văn bản</p>
-                            <p className="font-semibold">{vanBan.loaiVanBan.tenLoaiVanBan}</p>
+                            <p className="font-semibold">{vanBan.loaiVanBan.tenLoaiVanBan} - {vanBan.loaiVanBan.moTa}</p>
                         </div>
                         <div>
                             <p className="text-gray-600">Cấp ban hành</p>
@@ -116,7 +141,7 @@ const viewVanBan = async ({
                                 <div key={index} className="mt-2 flex items-center space-x-2 border border-gray-200 p-2 rounded-md">
                                     <p className="text-gray-600 w-[50px]">Tệp {index + 1}:</p>
                                     <a
-                                        href={file.filePDF ?? undefined}
+                                        href={file.filePDF ? `/${finalPath}/${file.filePDF}` : undefined}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-600 hover:underline w-1/2"
@@ -128,7 +153,7 @@ const viewVanBan = async ({
                                     </a>
 
                                     <a
-                                        href={file.fileGoc ?? undefined}
+                                        href={file.fileGoc ? `/${finalPath}/${file.fileGoc}` : undefined}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-600 hover:underline w-1/2"

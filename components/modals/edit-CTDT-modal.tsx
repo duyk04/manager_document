@@ -46,7 +46,7 @@ const formSchema = z.object({
 
 
 export const EditCTDTModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     // console.log(data);
     const { ma, maCTDT, tenCTDT, moTa, namDanhGia } = data;
@@ -98,14 +98,15 @@ export const EditCTDTModal = () => {
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
         // console.log(value);
+        onSave();
         try {
             await axios.patch("/api/CTDT", value);
-            form.reset();
             toast({
                 variant: "success",
                 title: "Thành công",
+                description: `Sửa thành công ${value.tenCTDT}`,
             });
-            router.refresh();
+            form.reset();
         } catch (error) {
             // console.error(error);
             toast({
@@ -114,7 +115,6 @@ export const EditCTDTModal = () => {
                 description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
             });
         } finally {
-           
             onClose();
         }
     }

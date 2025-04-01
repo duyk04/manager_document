@@ -4,7 +4,8 @@
  */
 export const publicRouters = [
     "/",
-    // "/api/proofDocuments"
+    // "/api/proofDocuments",
+    "/api/public/v1/documents", // method GET /api/documents?page=[]&keyword=[]&donVi=[]&capBanHanh=[]&linhVuc=[]&loaiVanBan=[]&sort=[]
 ]
 
 /**
@@ -28,4 +29,4 @@ export const apiAuthPrefix = "/api/auth"
  * Đường dẫn mặc định sau khi đăng nhập
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/"
+export const DEFAULT_LOGIN_REDIRECT = `${process.env.NEXT_PUBLIC_BASE_URL}/`;

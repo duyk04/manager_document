@@ -53,7 +53,7 @@ const roleMap = {
 }
 
 export const EditAccountModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     // console.log(data);
     const { ma, hoTen, email, donVi, vaiTro, trangThai } = data;
@@ -115,6 +115,7 @@ export const EditAccountModal = () => {
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
         // console.log(value);
+        onSave();
         try {
             await axios.patch("/api/account", value);
             form.reset();
@@ -123,7 +124,6 @@ export const EditAccountModal = () => {
                 title: "Thành công",
                 description: `Đã cập nhật thông tin tài khoản ${value.email}`,
             });
-            router.refresh();
         } catch (error) {
             // console.error(error);
             toast({

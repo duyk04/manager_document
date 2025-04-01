@@ -32,7 +32,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export const ViewListTieuChi = () => {
     const router = useRouter();
-    const { onOpen, onClose, isOpen } = useModal();
+    const { onOpen, onClose, isOpen, isSubmit } = useModal();
 
     const [listTieuChi, setListTieuChi] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -73,7 +73,7 @@ export const ViewListTieuChi = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedNamDanhGia, selectedTieuChuan, isOpen]);
+    }, [search, currentPage, selectedNamDanhGia, selectedTieuChuan, isSubmit]);
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -109,13 +109,13 @@ export const ViewListTieuChi = () => {
                 </div>
                 {/* tính năng lọc tìm kiếm */}
                 <div className="flex gap-4 my-4">
-                    <Combobox options={tieuChuanOptions} label="Tiêu chuẩn" onChange={setSelectedTieuChuan} />
-                    <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
+                    <Combobox options={tieuChuanOptions} label="Tiêu chuẩn" onChange={(value) => { setSelectedTieuChuan(value); setCurrentPage(1) }} />
+                    <Combobox options={years} label="Năm" onChange={(value) => { setSelectedNamDanhGia(value); setCurrentPage(1)}} />
                     {/* <Combobox options={sortDateOptions} label="Mới nhất." onChange={setSelectedSortDate} /> */}
                 </div>
             </div>
             <Table className="w-full text-center items-center">
-                <TableCaption>Danh sách văn bản</TableCaption>
+                <TableCaption>Danh sách tiêu chí</TableCaption>
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>
@@ -131,7 +131,7 @@ export const ViewListTieuChi = () => {
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[575px] flex flex-col items-center justify-center">
                                     <p>Đang tải dữ liệu...</p>
                                     <LoaderCircle className="animate-spin" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -143,7 +143,7 @@ export const ViewListTieuChi = () => {
                     ) : listTieuChi.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} className="text-center">
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[575px] flex flex-col items-center justify-center">
                                     Không tìm thấy dữ liệu!
                                 </div>
                             </TableCell>
@@ -170,7 +170,7 @@ export const ViewListTieuChi = () => {
             </Table>
 
             {/* Phân trang */}
-            <Separator />
+            <Separator className="mb-2" />
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
@@ -178,7 +178,7 @@ export const ViewListTieuChi = () => {
                     </PaginationItem>
                     {[...Array(totalPages)].map((_, index) => (
                         <PaginationItem key={index}>
-                            <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                            <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-black" : ""}>
                                 {index + 1}
                             </PaginationLink>
                         </PaginationItem>

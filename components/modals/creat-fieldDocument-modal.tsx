@@ -35,7 +35,7 @@ const formSchema = z.object({
 });
 
 export const CreateDepartmentModal = () => {
-    const { isOpen, onClose, type} = useModal();
+    const { isOpen, onClose, type, onSave } = useModal();
     const router = useRouter();
 
 
@@ -53,17 +53,16 @@ export const CreateDepartmentModal = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
+        // console.log(value);
+        onSave();
         try {
             await axios.post("/api/fieldDocument", value);
-
-            form.reset();
             toast({
                 variant: "success",
                 title: "Thành công",
                 description: `Đã thêm lĩnh vực văn bản ${value.tenLinhVuc}`,
             });
-            router.refresh();
+            form.reset();
         } catch (error) {
             // console.error(error);
             toast({
@@ -71,7 +70,7 @@ export const CreateDepartmentModal = () => {
                 title: "Lỗi",
                 description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
             });
-        }finally {
+        } finally {
             onClose();
         }
     }

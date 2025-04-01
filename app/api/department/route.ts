@@ -1,6 +1,8 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import path from "node:path";
+import fs from "node:fs/promises";
 
 export async function POST(
     req: Request,
@@ -29,6 +31,24 @@ export async function POST(
 
         if (depamentExist) {
             return new NextResponse("Khoa , đơn vi đã tồn tại!", { status: 400 });
+        }
+
+        const removeVietnameseTones = (str: string) => {
+            return str.normalize("NFD") // Tách dấu khỏi ký tự
+                .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+                .replace(/đ/g, "d").replace(/Đ/g, "D") // Thay 'đ' thành 'd'
+                .replace(/\s+/g, "_"); // Thay khoảng trắng bằng '_'
+        };
+
+        const nameFolder = removeVietnameseTones(tenDonVi);
+
+        const pathFolder = path.join(process.cwd(), "data_uploads", nameFolder);
+
+        try {
+            await fs.access(pathFolder);
+        }
+        catch {
+            await fs.mkdir(pathFolder, { recursive: true });
         }
 
         const deparment = await db.donVi.create({
@@ -135,6 +155,44 @@ export async function PATCH(
             tenDonVi,
             moTa
         } = await req.json();
+
+        const removeVietnameseTones = (str: string) => {
+            return str.normalize("NFD") // Tách dấu khỏi ký tự
+                .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+                .replace(/\s+/g, "_"); // Thay khoảng trắng bằng '_'
+        };
+
+        const newNameFolder = removeVietnameseTones(tenDonVi);
+
+        const deparmentExist = await db.donVi.findFirst({
+            where: {
+                ma: ma,
+            }
+        });
+
+        const oldNameFolder = removeVietnameseTones(deparmentExist?.tenDonVi || "");
+
+        const oldPathFolder = path.join(process.cwd(), "data_uploads", oldNameFolder);
+        const newPathFolder = path.join(process.cwd(), "data_uploads", newNameFolder);
+
+        try {
+            // Kiểm tra xem thư mục cũ có tồn tại không
+            await fs.access(oldPathFolder);
+
+            // Nếu đã có thư mục cũ, thực hiện đổi tên
+            await fs.rename(oldPathFolder, newPathFolder);
+            console.log(`Đã đổi tên thư mục: ${oldNameFolder} -> ${newNameFolder}`);
+        } catch (error) {
+            console.log(`Thư mục cũ không tồn tại hoặc lỗi: ${error}`);
+
+            // Nếu thư mục cũ không tồn tại, tạo thư mục mới
+            try {
+                await fs.mkdir(newPathFolder, { recursive: true });
+                console.log(`Đã tạo thư mục mới: ${newNameFolder}`);
+            } catch (mkdirError) {
+                console.error(`Lỗi khi tạo thư mục mới: ${mkdirError}`);
+            }
+        }
 
         const deparment = await db.donVi.update({
             where: {

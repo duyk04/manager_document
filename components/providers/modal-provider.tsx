@@ -24,6 +24,7 @@ import { DeleteTieuChiModal } from "../modals/delete-tieuChi-modal";
 import { EditTieuChuanModal } from "../modals/edit-tieuChuan-modal";
 import { DeleteTieuChuanModal } from "../modals/delete-tieuChuan-modal";
 import { ResetPasswordModal } from "../profile/resetPassword-modal";
+import { ResetPasswordAccountModal_Admin } from "../modals/reset-passwordAccount-modal";
 
 
 
@@ -63,6 +64,7 @@ export const ModalProvider = () => {
             <EditTieuChuanModal />
             <DeleteTieuChuanModal />
             <ResetPasswordModal />
+            <ResetPasswordAccountModal_Admin />
         </>
     );
 };

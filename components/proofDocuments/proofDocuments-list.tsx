@@ -41,7 +41,7 @@ import { ActionTooltip } from "../action-tooltip";
 
 export const ViewListProofDocument = () => {
     const router = useRouter();
-    const { onOpen, isOpen } = useModal();
+    const { onOpen, isOpen, isSubmit } = useModal();
     const [documents, setDocuments] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -82,7 +82,7 @@ export const ViewListProofDocument = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi, isOpen]);
+    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, selectedTieuChi, isSubmit]);
 
     // const onClickView = (soVanBan: string) => {
     //     router.push(`/document/view/${soVanBan}`);
@@ -101,7 +101,7 @@ export const ViewListProofDocument = () => {
     const tieuChiOptions = [
         ...tieuChi.map((item) => ({
             value: item.ma.toString(),
-            label:`${item.maTieuChi} - ${item.tenTieuChi}`,
+            label: `${item.maTieuChi} - ${item.tenTieuChi}`,
         })),
     ]
 
@@ -182,7 +182,7 @@ export const ViewListProofDocument = () => {
                                                     <div className="p-3 border-r border-black text-center col-span-1"></div>
                                                     <ActionTooltip label="Xem chi tiết" side="left">
                                                         <div className="p-3 border-r border-b border-black col-span-1 text-start">
-                                                            <Link href={`/document/view/${item.taiLieu.soVanBan}`} target="_blank" passHref>{item.taiLieu.tenTaiLieu} </Link>
+                                                            <Link href={`/document/view/${encodeURIComponent(item.taiLieu.soVanBan)}`} target="_blank" passHref>{item.taiLieu.tenTaiLieu} </Link>
                                                         </div>
                                                     </ActionTooltip>
                                                     <div className="p-3 border-r border-b border-black">{item.taiLieu.soVanBan}</div>
@@ -199,15 +199,15 @@ export const ViewListProofDocument = () => {
                         )}
                     </div>
                     {/* Phân trang */}
-                    <Separator />
-                    <Pagination>
+                    <Separator/>
+                    <Pagination className="my-1">
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} className="cursor-pointer" />
+                                <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
                             </PaginationItem>
                             {[...Array(totalPages)].map((_, index) => (
                                 <PaginationItem key={index}>
-                                    <PaginationLink onClick={() => setCurrentPage(index + 1)} className="cursor-pointer">
+                                    <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-black" : ""}>
                                         {index + 1}
                                     </PaginationLink>
                                 </PaginationItem>
@@ -216,7 +216,7 @@ export const ViewListProofDocument = () => {
                                 <PaginationEllipsis />
                             </PaginationItem>
                             <PaginationItem>
-                                <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} className="cursor-pointer" />
+                                <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

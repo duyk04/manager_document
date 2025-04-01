@@ -33,7 +33,7 @@ interface DonVi {
 }
 
 export const ListDepartment = () => {
-    const { onOpen, isOpen } = useModal();
+    const { onOpen, isOpen, isSubmit } = useModal();
 
     const [listDonVi, setListDonVi] = useState<DonVi[]>([]);
     const [search, setSearch] = useState("");
@@ -62,7 +62,7 @@ export const ListDepartment = () => {
         };
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, isOpen]);
+    }, [search, currentPage, isSubmit]);
 
     return (
         <div>
@@ -88,8 +88,8 @@ export const ListDepartment = () => {
                 </div> */}
             </div>
             <Table>
-                <TableCaption className="mb-10">Danh sách khoa, đơn vị</TableCaption>
-                <TableHeader>
+                <TableCaption className="mb-6">Danh sách khoa, đơn vị</TableCaption>
+                <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
                         {/* <TableHead>Mã Khoa</TableHead> */}
@@ -102,7 +102,7 @@ export const ListDepartment = () => {
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[565px] flex flex-col items-center justify-center">
                                     <p>Đang tải dữ liệu...</p>
                                     <LoaderCircle className="animate-spin" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -114,7 +114,7 @@ export const ListDepartment = () => {
                     ) : listDonVi.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} className="text-center">
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[565px] flex flex-col items-center justify-center">
                                     Không tìm thấy dữ liệu!
                                 </div>
                             </TableCell>
@@ -139,14 +139,14 @@ export const ListDepartment = () => {
             </Table>
             <div className="absolute bottom-0 right-0 w-full">
                 <Separator />
-                <Pagination >
+                <Pagination className="my-2">
                     <PaginationContent>
                         <PaginationItem>
                             <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
                         </PaginationItem>
                         {[...Array(totalPages)].map((_, index) => (
                             <PaginationItem key={index}>
-                                <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                                <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-dark" : ""}>
                                     {index + 1}
                                 </PaginationLink>
                             </PaginationItem>

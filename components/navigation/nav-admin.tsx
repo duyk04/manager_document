@@ -33,7 +33,8 @@ import {
 	MoreHorizontal,
 	Trash2,
 	CircleUser,
-	BookMarked
+	BookMarked,
+	ListCollapse
 } from "lucide-react"
 
 
@@ -80,7 +81,7 @@ const navAdmin = [
 	{
 		title: "Quản danh mục văn bản",
 		url: "#",
-		icon: BookMarked,
+		icon: ListCollapse,
 		items: [
 			{
 				title: "Lĩnh vực",

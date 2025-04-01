@@ -16,7 +16,8 @@ import { FileUpload } from "@/components/file-upload";
 import { PhamVi } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "../ui/textarea";
-
+import { generateFilePath } from "../path-file";
+import { useRouter } from "next/navigation";
 
 interface EditDocumentProps {
     vanBan: any;
@@ -71,7 +72,7 @@ const formSchema = z.object({
 export const EditDocument = ({
     vanBan
 }: EditDocumentProps) => {
-
+    const router = useRouter();
     // console.log(vanBan);
     const [isMounted, setMounted] = useState(false);
     const [departments, setDeparment] = useState<DonVi[]>([]);
@@ -176,24 +177,20 @@ export const EditDocument = ({
                 FILE_PDF: values.FILE_PDF.map((file) => (file && file.trim() === "" ? null : file)),
                 FILE_GOC: values.FILE_GOC.map((file) => (file && file.trim() === "" ? null : file)),
             };
-
-            console.log(updatedValues);
-
             // Gửi dữ liệu đến API
             await axios.patch("/api/documents", updatedValues);
             // Reset form sau khi thành công
-            form.reset();
-
+            //form.reset();
+            router.push(`/document/view/${encodeURIComponent(values?.soVanBan)}`);
             // Hiển thị thông báo thành công bằng toast
             toast({
                 variant: "success",
                 title: "Sửa thành công",
+                description: `Văn bản số ${values.soVanBan} đã được sửa thành công`,
             });
-
 
         } catch (error) {
             // console.error("Error submitting form:", error)
-
             // Hiển thị thông báo lỗi bằng toast
             toast({
                 variant: "destructive",
@@ -286,8 +283,7 @@ export const EditDocument = ({
                             name="loaiVanBan"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500
-                                    dark:text-secondary/70">
+                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
                                         Loại văn bản
                                     </FormLabel>
                                     <Select
@@ -295,19 +291,24 @@ export const EditDocument = ({
                                         defaultValue={field.value ? field.value.toString() : ""}
                                         onValueChange={(value) => {
                                             field.onChange(Number(value));
+
+                                            // Tìm loại văn bản tương ứng
+                                            const selectedType = type.find((item) => item.ma.toString() === value);
+                                            if (selectedType) {
+                                                // Đặt lại giá trị cho ô số văn bản với định dạng mới
+                                                form.setValue("soVanBan", `/${selectedType.tenLoaiVanBan}-`);
+                                            }
                                         }}
                                     >
                                         <FormControl>
-                                            <SelectTrigger
-                                                className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
-                                            >
+                                            <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
                                                 <SelectValue placeholder="Chọn loại văn bản" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             {type?.map((item) => (
                                                 <SelectItem key={item.ma} value={item.ma.toString()} className="capitalize">
-                                                    {item.tenLoaiVanBan}
+                                                    {item.tenLoaiVanBan} - {item.moTa}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -322,22 +323,46 @@ export const EditDocument = ({
                             name="soVanBan"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500
-                                    dark:text-secondary/70">
+                                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
                                         Số văn bản
                                     </FormLabel>
                                     <Input
                                         disabled={isLoading}
-                                        className="bg-zinc-300/50 border-0
-                                            focus-visible:ring-0 text-black
-                                            focus-visible:ring-offset-0"
+                                        className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0 pl-5"
                                         placeholder="Nhập số văn bản"
-                                        {...field}
+                                        value={field.value}
+                                        onChange={(e) => {
+                                            let input = e.target.value;
+                                            const loaiVanBanMa = form.watch("loaiVanBan"); // Lấy mã loại văn bản (số)
+
+                                            // Tìm trong danh sách type để lấy tên loại văn bản
+                                            const selectedType = type.find((item) => item.ma.toString() === loaiVanBanMa?.toString());
+                                            const loaiVanBan = selectedType ? selectedType.tenLoaiVanBan : "QĐ"; // Mặc định nếu không tìm thấy
+
+                                            const prefix = `/${loaiVanBan}-`;
+
+                                            // Kiểm tra nếu người dùng xóa prefix, đặt lại định dạng
+                                            if (!input.includes(prefix)) {
+                                                form.setValue("soVanBan", prefix);
+                                                return;
+                                            }
+
+                                            // Tách phần số và phần chữ
+                                            const [numberPart, textPart] = input.split(prefix);
+
+                                            // Giữ lại chỉ số ở phần đầu và chỉ chữ ở phần sau
+                                            const validNumber = numberPart.replace(/[^0-9]/g, ""); // Chỉ lấy số
+                                            const validText = textPart?.replace(/[^A-Za-z]/g, "") || ""; // Chỉ lấy chữ
+
+                                            // Cập nhật lại giá trị chuẩn
+                                            form.setValue("soVanBan", `${validNumber}${prefix}${validText}`);
+                                        }}
                                     />
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+
                         <FormField
                             control={form.control}
                             name="capBanHanh"
@@ -485,7 +510,9 @@ export const EditDocument = ({
                                                 File PDF {index + 1}
                                             </FormLabel>
                                             <FileUpload
-                                                value={field.value[index]}
+                                                // value={field.value[index]}
+                                                // value={"/" + generateFilePath(vanBan.donVi.tenDonVi, vanBan.soVanBan) + "/" + field.value[index]}
+                                                value={field.value[index] ? "/" + generateFilePath(vanBan.donVi.tenDonVi, vanBan.soVanBan) + "/" + field.value[index] : field.value[index]}
                                                 typeFile=".pdf"
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];
@@ -508,7 +535,8 @@ export const EditDocument = ({
                                                 File GỐC {index + 1}
                                             </FormLabel>
                                             <FileUpload
-                                                value={field.value[index]}
+                                                // value={field.value[index]}
+                                                value={field.value[index] ? "/" + generateFilePath(vanBan.donVi.tenDonVi, vanBan.soVanBan) + "/" + field.value[index] : field.value[index]}
                                                 typeFile=".doc, .docx, .xls, .xlsx"
                                                 onChange={(filePath) => {
                                                     const updatedFiles = [...field.value];

@@ -37,7 +37,7 @@ const formSchema = z.object({
 });
 
 export const EditFieldDocumentModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     // console.log(data);
 
@@ -69,12 +69,11 @@ export const EditFieldDocumentModal = () => {
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
+        // console.log(value);
+        onSave();
         try {
             await axios.patch("/api/fieldDocument", value);
-
             form.reset();
-            router.refresh();
             toast({
                 variant: "success",
                 title: "Thành công",

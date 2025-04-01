@@ -50,7 +50,7 @@ interface TieuChuan {
 }
 
 export const EditTieuChiModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     const [tieuChuanOptions, setTieuChuanOptions] = useState<TieuChuan[]>([]);
 
@@ -104,6 +104,7 @@ export const EditTieuChiModal = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        onSave();
         try {
             await axios.patch("/api/tieuchi", values);
             form.reset();
@@ -112,7 +113,6 @@ export const EditTieuChiModal = () => {
                 title: "Thành công",
                 description: "Tiêu chí đã được cập nhật thành công.",
             });
-            router.refresh();
         } catch (error) {
             toast({
                 variant: "destructive",
