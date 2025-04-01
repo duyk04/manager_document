@@ -33,7 +33,7 @@ import Link from "next/link";
 
 export const ViewListTieuChuan = () => {
     const router = useRouter();
-    const { onOpen, onClose, isOpen } = useModal();
+    const { onOpen, onClose, isOpen, isSubmit } = useModal();
 
     const [listTieuChuan, setListTieuChuan] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -77,7 +77,7 @@ export const ViewListTieuChuan = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedNamDanhGia, selectedLinhVuc, selectedCTDT, isOpen]);
+    }, [search, currentPage, selectedNamDanhGia, selectedLinhVuc, selectedCTDT, isSubmit]);
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => ({
@@ -109,9 +109,9 @@ export const ViewListTieuChuan = () => {
                 </div>
                 {/* tính năng lọc tìm kiếm */}
                 <div className="flex gap-4 my-4 relative items-center justify-end w-3/5">
-                    <Combobox options={CTDTOptions} label="Chương trình đào tạo" onChange={setSelectedCTDT} />
-                    <Combobox options={linhVucOptions} label="Lĩnh vực" onChange={setSelectedLinhVuc} />
-                    <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
+                    <Combobox options={CTDTOptions} label="Chương trình đào tạo" onChange={(value) => {setSelectedCTDT(value); setCurrentPage(1)}} />
+                    <Combobox options={linhVucOptions} label="Lĩnh vực" onChange={(value) => {setSelectedLinhVuc(value); setCurrentPage(1)}} />
+                    <Combobox options={years} label="Năm" onChange={(value) => {setSelectedNamDanhGia(value); setCurrentPage(1)}} />
                     {/* <Combobox options={sortDateOptions} label="Mới nhất." onChange={setSelectedSortDate} /> */}
                     <div className="w-1/3 relative flex items-cente">
                         <Input
@@ -143,7 +143,7 @@ export const ViewListTieuChuan = () => {
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[575px] flex flex-col items-center justify-center">
                                     <p>Đang tải dữ liệu...</p>
                                     <LoaderCircle className="animate-spin" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -155,7 +155,7 @@ export const ViewListTieuChuan = () => {
                     ) : listTieuChuan.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} className="text-center">
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[575px] flex flex-col items-center justify-center">
                                     Không tìm thấy tài liệu nào
                                 </div>
                             </TableCell>
@@ -183,7 +183,7 @@ export const ViewListTieuChuan = () => {
             </Table>
 
             {/* Phân trang */}
-            <Separator />
+            <Separator className="mb-2"/>
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
@@ -191,7 +191,7 @@ export const ViewListTieuChuan = () => {
                     </PaginationItem>
                     {[...Array(totalPages)].map((_, index) => (
                         <PaginationItem key={index}>
-                            <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                            <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-black" : ""}>
                                 {index + 1}
                             </PaginationLink>
                         </PaginationItem>

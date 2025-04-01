@@ -21,19 +21,49 @@ export async function PATCH(
         }
 
         const {
-            ma,
-            donVi,
-            hoTen,
-            email,
-            vaiTro,
-            trangThai
+            ma = "",
+            donVi = null,
+            hoTen = "",
+            email = "",
+            vaiTro = "",
+            trangThai = false
         } = await req.json();
+
+        // console.log(ma);
+        const { searchParams } = new URL(req.url);
+        const resetPassword = searchParams.get("resetPassword") === "true";
+        // console.log(resetPassword);
+
+        if (resetPassword === true && ma) {
+            const newPassword = "Hunre@1234";
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+
+            // await sendMail(
+            //     "Đặt lại mật khẩu thành công",
+            //     email,
+            //     `Tên đăng nhập: ${email} \n
+            //     Mật khẩu của bạn là: ${newPassword} \n
+            //     Truy cập vào hệ thống tại http://localhost:3000`
+            // )
+
+            await db.nguoiDung.update({
+                where: {
+                    ma: ma,
+                },
+                data: {
+                    matKhau: hashedPassword,
+                }
+            });
+
+            return new NextResponse("Đặt lại mật khẩu thành công", { status: 200 });
+        }
 
         const maDonVi = typeof donVi === 'string' ? Number(donVi) : donVi;
 
         const activeUser = trangThai === 'true' ? true : false;
 
-        const user = await db.nguoiDung.update({
+        await db.nguoiDung.update({
             where: {
                 ma: ma,
             },
@@ -49,8 +79,9 @@ export async function PATCH(
             }
         });
 
+
         // console.log(user);
-        return NextResponse.json(user);
+        return NextResponse.json("Cập nhật thông tin thành công", { status: 200 });
 
     } catch (error) {
         console.error("ACCOUNT_POST", error);
@@ -211,6 +242,8 @@ export async function POST(
 
         email.map(async (email: string) => {
             const newPassword = generateRandomPassword();
+            // const newPassword = "Hunre@1234";
+
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             await sendMail(
                 "Tạo mới tài khoản thành công",

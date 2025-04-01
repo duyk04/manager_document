@@ -23,11 +23,29 @@ export async function POST(
 			return new NextResponse("Unauthorized", { status: 401 });
 		}
 
+		const uuid_user = profile?.ma;
+
+		//kiểm tra xem có folder tmp trong data_uploads chưa
+		const pathFolderTmp = path.join(process.cwd(), "data_uploads", "tmp");
+		try {
+			await fs.access(pathFolderTmp);
+		}
+		catch {
+			await fs.mkdir(pathFolderTmp, { recursive: true });
+		}
+
+		//kiểm tra xem có folder user trong tmp chưa
+		const pathFolderUser = path.join(process.cwd(), "data_uploads", "tmp", uuid_user || "");
+		try {
+			await fs.access(pathFolderUser);
+		}catch {
+			await fs.mkdir(pathFolderUser, { recursive: true });
+		}
+
 		const { searchParams } = new URL(req.url);
 
 		const formData = await req.formData();
 		const file = formData.get("file") as File;
-
 
 		const removeVietnameseTones = (str: string) => {
 			return str.normalize("NFD") // Tách dấu khỏi ký tự
@@ -48,17 +66,19 @@ export async function POST(
 			await fs.mkdir(pathFolder, { recursive: true });
 		}
 
-
-
 		const arrayBuffer = await file.arrayBuffer();
 		const buffer = new Uint8Array(arrayBuffer);
 
-		const filePath = path.join(pathFolder, file.name);
+		// const filePath = path.join(pathFolder, file.name);
+		// await fs.writeFile(filePath, buffer);
+
+		// ghi file vào folder user
+		const filePath = path.join(pathFolderUser, file.name);
 		await fs.writeFile(filePath, buffer);
 
 		revalidatePath("/");
 
-		return NextResponse.json({ status: "success", filePath: `/data_uploads/${nameFolder}/${file.name}` });
+		return NextResponse.json({ status: "success", filePath: `/files/${file.name}?tmpFile=true` });
 	} catch (e) {
 		console.error(e);
 		return NextResponse.json({ status: "fail", error: e });

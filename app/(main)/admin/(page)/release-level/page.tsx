@@ -1,4 +1,5 @@
-import { ListReleaseLevel } from "@/components/manage-release/type-list";
+import { ListReleaseLevel } from "@/components/manage-release/release-list";
+import { NoAccess, NoPermission } from "@/components/notification_ui/notification";
 import { currentProfile } from "@/lib/current-profile";
 import { VaiTro } from "@prisma/client";
 
@@ -9,23 +10,24 @@ const TypePage = async () => {
         return null;
     }
 
-    if (profile.vaiTro !== VaiTro.QUANTRIVIEN) {
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
+    }
+
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA && profile.vaiTro !== VaiTro.QUANLY) {
         return (
-            <div>
-                <p className="text-2xl">Unauthorized</p>
-                <p className="text-zinc-400 text-md">You are not authorized to access this page</p>
-            </div>
+            <NoPermission />
         );
     }
 
     return (
         <div className="w-full">
             <div className="mb-5">
-                <p className="text-2xl">Quản lý cấp ban hành</p>
-                <p className="text-zinc-400 text-md">Tạo và quản lý các cấp ban hành</p>
+                <p className="text-2xl">Quản lý nơi, cấp ban hành</p>
+                <p className="text-zinc-400 text-md">Tạo và quản lý nơi, các cấp ban hành</p>
             </div>
             <div>
-                <ListReleaseLevel/>
+                <ListReleaseLevel />
             </div>
         </div>
     )

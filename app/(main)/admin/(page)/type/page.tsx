@@ -1,4 +1,5 @@
 import { ListType } from "@/components/manage-type/type-list";
+import { NoAccess, NoPermission } from "@/components/notification_ui/notification";
 import { currentProfile } from "@/lib/current-profile";
 import { VaiTro } from "@prisma/client";
 
@@ -9,12 +10,13 @@ const TypePage = async () => {
         return null;
     }
 
-    if (profile.vaiTro !== VaiTro.QUANTRIVIEN) {
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
+    }
+
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA && profile.vaiTro !== VaiTro.QUANLY) {
         return (
-            <div>
-                <p className="text-2xl">Unauthorized</p>
-                <p className="text-zinc-400 text-md">You are not authorized to access this page</p>
-            </div>
+            <NoPermission />
         );
     }
 

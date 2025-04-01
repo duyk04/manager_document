@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
+import { on } from "node:events";
 
 
 const formSchema = z.object({
@@ -34,7 +35,7 @@ const formSchema = z.object({
 });
 
 export const CreateReleaseLevelDocumentModal = () => {
-    const { isOpen, onClose, type} = useModal();
+    const { isOpen, onClose, type, onSave } = useModal();
     const router = useRouter();
 
 
@@ -52,6 +53,7 @@ export const CreateReleaseLevelDocumentModal = () => {
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
         // console.log(value);
+        onSave();
         try {
             await axios.post("/api/releaseLevel", value);
             toast({
@@ -59,7 +61,6 @@ export const CreateReleaseLevelDocumentModal = () => {
                 title: "Thêm thành công",
             });
             form.reset();
-            router.refresh();
         } catch (error) {
             // console.error(error);
             toast({
@@ -67,7 +68,7 @@ export const CreateReleaseLevelDocumentModal = () => {
                 title: "Lỗi",
                 description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
             });
-        }finally {
+        } finally {
             onClose();
         }
     }

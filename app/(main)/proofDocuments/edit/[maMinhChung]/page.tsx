@@ -1,4 +1,5 @@
 import { EditDocument } from "@/components/documents/document-edit";
+import { NoAccess } from "@/components/notification_ui/notification";
 import { EditProofDocument } from "@/components/proofDocuments/proofDocuments-edit";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
@@ -15,9 +16,8 @@ const EditMinhChung = async ({
     //Lấy thông tin người dùng hiện tại
     const profile = await currentProfile();
 
-    //Kiểm tra nếu không có thông tin người dùng
-    if (!profile) {
-        redirect("/home");
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
     }
 
     const maMinhChung = decodeURIComponent((await params).maMinhChung);
@@ -29,14 +29,14 @@ const EditMinhChung = async ({
                 select: {
                     ma: true,
                     maTieuChi: true,
-                    maTieuChuan:true,
+                    maTieuChuan: true,
                     tenTieuChi: true,
                     moTa: true,
                     tieuChuan: {
                         select: {
                             ma: true,
                             maTieuChuan: true,
-                            maCTDT:true,
+                            maCTDT: true,
                             tenTieuChuan: true,
                             moTa: true,
                             ChuongTrinhDaoTao: {
@@ -69,12 +69,12 @@ const EditMinhChung = async ({
         },
     });
 
-    
+
     // Kiểm tra nếu không tìm thấy dữ liệu
     if (!minhChung) {
         throw new Error("Không tìm thấy minh chứng!");
     }
-    
+
     // console.log(minhChung);
     const QUANLY = profile?.vaiTro === 'QUANLY';
 

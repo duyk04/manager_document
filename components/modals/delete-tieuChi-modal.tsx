@@ -16,41 +16,39 @@ import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
 
 export const DeleteTieuChiModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "deleteTieuChi";
-    const { ma, maTieuChi, tenTieuChi } = data || {}; // Lấy thông tin tiêu chí từ data
+    const { ma, maTieuChi, tenTieuChi } = data || {};
 
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
+        onSave()
         try {
             setIsLoading(true);
             await axios.delete("/api/tieuchi", {
-                data: { ma }, // Gửi ma (khóa chính) để xóa
+                data: { ma },
             });
             toast({
                 variant: "success",
                 title: "Xóa thành công",
                 description: `Tiêu chí ${maTieuChi} đã được xóa.`,
             });
-            onClose();
         } catch (error) {
             let errorMessage = "Có lỗi xảy ra khi xóa tiêu chí.";
 
             if (axios.isAxiosError(error) && error.response) {
                 errorMessage = error.response.data.error || errorMessage;
             }
-    
             toast({
                 variant: "destructive",
                 title: "Lỗi",
                 description: errorMessage,
             });
-            onClose();
         } finally {
-            router.refresh();
+            onClose();
             setIsLoading(false);
         }
     };

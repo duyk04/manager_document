@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
+import { on } from "events";
 
 
 const formSchema = z.object({
@@ -37,7 +38,7 @@ const formSchema = z.object({
 
 
 export const EditDepartmentModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     // console.log(data);
 
@@ -66,7 +67,8 @@ export const EditDepartmentModal = () => {
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
+        // console.log(value);
+        onSave();
         try {
             await axios.patch("/api/department", value);
 
@@ -74,8 +76,7 @@ export const EditDepartmentModal = () => {
                 variant: "success",
                 title: "Sửa thành công",
             });
-            form.reset();
-            router.refresh();
+            
         } catch (error) {
             console.error(error);
         } finally {

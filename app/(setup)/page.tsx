@@ -44,7 +44,7 @@ const SetupPage = async () => {
         return (
             <div className="flex justify-center items-center h-screen bg-white">
                 <div>
-                    <h1>Bạn cần liên hệ quản trị viên để đăng ký tài khoản</h1>
+                    <h1>Bạn cần liên hệ quản trị viên để kích hoạt tài khoản</h1>
                     <div className="mt-4 w-fit mx-auto">
                         <LogoutButton />
                     </div>

@@ -1,4 +1,5 @@
 import { ListDepartment } from "@/components/manage-departments/department-list";
+import { NoAccess, NoPermission } from "@/components/notification_ui/notification";
 import { currentProfile } from "@/lib/current-profile";
 import { VaiTro } from "@prisma/client";
 
@@ -9,8 +10,14 @@ const DepartmentPage = async () => {
         return null;
     }
 
+    if (profile?.trangThai === false) {
+        return (<><NoAccess /></>)
+    }
+
     if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA) {
-        return null;
+        return (
+            <NoPermission />
+        )
     }
 
     return (

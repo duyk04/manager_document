@@ -36,7 +36,7 @@ const formSchema = z.object({
 });
 
 export const EditTypeDocumentModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
     // console.log(data);
 
@@ -67,7 +67,8 @@ export const EditTypeDocumentModal = () => {
 
 
     const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
+        // console.log(value);
+        onSave();
         try {
             await axios.patch("/api/typeDocument", value);
 
@@ -76,7 +77,6 @@ export const EditTypeDocumentModal = () => {
                 title: "Sửa thành công",
             });
             form.reset();
-            router.refresh();
         } catch (error) {
             // 
             toast({

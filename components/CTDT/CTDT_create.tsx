@@ -58,7 +58,7 @@ export const Create_CTDT = () => {
 
             toast({
                 variant: "success",
-                title: "Thêm thành công",
+                title: `Thêm thành công ${value.tenCTDT}`,
             });
             form.reset();
             router.refresh();

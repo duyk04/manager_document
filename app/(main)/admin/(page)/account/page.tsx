@@ -4,6 +4,7 @@ import { VaiTro } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { ListAccount } from "@/components/manage-account/account-list";
 import { db } from "@/lib/db";
+import { NoAccess, NoPermission } from "@/components/notification_ui/notification";
 
 
 
@@ -14,10 +15,13 @@ const AccountPage = async () => {
         return null;
     }
 
-    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA) {
-        return null;
+    if (profile?.trangThai === false) {
+        return (<><NoAccess/></>)
     }
 
+    if (profile.vaiTro !== VaiTro.QUANTRIVIEN && profile.vaiTro !== VaiTro.THANHTRA) {
+        return (<><NoPermission/></>);
+    }
     return (
         <div>
             <div>

@@ -33,7 +33,7 @@ import Link from "next/link";
 
 export const ViewListCTDT = () => {
     const router = useRouter();
-    const { onOpen, onClose, isOpen } = useModal();
+    const { onOpen, onClose, isOpen, isSubmit } = useModal();
 
     const [listCTDT, setListCTDT] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -69,7 +69,7 @@ export const ViewListCTDT = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, isOpen]);
+    }, [search, currentPage, selectedSortDate, selectedNamDanhGia, isSubmit]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${soVanBan}`);
@@ -102,7 +102,7 @@ export const ViewListCTDT = () => {
                 </div>
                 {/* tính năng lọc tìm kiếm */}
                 <div className="flex gap-4 my-4 relative items-center justify-end w-2/5">
-                    <Combobox options={years} label="Năm" onChange={setSelectedNamDanhGia} />
+                    <Combobox options={years} label="Năm" onChange={(value)=> {setSelectedNamDanhGia(value); setCurrentPage(1)}} />
                     {/* <Combobox options={sortDateOptions} label="Mới nhất." onChange={setSelectedSortDate} /> */}
                     <div className="w-1/2 relative flex items-cente">
                         <Input
@@ -117,22 +117,22 @@ export const ViewListCTDT = () => {
                 </div>
             </div>
             <Table className="w-full text-center items-center">
-                <TableCaption>Danh sách văn bản</TableCaption>
+                <TableCaption>Danh sách chương trình đào tạo</TableCaption>
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>
                         <TableHead className="font-semibold">Mã</TableHead>
                         <TableHead className="font-semibold">Tên chương trình đào tạo</TableHead>
                         <TableHead className="font-semibold">Mô tả</TableHead>
-                        <TableHead className="font-semibold">Năm đánh giá</TableHead>
-                        <TableHead className="font-semibold">Thao tác</TableHead>
+                        <TableHead className="font-semibold text-center">Năm đánh giá</TableHead>
+                        <TableHead className="font-semibold text-center">Thao tác</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[575px] flex flex-col items-center justify-center">
                                     <p>Đang tải dữ liệu...</p>
                                     <LoaderCircle className="animate-spin" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -144,7 +144,7 @@ export const ViewListCTDT = () => {
                     ) : listCTDT.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} className="text-center">
-                                <div className="space-y-2 w-full min-h-[600px] flex flex-col items-center justify-center">
+                                <div className="space-y-2 w-full min-h-[575px] flex flex-col items-center justify-center">
                                     Không tìm thấy dữ liệu!
                                 </div>
                             </TableCell>
@@ -156,9 +156,9 @@ export const ViewListCTDT = () => {
                                 <TableCell className="text-start">{CTDT.maCTDT}</TableCell>
                                 <TableCell className="text-start">{CTDT.tenCTDT}</TableCell>
                                 <TableCell className="text-start">{CTDT.moTa || "N/A"}</TableCell>
-                                <TableCell className="text-start">{CTDT.namDanhGia}</TableCell>
+                                <TableCell className="text-center">{CTDT.namDanhGia}</TableCell>
 
-                                <TableCell className="flex gap-4">
+                                <TableCell className="flex gap-4 justify-center">
                                     <Button variant={"primary"} onClick={() => onOpen("editCTDT", CTDT)}>Sửa</Button>
                                     <Button variant={"success"} onClick={() => { }}>Xem</Button>
                                     <Button variant={"destructive"} onClick={() => onOpen("deleteCTDT", CTDT)}>Xóa</Button>
@@ -170,15 +170,15 @@ export const ViewListCTDT = () => {
             </Table>
 
             {/* Phân trang */}
-            <Separator />
-            <Pagination>
+            <Separator/>
+            <Pagination className="my-2">
                 <PaginationContent>
                     <PaginationItem>
-                        <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
+                        <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}/>
                     </PaginationItem>
                     {[...Array(totalPages)].map((_, index) => (
                         <PaginationItem key={index}>
-                            <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                            <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-black" : ""}>
                                 {index + 1}
                             </PaginationLink>
                         </PaginationItem>
@@ -187,7 +187,7 @@ export const ViewListCTDT = () => {
                         <PaginationEllipsis />
                     </PaginationItem>
                     <PaginationItem>
-                        <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} />
+                        <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}/>
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>

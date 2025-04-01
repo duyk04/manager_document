@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { toast } from "@/hooks/use-toast";
 import { resetPassword } from "@/actions/resetPassword";
-import { sub } from "date-fns";
 
 export const ResetPasswordModal = () => {
     const { isOpen, onClose, type, data } = useModal();
@@ -41,6 +40,11 @@ export const ResetPasswordModal = () => {
                 title: "Thành công!",
                 description: `Mật khẩu mới đã được gửi tới email ${email}!`,
             });
+            // toast({
+            //     variant: "warning",
+            //     title: "Tính năng này hiện tại đang tạm thời không khả dụng",
+            //     description: `Vui lòng liên hệ với quản trị viên để được hỗ trợ!`,
+            // });
             onClose();
             router.refresh();
         } catch (error) {

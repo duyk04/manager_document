@@ -56,7 +56,7 @@ interface ChuongTrinhDaoTao {
 }
 
 export const EditTieuChuanModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
 
     const [linhVucOptions, setLinhVucOptions] = useState<LinhVuc[]>([]);
@@ -116,6 +116,7 @@ export const EditTieuChuanModal = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        onSave();
         try {
             await axios.patch("/api/tieuchuan", values);
             form.reset();
@@ -124,8 +125,6 @@ export const EditTieuChuanModal = () => {
                 title: "Thành công",
                 description: "Tiêu chuẩn đã được cập nhật thành công.",
             });
-            router.refresh();
-            onClose();
         } catch (error) {
             toast({
                 variant: "destructive",
@@ -134,6 +133,8 @@ export const EditTieuChuanModal = () => {
                     ? error.response.data.message
                     : "Có lỗi xảy ra khi cập nhật tiêu chuẩn",
             });
+        } finally {
+            onClose();
         }
     };
 

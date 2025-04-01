@@ -18,7 +18,7 @@ import { toast } from "@/hooks/use-toast";
 
 
 export const DeleteDocumentModal = () => {
-    const { isOpen, onClose, type, data } = useModal();
+    const { isOpen, onClose, type, data, onSave } = useModal();
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "deleteDocument";
@@ -28,6 +28,7 @@ export const DeleteDocumentModal = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
+        onSave()
         try {
             setIsLoading(true);
             await axios.delete("/api/documents", {
@@ -35,19 +36,18 @@ export const DeleteDocumentModal = () => {
             });
             toast({
                 variant: "success",
-                title: `Xóa thành công văn bản${tenTaiLieu}`,
+                title: `Xóa thành công văn bản ${tenTaiLieu}`,
             });
-            onClose();
         } catch (error) {
             // console.error(error);
-            onClose();
             toast({
                 variant: "destructive",
                 title: "Lỗi",
                 description: axios.isAxiosError(error) && error.response ? error.response.data : "Có lỗi xảy ra",
+                // action:<Button variant="link" onClick={() => router.push("/admin/documents")}>Quay lại</Button>,
             });
         } finally {
-            router.refresh();
+            onClose();
             setIsLoading(false);
         }
     };
@@ -76,7 +76,7 @@ export const DeleteDocumentModal = () => {
                         <Button
                             disabled={isLoading}
                             onClick={handleDelete}
-                            variant="primary"
+                            variant="destructive"
                         >
                             Xác nhận
                         </Button>

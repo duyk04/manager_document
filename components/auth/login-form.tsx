@@ -18,6 +18,8 @@ import { FormError } from '../form-error';
 import { FormSuccess } from '../form-success';
 import { LoginSchema } from '@/schemas';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { toast } from '@/hooks/use-toast';
 
 const LoginForm = () => {
     const [isPending, startTransition] = useTransition();
@@ -48,6 +50,14 @@ const LoginForm = () => {
                 });
         });
     };
+
+    const onClickForgotPassword = () => {
+        toast({
+            title: "Chức năng này chưa được bảo trì!",
+            description: "Vui lòng thử lại sau, hoặc liên hệ quản trị viên để được hỗ trợ.",
+            variant: "warning",
+        });
+    }
 
     return (
         <div>
@@ -140,9 +150,14 @@ const LoginForm = () => {
                                 Remember me
                             </label>
                         </div> */}
-                        <a href="#" className="text-sm text-indigo-600 hover:underline">
+                        {/* <Link href="#" className="text-sm text-indigo-600 hover:underline">
                             Quên mật khẩu?
-                        </a>
+                        </Link> */}
+                        <Button type='button' variant="ghost" className="text-sm text-indigo-600 hover:underline p-0 hover:bg-white hover:text-indigo-600"
+                            onClick={onClickForgotPassword}
+                        >
+                            Quên mật khẩu?
+                        </Button>
                     </div>
                     <FormSuccess message={success} />
                     <FormError message={error} />

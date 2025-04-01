@@ -6,6 +6,7 @@ declare module "@/node_modules/next-auth" {
     interface User {
         ma: string;
         vaiTro: string;
+        email: string;
         maDonVi?: string;
         hoTen: string;
         anhDaiDien?: string;
@@ -21,17 +22,10 @@ declare module "@/node_modules/next-auth" {
             hoTen: string;
             anhDaiDien?: string;
             trangThai: boolean;
-        };
+        } & DefaultSession["user"];
     }
 
     interface JWT {
-        // id: string;
-        // email: string;
-        // name: string;
-        // department?: string;
-        // role: string;
-        // avatar?: string;
-        // status: boolean;
         ma: string;
         vaiTro: string;
         email: string;

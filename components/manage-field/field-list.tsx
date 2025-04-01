@@ -34,7 +34,7 @@ interface LinhVuc {
 }
 
 export const ListField = () => {
-    const { onOpen, isOpen } = useModal();
+    const { onOpen, isOpen, isSubmit } = useModal();
     const [listLinhVuc, setListLinhVuc] = useState<LinhVuc[]>([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -62,7 +62,7 @@ export const ListField = () => {
         };
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, isOpen])
+    }, [search, currentPage, isSubmit])
     return (
         <div>
             <div className="flex flex-row gap-4 justify-between">
@@ -87,8 +87,8 @@ export const ListField = () => {
                 </div> */}
             </div>
             <Table>
-                <TableCaption className="mb-10">Danh sách lĩnh vực văn bản</TableCaption>
-                <TableHeader>
+                <TableCaption className="mb-2">Danh sách lĩnh vực văn bản</TableCaption>
+                <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead className="w-[100px] text-center">STT</TableHead>
                         <TableHead>Mã lĩnh vực</TableHead>
@@ -138,14 +138,14 @@ export const ListField = () => {
             </Table>
             <div className="absolute bottom-0 right-0 w-full">
                 <Separator />
-                <Pagination >
+                <Pagination className="my-2">
                     <PaginationContent>
                         <PaginationItem>
                             <PaginationPrevious onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} />
                         </PaginationItem>
                         {[...Array(totalPages)].map((_, index) => (
                             <PaginationItem key={index}>
-                                <PaginationLink onClick={() => setCurrentPage(index + 1)}>
+                                <PaginationLink onClick={() => setCurrentPage(index + 1)} className={currentPage === index + 1 ? "bg-gray-200 text-dark" : ""}>
                                     {index + 1}
                                 </PaginationLink>
                             </PaginationItem>
