@@ -1,7 +1,6 @@
 // next-auth.d.ts
 import NextAuth from "@/node_modules/next-auth";
 
-
 declare module "@/node_modules/next-auth" {
     interface User {
         ma: string;
