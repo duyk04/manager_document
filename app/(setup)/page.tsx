@@ -1,7 +1,6 @@
 
 import { auth } from "@/auth";
 import { LogoutButton } from "@/components/auth/logout-button";
-import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 const SetupPage = async () => {

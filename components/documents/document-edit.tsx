@@ -269,7 +269,7 @@ export const EditDocument = ({
                                         <SelectContent>
                                             {fieldDocument?.map((item, index) => (
                                                 <SelectItem key={index} value={item.ma.toString()} className="capitalize">
-                                                    {item.tenLinhVuc}
+                                                    {item.maLinhVuc} - {item.tenLinhVuc}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

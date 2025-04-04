@@ -43,8 +43,8 @@ export const ViewDocumentModal = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [donVi, setDonVi] = useState<{ ma: number; tenDonVi: string; moTa: string }[]>([]);
     const [capBanHanh, setCapBanHanh] = useState<{ ma: number; tenCap: string }[]>([]);
-    const [linhVuc, setLinhVuc] = useState<{ ma: number; tenLinhVuc: string }[]>([]);
-    const [loaiVanBan, setLoaiVanBan] = useState<{ ma: number; tenLoaiVanBan: string }[]>([]);
+    const [linhVuc, setLinhVuc] = useState<{ ma: number; maLinhVuc: string; tenLinhVuc: string }[]>([]);
+    const [loaiVanBan, setLoaiVanBan] = useState<{ ma: number; tenLoaiVanBan: string; moTa: string }[]>([]);
 
     // Lưu trạng thái bộ lọc
     const [selectedDonVi, setSelectedDonVi] = useState<string | null>(null);
@@ -112,14 +112,14 @@ export const ViewDocumentModal = () => {
     const linhVucOptions = [
         ...linhVuc.map((item) => ({
             value: item.ma.toString(),
-            label: item.tenLinhVuc,
+            label: `${item.maLinhVuc} - ${item.tenLinhVuc}`,
         })),
     ]
 
     const loaiVanBanOptions = [
         ...loaiVanBan.map((item) => ({
             value: item.ma.toString(),
-            label: item.tenLoaiVanBan,
+            label: `${item.tenLoaiVanBan} - ${item.moTa}`,
         })),
     ]
 
@@ -262,7 +262,7 @@ export const ViewDocumentModal = () => {
 
             {/* Phân trang */}
             <div>
-                <Separator className="mb-2"/>
+                <Separator className="mb-2" />
                 <Pagination >
                     <PaginationContent>
                         <PaginationItem>
@@ -279,7 +279,7 @@ export const ViewDocumentModal = () => {
                             <PaginationEllipsis />
                         </PaginationItem>
                         <PaginationItem>
-                            <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}/>
+                            <PaginationNext onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} />
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
