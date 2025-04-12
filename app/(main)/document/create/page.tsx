@@ -10,7 +10,9 @@ const DocumentPage = async () => {
     return (
         <div>
             <p className="text-center text-2xl pt-5">Thêm mới văn bản vào kho dữ liệu</p>
-            <CreateDocumentModal />
+            <CreateDocumentModal 
+                ma={profile?.maDonVi ?? null} 
+            />
         </div>
     );
 };

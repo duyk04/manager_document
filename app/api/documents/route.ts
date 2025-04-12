@@ -277,10 +277,11 @@ export async function POST(req: Request) {
             };
         });
 
+
         // Lưu vào DB
         const document = await db.taiLieu.create({
             data: {
-                maDonVi: donVi,
+                maDonVi: profile?.maDonVi || donVi,
                 maLinhVuc: linhVuc,
                 maLoaiVanBan: loaiVanBan,
                 maCapBanHanh: capBanHanh,
@@ -352,6 +353,7 @@ export async function GET(req: Request) {
         const capBanHanhFilter = parseInt(searchParams.get("capBanHanh") || "0", 0) || null;
         const linhVucFilter = parseInt(searchParams.get("linhVuc") || "0", 0) || null;
         const loaiVanBanFilter = parseInt(searchParams.get("loaiVanBan") || "0", 0) || null;
+        const yearFilter = parseInt(searchParams.get("year") || "0", 0) || null;
         const sort = searchParams.get("sort") || "newest";
         const page = parseInt(searchParams.get("page") || "1", 10);
         const pageSize = 10
@@ -400,6 +402,15 @@ export async function GET(req: Request) {
 
         if (loaiVanBanFilter) {
             andConditions.push({ maLoaiVanBan: loaiVanBanFilter });
+        }
+
+        if (yearFilter) {
+            andConditions.push({
+                ngayBanHanh: {
+                    gte: new Date(`${yearFilter}-01-01`),
+                    lte: new Date(`${yearFilter}-12-31`)
+                }
+            });
         }
 
         // Xử lý quyền truy cập

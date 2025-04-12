@@ -308,9 +308,9 @@ export const CreateProofDocumentModal = () => {
     return (
         <div>
             <div className="w-full">
-                <p className="mb-5">Tạo mới minh chứng</p>
+                {/* <p className="mb-5">Tạo mới minh chứng</p> */}
                 <div className="flex flex-row gap-4">
-                    <div className="flex-col w-2/5">
+                    <div className="flex-col w-2/5 mt-2">
                         <div>
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

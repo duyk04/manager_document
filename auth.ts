@@ -59,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.id = user.ma;
                 token.role = user.vaiTro;
                 token.email = user.email;
-                token.picture = user.anhDaiDien;
+                token.picture = user.image;
                 token.trangThai = user.trangThai;
             }
 

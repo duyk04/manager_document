@@ -16,6 +16,7 @@ import { FileUpload } from "@/components/file-upload";
 import { PhamVi } from "@prisma/client";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { currentProfile } from "@/lib/current-profile";
 
 
 interface FileField {
@@ -63,8 +64,13 @@ const formSchema = z.object({
     FILE_GOC: z.array(z.string()),
 });
 
+interface DonViProfile {
+    ma: number | null;
+}
 
-export const CreateDocumentModal = () => {
+export const CreateDocumentModal = ({
+    ma,
+}: DonViProfile) => {
     const router = useRouter();
     const [isMounted, setMounted] = useState(false);
     const [departments, setDeparment] = useState<DonVi[]>([]);
@@ -130,7 +136,7 @@ export const CreateDocumentModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            donVi: 0,
+            donVi: ma ?? 0,
             linhVuc: 0,
             loaiVanBan: 0,
             soVanBan: "",
@@ -194,7 +200,7 @@ export const CreateDocumentModal = () => {
                                         Khoa
                                     </FormLabel>
                                     <Select
-                                        disabled={isLoading}
+                                        disabled
                                         // onValueChange={field.onChange}
                                         // defaultValue={field.value}
                                         defaultValue={field.value ? field.value.toString() : ""} // Chuyển giá trị sang string để hiển thị
@@ -527,11 +533,11 @@ export const CreateDocumentModal = () => {
                                 {/* Nút Xóa */}
                                 <Button
                                     type="button"
-                                    variant="secondary"
+                                    variant="outline"
                                     className="h-8 w-fit text-red-500"
                                     onClick={() => removeFileField(file.id)}
                                 >
-                                    Loại bỏ file {index + 1}
+                                    Loại bỏ tài liệu đính kèm {index + 1}
                                 </Button>
                             </div>
                         ))}
@@ -539,12 +545,12 @@ export const CreateDocumentModal = () => {
 
                         <Button
                             type="button"
-                            variant="primary"
-                            className="w-1/6"
+                            variant="outline"
+                            className="w-fit"
                             onClick={addFileField}
                             disabled={isLoading}
                         >
-                            Thêm file
+                            Thêm tài liệu đính kèm
                         </Button>
 
                     </div>

@@ -71,7 +71,8 @@ export const ResetPasswordAccountModal_Admin = () => {
                         Đặt lại mật khẩu tài khoản
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Tài khoản sau sẽ được đặt lại mật khẩu về mặc định <br />
+                        Tài khoản sau sẽ được đặt lại mật khẩu về mặc định
+                        <span className="text-emerald-500 font-semibold"> Hunre@1234</span> <br />
                         <span className="text-indigo-500 font-semibold">{email}</span>
                     </DialogDescription>
                 </DialogHeader>

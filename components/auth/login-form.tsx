@@ -53,7 +53,7 @@ const LoginForm = () => {
 
     const onClickForgotPassword = () => {
         toast({
-            title: "Chức năng này chưa được bảo trì!",
+            title: "Chức năng này đang được bảo trì!",
             description: "Vui lòng thử lại sau, hoặc liên hệ quản trị viên để được hỗ trợ.",
             variant: "warning",
         });

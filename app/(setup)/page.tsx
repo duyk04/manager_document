@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 const SetupPage = async () => {
     const session = await auth();
-    // console.log("session",session);
+    // console.log("sessions",session);
     const userId = session?.user.ma;
 
     if (!session) {

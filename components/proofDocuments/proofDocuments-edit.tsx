@@ -132,18 +132,18 @@ export const EditProofDocument = ({
     }, [isMounted]);
 
 
-
+    // console.log("minhchung", minhchung);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             ma: minhchung.ma,
             tieuChi: minhchung.tieuChi.ma,
-            maCTDT: minhchung.tieuChi.tieuChuan.ChuongTrinhDaoTao?.maCTDT,
+            maCTDT: minhchung.tieuChi.tieuChuan.ChuongTrinhDaoTao?.ma,
             maTieuChuan: minhchung.tieuChi.maTieuChuan,
             tenMinhChung: minhchung.tenMinhChung,
             maMinhChung: minhchung.maMinhChung,
-            namDanhGia: 0,
+            namDanhGia: minhchung.namDanhGia,
             moTa: minhchung.moTa || "",
             danhSachTaiLieu: [] as string[],
         }
@@ -318,28 +318,39 @@ export const EditProofDocument = ({
 
     const [filterCTDT, setFilterCTDT] = useState<ChuongTrinhDaoTao[]>();
     const [filterTieuChuan, setFilterTieuChuan] = useState<TieuChuan[]>()
-    const [filterTieuChi, setFilerTieuChi] = useState<TieuChi[]>()
+    const [filterTieuChi, setFilterTieuChi] = useState<TieuChi[]>()
 
 
     useEffect(() => {
-        // form.setValue("tieuChi", 0)
-        if (selectedYear) {
+        if (selectedYear && CTDT.length > 0) {
             setFilterCTDT(CTDT.filter((item) => item.namDanhGia === selectedYear));
+        } else {
+            setFilterCTDT(CTDT);
         }
-        if (filterCTDT) {
+    }, [selectedYear, CTDT]);
+
+    useEffect(() => {
+        if (selectedCTDT && tieuchuan.length > 0) {
             setFilterTieuChuan(tieuchuan.filter((item) => item.maCTDT === Number(selectedCTDT)));
+        } else {
+            setFilterTieuChuan(tieuchuan);
         }
-        if (filterTieuChuan) {
-            setFilerTieuChi(tieuChi.filter((item) => item.maTieuChuan === selectedTieuChuan));
+    }, [selectedCTDT, tieuchuan]);
+
+    useEffect(() => {
+        if (selectedTieuChuan && tieuChi.length > 0) {
+            setFilterTieuChi(tieuChi.filter((item) => item.maTieuChuan === selectedTieuChuan));
+        } else {
+            setFilterTieuChi(tieuChi);
         }
-    }, [selectedYear, selectedCTDT, selectedTieuChuan]);
+    }, [selectedTieuChuan, tieuChi]);
 
     return (
         <div>
             <div className="w-full">
-                <p className="mb-5">Sửa minh chứng</p>
+                {/* <p className="mb-5">Sửa minh chứng</p> */}
                 <div className="flex flex-row gap-4">
-                    <div className="flex-col w-2/5">
+                    <div className="flex-col w-2/5 mt-2">
                         <div>
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

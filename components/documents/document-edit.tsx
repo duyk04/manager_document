@@ -218,7 +218,7 @@ export const EditDocument = ({
                                         Đơn vị cập nhật
                                     </FormLabel>
                                     <Select
-                                        disabled={isLoading}
+                                        disabled
                                         defaultValue={field.value ? field.value.toString() : ""}
                                         onValueChange={(value) => {
                                             field.onChange(Number(value));
@@ -552,11 +552,11 @@ export const EditDocument = ({
                                 {/* Nút Xóa */}
                                 <Button
                                     type="button"
-                                    variant="secondary"
-                                    className="h-8 w-28 text-red-500"
+                                    variant="outline"
+                                    className="h-8 w-fit text-red-500"
                                     onClick={() => removeFileField(file.id)}
                                 >
-                                    Loại bỏ file {index + 1}
+                                    Loại bỏ tài liệu đính kèm {index + 1}
                                 </Button>
                             </div>
                         ))}
@@ -564,12 +564,12 @@ export const EditDocument = ({
 
                         <Button
                             type="button"
-                            variant="primary"
-                            className="w-1/6"
+                            variant="outline"
+                            className="w-fit"
                             onClick={addFileField}
                             disabled={isLoading}
                         >
-                            Thêm file
+                            Thêm tài liệu đính kèm
                         </Button>
 
                     </div>

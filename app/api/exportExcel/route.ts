@@ -11,7 +11,7 @@ export async function GET(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const listMa_MinhChung = ["H.01.01.01"];
+        const listMa_MinhChung = ["MC-001"];
 
         const listMC = await db.minhChung.findMany({
             where: {

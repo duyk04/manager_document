@@ -52,6 +52,7 @@ export const ViewDocumentModal = () => {
     const [selectedLinhVuc, setSelectedLinhVuc] = useState<string | null>(null);
     const [selectedLoaiVanBan, setSelectedLoaiVanBan] = useState<string | null>(null);
     const [selectedSortDate, setSelectedSortDate] = useState<string | null>(null);
+    const [selectedNam, setSelectedNam] = useState<string | null>(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -67,6 +68,7 @@ export const ViewDocumentModal = () => {
                         capBanHanh: selectedCapBanHanh,
                         linhVuc: selectedLinhVuc,
                         loaiVanBan: selectedLoaiVanBan,
+                        year: selectedNam,
                         sort: selectedSortDate,
                     },
                 });
@@ -85,7 +87,7 @@ export const ViewDocumentModal = () => {
 
         const delaySearch = setTimeout(fetchDocuments, 300);
         return () => clearTimeout(delaySearch);
-    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate, isSubmit]);
+    }, [search, currentPage, selectedDonVi, selectedCapBanHanh, selectedLinhVuc, selectedLoaiVanBan, selectedSortDate, selectedNam, isSubmit]);
 
     const onClickView = (soVanBan: string) => {
         router.push(`/document/view/${encodeURIComponent(soVanBan)}`);
@@ -128,6 +130,12 @@ export const ViewDocumentModal = () => {
         { value: "newest", label: "Mới nhất" },
     ];
 
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 30 }, (_, i) => ({
+        value: (currentYear - i).toString(),
+        label: (currentYear - i).toString(),
+    }));
+
     return (
         <div className="w-full rounded-lg shadow-sm">
             <div className="flex flex-row gap-4 justify-between">
@@ -147,6 +155,7 @@ export const ViewDocumentModal = () => {
                     <Combobox options={capBanHanhOptions} label="Cấp ban hành" onChange={(value) => { setSelectedCapBanHanh(value); setCurrentPage(1); }} />
                     <Combobox options={linhVucOptions} label="Lĩnh vực" onChange={(value) => { setSelectedLinhVuc(value); setCurrentPage(1); }} />
                     <Combobox options={loaiVanBanOptions} label="Loại văn bản" onChange={(value) => { setSelectedLoaiVanBan(value); setCurrentPage(1); }} />
+                    <Combobox options={years} label="Năm" onChange={(value) => {setSelectedNam(value); setCurrentPage(1)}} />
                     <Combobox options={sortDateOptions} label="Ngày ban hành." onChange={(value) => { setSelectedSortDate(value); setCurrentPage(1); }} />
                 </div>
             </div>
@@ -155,12 +164,12 @@ export const ViewDocumentModal = () => {
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>
-                        <TableHead className="font-semibold">Tên tài liệu</TableHead>
-                        <TableHead className="font-semibold">Mô tả</TableHead>
+                        <TableHead className="font-semibold">Tên văn bản/Số ký hiệu</TableHead>
+                        <TableHead className="font-semibold">Trích yếu</TableHead>
                         <TableHead className="font-semibold">Đơn vị</TableHead>
                         <TableHead className="font-semibold">Ngày ban hành</TableHead>
                         <TableHead className="font-semibold">Phạm vi</TableHead>
-                        <TableHead className="font-semibold text-center">File</TableHead>
+                        <TableHead className="font-semibold text-center">Tài liệu đính kèm</TableHead>
                         <TableHead className="font-semibold text-center">Thao tác</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -189,7 +198,7 @@ export const ViewDocumentModal = () => {
                         documents.map((document, index) => (
                             <TableRow key={index}>
                                 <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
-                                <TableCell className="text-start">{document.soVanBan} - {document.tenTaiLieu}</TableCell>
+                                <TableCell className="text-start">{document.tenTaiLieu} - {document.soVanBan}</TableCell>
                                 <TableCell className="text-start">{document.trichYeu}</TableCell>
                                 <TableCell className="text-start">{document.donVi?.tenDonVi || "N/A"}</TableCell>
                                 <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>

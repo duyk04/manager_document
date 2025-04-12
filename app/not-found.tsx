@@ -138,7 +138,7 @@ const Not_Found_Page = () => {
                             >
                                 Quay về trang chủ
                             </Link>
-                            <Link href="#" className="text-sm font-semibold text-gray-900">
+                            <Link href="https://docs.google.com/spreadsheets/d/1UerbvAr6-qJwqPpMaPcGfXpaKeIYdL0blR92AX_A9fU/edit?gid=1650437734#gid=1650437734" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-gray-900">
                                 Liên hệ hỗ trợ <span aria-hidden="true">&rarr;</span>
                             </Link>
                         </div>
