@@ -35,6 +35,7 @@ export const DeleteMinhChungModal = () => {
             toast({
                 variant: "success",
                 title: "Xóa thành công",
+                description: `Đã xóa thành công minh chứng ${maMinhChung} - ${tenMinhChung}`,
             });
         } catch (error) {
             // console.error(error);

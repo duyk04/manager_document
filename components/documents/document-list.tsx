@@ -139,9 +139,9 @@ export const ViewDocumentModal = () => {
     return (
         <div className="w-full rounded-lg shadow-sm">
             <div className="flex flex-row gap-4 justify-between">
-                <div className="relative flex items-center w-1/5 py-4 bg-white dark:bg-gray-800">
+                <div className="relative flex items-center w-3/12 py-4 bg-white dark:bg-gray-800">
                     <Input
-                        placeholder="Nhập tên hoặc mô tả văn bản"
+                        placeholder="Nhập tên, số kí hiệu hoặc trích yếu văn bản"
                         className="w-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                     />
@@ -164,7 +164,8 @@ export const ViewDocumentModal = () => {
                 <TableHeader className="bg-gray-100 dark:bg-gray-700">
                     <TableRow>
                         <TableHead>STT</TableHead>
-                        <TableHead className="font-semibold">Tên văn bản/Số ký hiệu</TableHead>
+                        <TableHead className="font-semibold">Tên văn bản</TableHead>
+                        <TableHead className="font-semibold">Số ký hiệu</TableHead>
                         <TableHead className="font-semibold">Trích yếu</TableHead>
                         <TableHead className="font-semibold">Đơn vị</TableHead>
                         <TableHead className="font-semibold">Ngày ban hành</TableHead>
@@ -198,7 +199,8 @@ export const ViewDocumentModal = () => {
                         documents.map((document, index) => (
                             <TableRow key={index}>
                                 <TableCell>{(currentPage - 1) * 10 + index + 1}</TableCell>
-                                <TableCell className="text-start">{document.tenTaiLieu} - {document.soVanBan}</TableCell>
+                                <TableCell className="text-start">{document.tenTaiLieu}</TableCell>
+                                <TableCell className="text-start">{document.soVanBan}</TableCell>
                                 <TableCell className="text-start">{document.trichYeu}</TableCell>
                                 <TableCell className="text-start">{document.donVi?.tenDonVi || "N/A"}</TableCell>
                                 <TableCell className="text-start">{new Date(document.ngayBanHanh).toLocaleDateString()}</TableCell>

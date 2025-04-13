@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 // Danh sách route với title
 const hrefs = [
     { title: "Trang chủ", url: "/home" },
-    { title: "Admin", url: "/admin" },
+    { title: "Admin", url: "/admin/dashboard" },
     { title: "Tài khoản", url: "/admin/account" },
     { title: "Danh sách tài khoản", url: "/admin/account/list" },
     { title: "Thêm tài khoản", url: "/admin/account/create-account" },

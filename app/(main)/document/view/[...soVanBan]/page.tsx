@@ -88,7 +88,7 @@ const viewVanBan = async ({
                             <p className="font-semibold">{vanBan.ma}</p>
                         </div> */}
                         <div>
-                            <p className="text-gray-600">Tên văn bản</p>
+                            <p className="text-gray-600">Tên tài liệu</p>
                             <p className="font-semibold">{vanBan.tenTaiLieu}</p>
                         </div>
                         <div>
@@ -110,10 +110,6 @@ const viewVanBan = async ({
                         <div>
                             <p className="text-gray-600">Số Văn Bản:</p>
                             <p className="font-semibold">{vanBan.soVanBan}</p>
-                        </div>
-                        <div>
-                            <p className="text-gray-600">Tên Tài Liệu:</p>
-                            <p className="font-semibold">{vanBan.tenTaiLieu}</p>
                         </div>
                         <div>
                             <p className="text-gray-600">Mô Tả:</p>

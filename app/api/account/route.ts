@@ -17,7 +17,7 @@ export async function PATCH(
         }
 
         if (profile.vaiTro !== "QUANTRIVIEN") {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return new NextResponse("Bạn không có quyển chỉnh sửa thông tin này!", { status: 401 });
         }
 
         const {
@@ -99,7 +99,7 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (profile.vaiTro !== "QUANTRIVIEN") {
+        if (profile.vaiTro !== "QUANTRIVIEN" && profile.vaiTro !== "THANHTRA") {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 

@@ -383,6 +383,7 @@ export async function GET(req: Request) {
             andConditions.push({
                 OR: [
                     { tenTaiLieu: { contains: keyword } },
+                    { soVanBan: { contains: keyword } },
                     { trichYeu: { contains: keyword } }
                 ]
             });
@@ -697,7 +698,7 @@ export async function DELETE(
             }
         });
 
-        
+
         const isQUANTRIVIEN = profile.vaiTro === 'QUANTRIVIEN';
         // const isQUANLY = profile.vaiTro === 'QUANLY';
         const isQUANLY_KHOA = profile.vaiTro === 'QUANLY' && profile.maDonVi === document?.maDonVi;

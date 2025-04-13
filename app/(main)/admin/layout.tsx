@@ -8,7 +8,7 @@ const MainLayout = async ({
             {/* <Separator orientation="vertical" />
                     <AppSidebar />
                     <Separator orientation="vertical" /> */}
-            <div className="w-full p-5">
+            <div className="w-full pt-5">
                 {/* <SidebarTrigger /> */}
                 {children}
             </div>

@@ -137,21 +137,21 @@ const navMain = [
 			},
 		],
 	},
-	{
-		title: "Danh mục",
-		url: "#",
-		icon: ListCollapse,
-		items: [
-			{
-				title: "Danh sách",
-				url: "#",
-			},
-			{
-				title: "Thêm mới",
-				url: "#",
-			},
-		],
-	},
+	// {
+	// 	title: "Danh mục",
+	// 	url: "#",
+	// 	icon: ListCollapse,
+	// 	items: [
+	// 		{
+	// 			title: "Danh sách",
+	// 			url: "#",
+	// 		},
+	// 		{
+	// 			title: "Thêm mới",
+	// 			url: "#",
+	// 		},
+	// 	],
+	// },
 	// {
 	// 	title: "Settings",
 	// 	url: "#",

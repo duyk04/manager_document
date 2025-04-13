@@ -34,7 +34,8 @@ import {
 	Trash2,
 	CircleUser,
 	BookMarked,
-	ListCollapse
+	ListCollapse,
+	HardDrive
 } from "lucide-react"
 
 
@@ -94,6 +95,17 @@ const navAdmin = [
 			{
 				title: "Cấp ban hành",
 				url: "/admin/release-level",
+			},
+		],
+	},
+	{
+		title: "Thống kê dữ liệu",
+		url: "#",
+		icon: HardDrive,
+		items: [
+			{
+				title: "Dash board",
+				url: "/admin/dashboard",
 			},
 		],
 	},
