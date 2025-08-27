@@ -20,17 +20,18 @@ cd document_management
 
 3️⃣ Cài đặt dependencies
 
-npm install
+`npm install`
 
 4️⃣ Chạy Prisma migration
 
-npx prisma migrate dev
+`npx prisma migrate dev`
 
-npx prisma db push
+`npx prisma db push`
 
 5️⃣ Khởi động dự án
 
-npm run dev
+`npm run build`
+`npm start`
 
 📩 Liên hệ: khuongduy5307@gmail.com.com
 
